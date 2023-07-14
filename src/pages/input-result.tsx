@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
-import Link from 'next/link';
+import Router from 'next/router'
 import { MappingContext } from '../context/context';
 
 const InputResult = () => {
   const { tasks, roles, mapTasksToActivities, mapRolesToPattern } = useContext(MappingContext);
 
-  const handleCheckDone = () => {
+  const handleClick = () => {
     mapTasksToActivities();
     mapRolesToPattern();
-    // navigate('/map-areas');
+    Router.push('/map-areas');
   };
 
   return (
@@ -37,9 +37,7 @@ const InputResult = () => {
         ))}
       </ul>
 
-      <Link href="/map-areas">
-        <button onClick={handleCheckDone}>Next</button>
-      </Link>
+      <button onClick={handleClick}>Next</button>
     </div>
   );
 };

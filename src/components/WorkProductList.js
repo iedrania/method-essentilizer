@@ -5,13 +5,13 @@ const WorkProductList = ({ task, addWorkProduct }) => {
 
   const handleAddWorkProduct = () => {
     if (workProductName) {
-      addWorkProduct(task.id, [{ id: task.workProducts + 1, name: workProductName }]);
+      addWorkProduct(task.id, [{ id: task.id + "-wp-" + (task.workProducts.length + 1), name: workProductName }]);
       setWorkProductName('');
     }
   };
 
   return (
-    <>
+    <div>
       <ul>
         {task.workProducts &&
           task.workProducts.map((workProduct) => (
@@ -24,7 +24,7 @@ const WorkProductList = ({ task, addWorkProduct }) => {
         onChange={(e) => setWorkProductName(e.target.value)}
       />
       <button onClick={handleAddWorkProduct}>Add Work Product</button>
-    </>
+    </div>
   );
 };
 

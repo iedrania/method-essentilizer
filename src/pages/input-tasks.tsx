@@ -1,15 +1,15 @@
 import React, { useContext, useState } from 'react';
 import Link from 'next/link';
 import { MappingContext } from '../context/context';
-import WorkProductList from '@/components/InputWorkProduct';
+import WorkProductList from '@/components/WorkProductList';
 
-export default function Home() {
-  const { tasks, addTask, addWorkProductToTask } = useContext(MappingContext);
+const InputTasks = () => {
+  const { methodId, tasks, addTask, addWorkProductToTask } = useContext(MappingContext);
   const [taskName, setTaskName] = useState('');
 
   const handleAddTask = () => {
     if (taskName) {
-      addTask({ id: tasks.length + 1, name: taskName, workProducts: [] });
+      addTask({ id: methodId + "-task-" + (tasks.length + 1), name: taskName, workProducts: [] });
       setTaskName('');
     }
   };
@@ -39,3 +39,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default InputTasks;

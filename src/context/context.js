@@ -3,6 +3,9 @@ import React, { createContext, useState } from 'react';
 const MappingContext = React.createContext();
 
 const MappingProvider = ({ children }) => {
+  const [methodId, setMethodId] = useState(-1);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState([]);
   const [roles, setRoles] = useState([]);
   const [activities, setActivities] = useState([]);
@@ -49,23 +52,35 @@ const MappingProvider = ({ children }) => {
     const patternData = deepCopy.map((role) => {
       return {
         ...role,
+        areasOfConcern: [],
         competencies: [],
       };
     });
     setRolesPattern(patternData);
   };
 
+  // TODO setActivityById, setWorkProductById, setRoleById
+
   const contextValue = {
+    methodId,
+    setMethodId,
+    name,
+    setName,
+    description,
+    setDescription,
     tasks,
+    setTasks,
     roles,
+    setRoles,
     activities,
+    setActivities,
     rolesPattern,
+    setRolesPattern,
     addTask,
-    addWorkProductToTask,
     addRole,
+    addWorkProductToTask,
     mapTasksToActivities,
     mapRolesToPattern,
-    setActivities,
   };
 
   return <MappingContext.Provider value={contextValue}>{children}</MappingContext.Provider>;

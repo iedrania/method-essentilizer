@@ -11,6 +11,78 @@ datasource db {
 }
 
 model AreaOfConcern {
-  id    Int     @id @default(autoincrement())
-  name  String?
+  id             Int             @id @default(autoincrement())
+  name           String
+  activitySpaces ActivitySpace[]
+  alphas         Alpha[]
+  competencies   Competency[]
+}
+
+model ActivitySpace {
+  id              Int           @id @default(autoincrement())
+  name            String
+  description     String
+  areaOfConcernId Int
+  areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
+  tasks           Task[]
+}
+
+model Alpha {
+  id              Int           @id @default(autoincrement())
+  name            String
+  description     String
+  areaOfConcernId Int
+  areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
+  workProducts    WorkProduct[]
+  states          State[]
+}
+
+model State {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  alphaId     Int
+  alpha       Alpha  @relation(fields: [alphaId], references: [id])
+}
+
+model Competency {
+  id              Int           @id @default(autoincrement())
+  name            String
+  description     String
+  areaOfConcernId Int
+  AreaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
+  roles           Role[]
+}
+
+model Method {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+  tasks       Task[]
+  roles       Role[]
+}
+
+model Task {
+  id             String          @id
+  name           String
+  activitySpaces ActivitySpace[]
+  methodId       Int
+  method         Method          @relation(fields: [methodId], references: [id])
+  workProducts   WorkProduct[]
+}
+
+model WorkProduct {
+  id          String  @id
+  name        String
+  alphas      Alpha[]
+  taskId      String
+  task        Task    @relation(fields: [taskId], references: [id])
+}
+
+model Role {
+  id                 String        @id
+  name               String
+  competencies       Competency[]
+  methodId           Int
+  method             Method        @relation(fields: [methodId], references: [id])
 }

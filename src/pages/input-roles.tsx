@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react';
 import Link from 'next/link';
 import { MappingContext } from '../context/context';
 
-const InsertRoleForm = () => {
-  const { roles, addRole } = useContext(MappingContext);
+const InputRoles = () => {
+  const { methodId, roles, addRole } = useContext(MappingContext);
   const [roleName, setRoleName] = useState('');
 
   const handleAddRole = () => {
     if (roleName) {
-      addRole({ name: roleName });
+      addRole({ id: methodId + "-role-" + (roles.length + 1), name: roleName });
       setRoleName('');
     }
   };
@@ -29,6 +29,9 @@ const InsertRoleForm = () => {
           <li key={index}>{role.name}</li>
         ))}
       </ul>
+
+      {/* TODO ask for related task/work product */}
+
       <Link href="/input-result">
         <button>Next</button>
       </Link>
@@ -36,4 +39,4 @@ const InsertRoleForm = () => {
   );
 };
 
-export default InsertRoleForm;
+export default InputRoles;

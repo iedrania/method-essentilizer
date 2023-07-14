@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { areasOfConcern as aoc, customerAlphas, solutionAlphas, workAlphas } from './data';
 
-const AlphaList = ({ workProduct, areasOfConcern }) => {
+const AlphaList = ({ workProduct, alphas }) => {
   const [selectedAlphas, setSelectedAlphas] = useState([]);
 
   const handleAlphaChange = (event) => {
@@ -18,22 +17,7 @@ const AlphaList = ({ workProduct, areasOfConcern }) => {
     // workProduct.setAlphas(updatedAlphas);
   };
 
-  const renderAlphas = (areaId) => {
-    let alphas;
-    switch (areaId) {
-      case "1":
-        alphas = customerAlphas;
-        break;
-      case "2":
-        alphas = solutionAlphas;
-        break;
-      case "3":
-        alphas = workAlphas;
-        break;
-      default:
-        alphas = [];
-    }
-
+  const renderAlphas = () => {
     return alphas.map((alpha) => (
       <label key={alpha.id}>
         <input type="checkbox" value={alpha.id} onChange={handleAlphaChange} />
@@ -43,16 +27,18 @@ const AlphaList = ({ workProduct, areasOfConcern }) => {
   };
 
   return (
-    <li key={workProduct.id}>
+    <li>
       <h3>{workProduct.name}</h3>
 
       <h4>Alphas:</h4>
+      {/* TODO add area of concern category
       {areasOfConcern.map((area) => (
         <div key={area}>
           <p>{aoc.find(areaObj => areaObj.id.toString() === area)?.name || ''}</p>
           {renderAlphas(area)}
         </div>
-      ))}
+      ))} */}
+      {renderAlphas()}
     </li>
   );
 };

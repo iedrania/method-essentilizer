@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { competencies } from './data';
 
-const CompetencyList = ({ role }) => {
+const CompetencyList = ({ role, competencies }) => {
   const [selectedCompetencies, setSelectedCompetencies] = useState([]);
 
   const handleCompetencyChange = (event) => {
@@ -28,12 +27,13 @@ const CompetencyList = ({ role }) => {
   };
 
   return (
-    <li key={role.id}>
+    <li>
       <h3>{role.name}</h3>
 
       <h4>Competencies:</h4>
       {renderCompetencies()}
-      {/* TODO {role.areasOfConcern.map((area) => (
+      {/* TODO display concerned areas
+      {role.areasOfConcern.map((area) => (
         <div key={area}>
           <p>{area}</p>
           {renderCompetencies(area)}

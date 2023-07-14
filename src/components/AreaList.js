@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { areasOfConcern } from './data';
 
-const AreaList = ({ activity }) => {
+const AreaList = ({ activity, setActivities, areasOfConcern }) => {
   const [selectedAreaOfConcern, setSelectedAreaOfConcern] = useState([]);
 
   const handleAreaOfConcernChange = (event) => {
@@ -26,7 +25,7 @@ const AreaList = ({ activity }) => {
   };
 
   return (
-    <li key={activity.id}>
+    <li>
       <h3>{activity.name}</h3>
 
       <h4>Area of Concern:</h4>
