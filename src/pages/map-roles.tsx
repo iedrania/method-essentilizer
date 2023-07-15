@@ -22,11 +22,9 @@ const MapRoles: React.FC = ({competencies}) => {
 
       <ul>
         {rolesPattern.map((role) => (
-          <CompetencyList key={role.id} role={role} competencies={competencies}/>
+          <CompetencyList key={role.id} role={role} competencies={competencies.filter((item) => (role.areasOfConcern).includes(String(item.areaOfConcernId)))} />
         ))}
       </ul>
-
-      {/* TODO filter competencies by related task/work product, if none, display all */}
 
       <Link href="/map-result">
         <button>Next</button>

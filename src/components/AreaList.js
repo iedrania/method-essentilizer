@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { MappingContext } from '../context/context';
 
-const AreaList = ({ activity, setActivities, areasOfConcern }) => {
-  const [selectedAreaOfConcern, setSelectedAreaOfConcern] = useState([]);
+const AreaList = ({ element, elementType, areasOfConcern }) => {
+  const { updateAreas } = useContext(MappingContext);
 
   const handleAreaOfConcernChange = (event) => {
-    const areaOfConcernId = event.target.value;
-    if (selectedAreaOfConcern.includes(areaOfConcernId)) {
-      setSelectedAreaOfConcern(selectedAreaOfConcern.filter((areaId) => areaId !== areaOfConcernId));
-      activity.areasOfConcern = activity.areasOfConcern.filter((areaId) => areaId !== areaOfConcernId);
-    } else {
-      setSelectedAreaOfConcern([...selectedAreaOfConcern, areaOfConcernId]);
-      activity.areasOfConcern = [...activity.areasOfConcern, areaOfConcernId];
-    }
-    // TODO Update the activity state using a proper state management technique
+    const areaId = event.target.value;
+    const isChecked = event.target.checked;
+    updateAreas(element.id, areaId, isChecked, elementType);
   };
 
   const renderAreaOfConcern = () => {
@@ -26,7 +21,7 @@ const AreaList = ({ activity, setActivities, areasOfConcern }) => {
 
   return (
     <li>
-      <h3>{activity.name}</h3>
+      <h3>{element.name}</h3>
 
       <h4>Area of Concern:</h4>
       {renderAreaOfConcern()}

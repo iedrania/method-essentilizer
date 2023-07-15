@@ -37,6 +37,46 @@ const MappingProvider = ({ children }) => {
     );
   };
 
+  const updatePerformedTasks = (roleId, taskId, isChecked) => {
+    setRoles((prevRoles) =>
+      prevRoles.map((role) => {
+        if (role.id === roleId) {
+          let updatedPerformedTasks;
+
+          if (isChecked) {
+            updatedPerformedTasks = [...(role.performedTasks || []), taskId];
+          } else {
+            updatedPerformedTasks = (role.performedTasks || []).filter((id) => id !== taskId);
+          }
+
+          return { ...role, performedTasks: updatedPerformedTasks };
+        }
+
+        return role;
+      })
+    );
+  };
+
+  const updateAssignedWorkProducts = (roleId, workProductId, isChecked) => {
+    setRoles((prevRoles) =>
+      prevRoles.map((role) => {
+        if (role.id === roleId) {
+          let updatedAssignedWorkProducts;
+
+          if (isChecked) {
+            updatedAssignedWorkProducts = [...(role.assignedWorkProducts || []), workProductId];
+          } else {
+            updatedAssignedWorkProducts = (role.assignedWorkProducts || []).filter((id) => id !== workProductId);
+          }
+
+          return { ...role, assignedWorkProducts: updatedAssignedWorkProducts };
+        }
+
+        return role;
+      })
+    );
+  };
+
   const addWorkProductToTask = (taskId, workProducts) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
@@ -79,6 +119,95 @@ const MappingProvider = ({ children }) => {
 
   // TODO setActivityById, setWorkProductById, setRoleById
 
+  const updateAreas = (elementId, areaId, isChecked, elementType) => {
+    if (elementType === 1) { // activity
+      setActivities((prevActivities) =>
+        prevActivities.map((activity) => {
+          if (activity.id === elementId) {
+            let updatedAreas;
+
+            if (isChecked) {
+              updatedAreas = [...(activity.areasOfConcern || []), areaId];
+            } else {
+              updatedAreas = (activity.areasOfConcern || []).filter((id) => id !== areaId);
+            }
+
+            return { ...activity, areasOfConcern: updatedAreas };
+          }
+
+          return activity;
+        })
+      );
+    } else if (elementType === 2) { // role
+      setRolesPattern((prevRoles) =>
+        prevRoles.map((role) => {
+          if (role.id === elementId) {
+            let updatedAreas;
+
+            if (isChecked) {
+              updatedAreas = [...(role.areasOfConcern || []), areaId];
+            } else {
+              updatedAreas = (role.areasOfConcern || []).filter((id) => id !== areaId);
+            }
+
+            return { ...role, areasOfConcern: updatedAreas };
+          }
+
+          return role;
+        })
+      );
+    } else {
+      console.error("elementType unknown");
+    }
+  };
+
+  const fillRoleAreasFromRelated = () => {
+    setRolesPattern((prevRoles) =>
+      prevRoles.map((role) => {
+        if (!role.areasOfConcern.length) {
+          const relatedAreasOfConcern = [];
+
+          console.log(role.performedTasks, "length adalah", role.performedTasks.length)
+          if (role.performedTasks.length) {
+            console.log('ada performed task')
+            activities.forEach((activity) => {
+              console.log(activity);
+              if (role.performedTasks.includes(activity.id)) {
+                relatedAreasOfConcern.push(...activity.areasOfConcern);
+                console.log('area of concern yg ditambah dari activity', activity.areasOfConcern)
+              }
+            });
+          }
+
+          if (role.assignedWorkProducts.length) {
+            console.log('ada assigned work product')
+            const allWorkProducts = tasks.reduce((result, task) => {
+              return result.concat(task.workProducts);
+            }, []);
+            console.log("all work products", allWorkProducts)
+
+            allWorkProducts.forEach((workProduct) => {
+              console.log("if",role.assignedWorkProducts, "includes", (workProduct.id))
+              if (role.assignedWorkProducts.includes(workProduct.id)) {
+                relatedAreasOfConcern.push(...activities.find((activity) => activity.workProducts.find((wp) => wp.id === workProduct.id)).areasOfConcern);
+                console.log('area of concern yg ditambah dari product', activities.find((activity) => activity.workProducts.find((wp) => wp.id === workProduct.id)).areasOfConcern)
+              }
+            });
+          }
+
+          console.log("relatedArea", relatedAreasOfConcern)
+
+          const uniqueAreasOfConcern = Array.from(new Set(relatedAreasOfConcern));
+          console.log(uniqueAreasOfConcern)
+
+          return { ...role, areasOfConcern: uniqueAreasOfConcern }
+        }
+
+        return role;
+      })
+    );
+  };
+
   const contextValue = {
     methodId,
     setMethodId,
@@ -98,9 +227,13 @@ const MappingProvider = ({ children }) => {
     addRole,
     deleteRole,
     changeRoleName,
+    updatePerformedTasks,
+    updateAssignedWorkProducts,
     addWorkProductToTask,
     mapTasksToActivities,
     mapRolesToPattern,
+    updateAreas,
+    fillRoleAreasFromRelated,
   };
 
   return <MappingContext.Provider value={contextValue}>{children}</MappingContext.Provider>;

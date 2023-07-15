@@ -14,7 +14,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapWorkProducts: React.FC = ({alphas}) => {
-  const { activities, setActivities } = useContext(MappingContext);
+  const { activities } = useContext(MappingContext);
 
   return (
     <div>
@@ -26,7 +26,7 @@ const MapWorkProducts: React.FC = ({alphas}) => {
             <h3>{activity.name}</h3>
 
             {activity.workProducts.map((workProduct) => (
-              <AlphaList key={workProduct.id} workProduct={workProduct} alphas={ alphas.filter(item => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } />
+              <AlphaList key={workProduct.id} workProduct={workProduct} alphas={ alphas.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } />
             ))}
           </div>
         ))}

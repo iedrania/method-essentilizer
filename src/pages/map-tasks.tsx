@@ -22,7 +22,7 @@ const MapTasks: React.FC = ({spaces}) => {
 
       <ul>
         {activities.map((activity) => (
-          <ActivitySpaceList key={activity.id} activity={activity} setActivities={setActivities} activitySpaces={ spaces.filter(item => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } />
+          <ActivitySpaceList key={activity.id} activity={activity} setActivities={setActivities} activitySpaces={ spaces.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } />
         ))}
       </ul>
 

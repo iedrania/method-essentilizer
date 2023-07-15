@@ -5,11 +5,19 @@ import { MappingContext } from '../context/context';
 const InputResult = () => {
   const { tasks, roles, mapTasksToActivities, mapRolesToPattern } = useContext(MappingContext);
 
+  const allWorkProducts = tasks.reduce((result, task) => {
+    return result.concat(task.workProducts);
+  }, []);
+
   const handleClick = () => {
     mapTasksToActivities();
     mapRolesToPattern();
     Router.push('/map-areas');
   };
+
+  const printConsole = () => {
+    console.log(tasks, roles)
+  }
 
   return (
     <div>
@@ -20,6 +28,7 @@ const InputResult = () => {
         {tasks.map((task, index) => (
           <div key={index}>
             <li>{task.name}</li>
+
             <h4>Work Products:</h4>
             <ul>
               {task.workProducts.map((workProduct) => (
@@ -33,11 +42,28 @@ const InputResult = () => {
       <h3>Roles:</h3>
       <ul>
         {roles.map((role, index) => (
-          <li key={index}>{role.name}</li>
+          <div key={index}>
+            <li>{role.name}</li>
+
+            <h4>Performed Tasks:</h4>
+            <ul>
+              {role.performedTasks.map((taskId) => (
+                <li key={taskId}>{tasks.find((item) => item.id === taskId).name}</li>
+              ))}
+            </ul>
+
+            <h4>Assigned Work Products:</h4>
+            <ul>
+              {role.assignedWorkProducts.map((workProductId) => (
+                <li key={workProductId}>{allWorkProducts.find((item) => item.id === workProductId).name}</li>
+              ))}
+            </ul>
+          </div>
         ))}
       </ul>
 
       <button onClick={handleClick}>Next</button>
+      <button onClick={printConsole}>Log</button>
     </div>
   );
 };
