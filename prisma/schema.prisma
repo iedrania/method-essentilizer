@@ -11,7 +11,7 @@ datasource db {
 }
 
 model AreaOfConcern {
-  id             Int             @id @default(autoincrement())
+  id             Int             @id
   name           String
   activitySpaces ActivitySpace[]
   alphas         Alpha[]
@@ -19,7 +19,7 @@ model AreaOfConcern {
 }
 
 model ActivitySpace {
-  id              Int           @id @default(autoincrement())
+  id              Int           @id
   name            String
   description     String
   areaOfConcernId Int
@@ -28,7 +28,7 @@ model ActivitySpace {
 }
 
 model Alpha {
-  id              Int           @id @default(autoincrement())
+  id              Int           @id
   name            String
   description     String
   areaOfConcernId Int
@@ -38,7 +38,7 @@ model Alpha {
 }
 
 model State {
-  id          Int    @id @default(autoincrement())
+  id          Int    @id
   name        String
   description String
   alphaId     Int
@@ -46,7 +46,7 @@ model State {
 }
 
 model Competency {
-  id              Int           @id @default(autoincrement())
+  id              Int           @id
   name            String
   description     String
   areaOfConcernId Int
@@ -55,7 +55,7 @@ model Competency {
 }
 
 model Method {
-  id          Int    @id @default(autoincrement())
+  id          Int    @id
   name        String @unique
   description String
   tasks       Task[]
@@ -69,6 +69,7 @@ model Task {
   methodId       Int
   method         Method          @relation(fields: [methodId], references: [id])
   workProducts   WorkProduct[]
+  performRoles   Role[]
 }
 
 model WorkProduct {
@@ -77,6 +78,7 @@ model WorkProduct {
   alphas      Alpha[]
   taskId      String
   task        Task    @relation(fields: [taskId], references: [id])
+  assignRoles Role[]
 }
 
 model Role {
@@ -85,4 +87,6 @@ model Role {
   competencies       Competency[]
   methodId           Int
   method             Method        @relation(fields: [methodId], references: [id])
+  performTasks       Task[]
+  assignWorkProducts WorkProduct[]
 }

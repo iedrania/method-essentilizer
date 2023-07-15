@@ -22,7 +22,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
     // TODO P2 choose db or json
     // TODO P2 validate methodId
     try {
-      const body = { name, description, activities, rolesPattern };
+      const body = { methodId, name, description, activities, rolesPattern };
       await fetch('/api/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

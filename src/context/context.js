@@ -19,6 +19,24 @@ const MappingProvider = ({ children }) => {
     setRoles((prevRoles) => [...prevRoles, role]);
   };
 
+  const deleteRole = (roleId) => {
+    setRoles((prevRoles) =>
+      prevRoles
+        .filter((role) => role.id !== roleId)
+        .map((role) => {
+          return role.id > roleId ? { ...role, id: role.id - 1 } : role;
+        })
+    );
+  };
+
+  const changeRoleName = (roleId, newRoleName) => {
+    setRoles((prevRoles) =>
+      prevRoles.map((role) =>
+        role.id === roleId ? { ...role, name: newRoleName } : role
+      )
+    );
+  };
+
   const addWorkProductToTask = (taskId, workProducts) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
@@ -78,6 +96,8 @@ const MappingProvider = ({ children }) => {
     setRolesPattern,
     addTask,
     addRole,
+    deleteRole,
+    changeRoleName,
     addWorkProductToTask,
     mapTasksToActivities,
     mapRolesToPattern,

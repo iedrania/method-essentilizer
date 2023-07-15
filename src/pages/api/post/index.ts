@@ -1,11 +1,12 @@
 import prisma from '../../../lib/prisma';
 
 export default async function handle(req, res) {
-  const { name, description, activities, rolesPattern } = req.body;
+  const { methodId, name, description, activities, rolesPattern } = req.body;
 
   try {
     const result = await prisma.method.create({
       data: {
+        id: methodId,
         name: name,
         description: description,
         tasks: {
@@ -29,7 +30,7 @@ export default async function handle(req, res) {
         },
         roles: {
           create: rolesPattern.map((role) => ({
-            id: role.id,
+            id: methodId + "-role-" + role.id,
             name: role.name,
             competencies: { connect: role.competencies.map((competencyId) => ({ id: Number(competencyId) })) },
             // performTasks: [], // { connect: role.performTasks.map((taskId) => ({ id: Number(taskId) })) }, // TODO P1 ada di db, gaada di roles

@@ -1,34 +1,32 @@
 import React, { useContext, useState } from 'react';
 import Link from 'next/link';
 import { MappingContext } from '../context/context';
+import Role from '@/components/role/Role';
 
 const InputRoles = () => {
-  const { methodId, roles, addRole } = useContext(MappingContext);
-  const [roleName, setRoleName] = useState('');
+  const { methodId, roles, addRole, deleteRole, changeRoleName } = useContext(MappingContext);
 
   const handleAddRole = () => {
-    if (roleName) {
-      addRole({ id: methodId + "-role-" + (roles.length + 1), name: roleName });
-      setRoleName('');
-    }
+    addRole({ id: roles.length + 1, name: '', performedTasks: [], assignedWorkProducts: [] });
+  };
+
+  const handleDeleteRole = (roleId) => {
+    deleteRole(roleId);
+  };
+  
+  const handleRoleNameChange = (roleId, roleName) => {
+    changeRoleName(roleId, roleName);
   };
 
   return (
     <div>
       <h2>Insert Roles</h2>
-      <input
-        type="text"
-        value={roleName}
-        onChange={(e) => setRoleName(e.target.value)}
-      />
-      <button onClick={handleAddRole}>Add Role</button>
 
-      <h3>Roles:</h3>
-      <ul>
-        {roles.map((role, index) => (
-          <li key={index}>{role.name}</li>
-        ))}
-      </ul>
+      {roles.map((role) => (
+        <Role key={role.id} role={role} handleDeleteRole={handleDeleteRole} handleRoleNameChange={handleRoleNameChange} />
+      ))}
+
+      <button onClick={handleAddRole}>Add Role</button>
 
       {/* TODO ask for related task/work product */}
 

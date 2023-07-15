@@ -7,7 +7,6 @@ export default function Home() {
 
   const validateData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    // TODO P1 post essence
     try {
       await fetch('/api/post/insert', {
         method: 'POST',
