@@ -14,7 +14,9 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapTasks: React.FC = ({spaces}) => {
-  const { activities, setActivities } = useContext(MappingContext);
+  const { activities } = useContext(MappingContext);
+
+  console.log("activities in map-tasks", activities)
 
   return (
     <div>
@@ -22,7 +24,7 @@ const MapTasks: React.FC = ({spaces}) => {
 
       <ul>
         {activities.map((activity) => (
-          <ActivitySpaceList key={activity.id} activity={activity} setActivities={setActivities} activitySpaces={ spaces.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } />
+          <ActivitySpaceList key={activity.id} activity={activity} activitySpaces={ spaces.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } />
         ))}
       </ul>
 

@@ -1,20 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { MappingContext } from '../context/context';
 
 const CompetencyList = ({ role, competencies }) => {
-  const [selectedCompetencies, setSelectedCompetencies] = useState([]);
+  const { updateCompetencies } = useContext(MappingContext);
 
   const handleCompetencyChange = (event) => {
     const competencyId = event.target.value;
-    if (selectedCompetencies.includes(competencyId)) {
-      setSelectedCompetencies(selectedCompetencies.filter((id) => id !== competencyId));
-      role.competencies = role.competencies.filter((id) => id !== competencyId);
-    } else {
-      setSelectedCompetencies([...selectedCompetencies, competencyId]);
-      role.competencies = [...role.competencies, competencyId];
-    }
-    // TODO Update the role state using a proper state management technique
-    // const updatedCompetencies = [...role.competencies, competencyId];
-    // role.setCompetencies(updatedCompetencies);
+    const isChecked = event.target.checked;
+    updateCompetencies(role.id, competencyId, isChecked);
   };
 
   const renderCompetencies = () => {
@@ -32,13 +25,6 @@ const CompetencyList = ({ role, competencies }) => {
 
       <h4>Competencies:</h4>
       {renderCompetencies()}
-      {/* TODO display concerned areas
-      {role.areasOfConcern.map((area) => (
-        <div key={area}>
-          <p>{area}</p>
-          {renderCompetencies(area)}
-        </div>
-      ))} */}
     </li>
   );
 };

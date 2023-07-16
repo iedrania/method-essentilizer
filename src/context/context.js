@@ -117,7 +117,73 @@ const MappingProvider = ({ children }) => {
     setRolesPattern(patternData);
   };
 
-  // TODO setActivityById, setWorkProductById, setRoleById
+  const updateActivitySpaces = (activityId, activitySpaceId, isChecked) => {
+    setActivities((prevActivities) =>
+      prevActivities.map((activity) => {
+        if (activity.id === activityId) {
+          let updatedSpaces;
+
+          if (isChecked) {
+            updatedSpaces = [...(activity.activitySpaces || []), activitySpaceId];
+          } else {
+            updatedSpaces = (activity.activitySpaces || []).filter((id) => id !== activitySpaceId);
+          }
+
+          return { ...activity, activitySpaces: updatedSpaces };
+        }
+
+        return activity;
+      })
+    );
+  };
+
+  const updateAlphas = (activityId, workProductId, alphaId, isChecked) => {
+    setActivities((prevActivities) =>
+      prevActivities.map((activity) => {
+        if (activity.id === activityId) {
+          const updatedWorkProducts = activity.workProducts.map((workProduct) => {
+            if (workProduct.id === workProductId) {
+              let updatedAlphas;
+  
+              if (isChecked) {
+                updatedAlphas = [...(workProduct.alphas || []), alphaId];
+              } else {
+                updatedAlphas = (workProduct.alphas || []).filter((id) => id !== alphaId);
+              }
+  
+              return { ...workProduct, alphas: updatedAlphas };
+            }
+  
+            return workProduct;
+          });
+  
+          return { ...activity, workProducts: updatedWorkProducts };
+        }
+  
+        return activity;
+      })
+    );
+  };  
+
+  const updateCompetencies = (roleId, competencyId, isChecked) => {
+    setRolesPattern((prevRolesPattern) =>
+      prevRolesPattern.map((role) => {
+        if (role.id === roleId) {
+          let updatedCompetencies;
+
+          if (isChecked) {
+            updatedCompetencies = [...(role.competencies || []), competencyId];
+          } else {
+            updatedCompetencies = (role.competencies || []).filter((id) => id !== competencyId);
+          }
+
+          return { ...role, competencies: updatedCompetencies };
+        }
+
+        return role;
+      })
+    );
+  };
 
   const updateAreas = (elementId, areaId, isChecked, elementType) => {
     if (elementType === 1) { // activity
@@ -233,6 +299,9 @@ const MappingProvider = ({ children }) => {
     mapTasksToActivities,
     mapRolesToPattern,
     updateAreas,
+    updateActivitySpaces,
+    updateAlphas,
+    updateCompetencies,
     fillRoleAreasFromRelated,
   };
 

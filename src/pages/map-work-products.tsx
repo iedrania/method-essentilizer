@@ -26,7 +26,7 @@ const MapWorkProducts: React.FC = ({alphas}) => {
             <h3>{activity.name}</h3>
 
             {activity.workProducts.map((workProduct) => (
-              <AlphaList key={workProduct.id} workProduct={workProduct} alphas={ alphas.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } />
+              <AlphaList key={workProduct.id} workProduct={workProduct} alphas={ alphas.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } activityId={activity.id} />
             ))}
           </div>
         ))}

@@ -1,20 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { MappingContext } from '../context/context';
 
 const ActivitySpaceList = ({ activity, activitySpaces }) => {
-  const [selectedActivitySpaces, setSelectedActivitySpaces] = useState([]);
+  const { updateActivitySpaces } = useContext(MappingContext);
 
   const handleActivitySpaceChange = (event) => {
     const activitySpaceId = event.target.value;
-    if (selectedActivitySpaces.includes(activitySpaceId)) {
-      setSelectedActivitySpaces(selectedActivitySpaces.filter((spaceId) => spaceId !== activitySpaceId));
-      activity.activitySpaces = activity.activitySpaces.filter((spaceId) => spaceId !== activitySpaceId);
-    } else {
-      setSelectedActivitySpaces([...selectedActivitySpaces, activitySpaceId]);
-      activity.activitySpaces = [...activity.activitySpaces, activitySpaceId];
-    }
-    // TODO Update the activity state using a proper state management technique
-    // const updatedActivitySpaces = [...activity.activitySpaces, activitySpaceId];
-    // activity.setActivitySpaces(updatedActivitySpaces);
+    const isChecked = event.target.checked;
+    updateActivitySpaces(activity.id, activitySpaceId, isChecked);
   };
 
   const renderActivitySpaces = () => {
@@ -31,8 +24,8 @@ const ActivitySpaceList = ({ activity, activitySpaces }) => {
       <h3>{activity.name}</h3>
 
       <h4>Activity Spaces:</h4>
-      {/* TODO add area of concern category
-      {activity.areasOfConcern.map((area) => (
+      {/* TODO P3 add area of concern category */}
+      {/* activity.areasOfConcern.map((area) => (
         <div key={area}>
           <p>{areasOfConcern.find(areaObj => areaObj.id.toString() === area)?.name || ''}</p>
           {renderActivitySpaces(area)}

@@ -1,20 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { MappingContext } from '../context/context';
 
-const AlphaList = ({ workProduct, alphas }) => {
-  const [selectedAlphas, setSelectedAlphas] = useState([]);
+const AlphaList = ({ workProduct, alphas, activityId }) => {
+  const { updateAlphas } = useContext(MappingContext);
 
   const handleAlphaChange = (event) => {
     const alphaId = event.target.value;
-    if (selectedAlphas.includes(alphaId)) {
-      setSelectedAlphas(selectedAlphas.filter((id) => id !== alphaId));
-      workProduct.alphas = workProduct.alphas.filter((id) => id !== alphaId);
-    } else {
-      setSelectedAlphas([...selectedAlphas, alphaId]);
-      workProduct.alphas = [...workProduct.alphas, alphaId];
-    }
-    // TODO Update the workProduct alphas using a proper state management technique
-    // const updatedAlphas = [...workProduct.alphas, alphaId];
-    // workProduct.setAlphas(updatedAlphas);
+    const isChecked = event.target.checked;
+    updateAlphas(activityId, workProduct.id, alphaId, isChecked);
   };
 
   const renderAlphas = () => {
@@ -31,13 +24,6 @@ const AlphaList = ({ workProduct, alphas }) => {
       <h3>{workProduct.name}</h3>
 
       <h4>Alphas:</h4>
-      {/* TODO add area of concern category
-      {areasOfConcern.map((area) => (
-        <div key={area}>
-          <p>{aoc.find(areaObj => areaObj.id.toString() === area)?.name || ''}</p>
-          {renderAlphas(area)}
-        </div>
-      ))} */}
       {renderAlphas()}
     </li>
   );

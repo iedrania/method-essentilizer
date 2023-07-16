@@ -16,6 +16,9 @@ model AreaOfConcern {
   activitySpaces ActivitySpace[]
   alphas         Alpha[]
   competencies   Competency[]
+  tasks          Task[]
+  workProducts   WorkProduct[]
+  roles          Role[]
 }
 
 model ActivitySpace {
@@ -56,7 +59,7 @@ model Competency {
 
 model Method {
   id          Int    @id
-  name        String @unique
+  name        String
   description String
   tasks       Task[]
   roles       Role[]
@@ -65,28 +68,31 @@ model Method {
 model Task {
   id             String          @id
   name           String
+  areasOfConcern AreaOfConcern[]
   activitySpaces ActivitySpace[]
   methodId       Int
   method         Method          @relation(fields: [methodId], references: [id])
   workProducts   WorkProduct[]
-  performRoles   Role[]
+  performerRoles Role[]
 }
 
 model WorkProduct {
-  id          String  @id
-  name        String
-  alphas      Alpha[]
-  taskId      String
-  task        Task    @relation(fields: [taskId], references: [id])
-  assignRoles Role[]
+  id             String          @id
+  name           String
+  areasOfConcern AreaOfConcern[]
+  alphas         Alpha[]
+  taskId         String
+  task           Task            @relation(fields: [taskId], references: [id])
+  assigneeRoles  Role[]
 }
 
 model Role {
-  id                 String        @id
-  name               String
-  competencies       Competency[]
-  methodId           Int
-  method             Method        @relation(fields: [methodId], references: [id])
-  performTasks       Task[]
-  assignWorkProducts WorkProduct[]
+  id                   String          @id
+  name                 String
+  areasOfConcern       AreaOfConcern[]
+  competencies         Competency[]
+  methodId             Int
+  method               Method          @relation(fields: [methodId], references: [id])
+  performedTasks       Task[]
+  assignedWorkProducts WorkProduct[]
 }
