@@ -19,9 +19,10 @@ const Role = ({ role }) => {
   };
 
   const handleWorkProductChange = (event) => {
-    const workProductId = event.target.value;
+    const taskId = event.target.value[0];
+    const workProductId = event.target.value[2];
     const isChecked = event.target.checked;
-    updateAssignedWorkProducts(role.id, workProductId, isChecked);
+    updateAssignedWorkProducts(role.id, taskId, workProductId, isChecked);
   };
 
   const renderTasks = () => {
@@ -34,25 +35,27 @@ const Role = ({ role }) => {
   };
 
   const renderWorkProducts = () => {
-    const allWorkProducts = tasks.reduce((result, task) => {
-      return result.concat(task.workProducts);
-    }, []);
-
-    return allWorkProducts.map((workProduct) => (
-      <label key={workProduct.id}>
-        <input type="checkbox" value={workProduct.id} onChange={handleWorkProductChange} />
-        {workProduct.name}
-      </label>
-    ));
+    // TODO P3 add task category
+    return tasks.map((task) =>
+      task.workProducts.map((workProduct) => (
+        <label key={workProduct.id}>
+          <input type="checkbox" value={[task.id, workProduct.id]} onChange={handleWorkProductChange} />
+          {workProduct.name}
+        </label>
+      ))
+    );
   };
 
   return (
     <div>
       <input type="text" value={role.name} onChange={(e) => setRoleName(e.target.value)} />
+
       <h4>Does this role perform any task?</h4>
       {renderTasks()}
+
       <h4>Is this role responsible for any work product?</h4>
       {renderWorkProducts()}
+
       <button onClick={handleDelete}>Delete Role</button>
     </div>
   );

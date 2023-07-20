@@ -13,6 +13,69 @@ const MappingProvider = ({ children }) => {
     setTasks((prevTasks) => [...prevTasks, task]);
   };
 
+  const changeTaskName = (taskId, newTaskName) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, name: newTaskName } : task
+      )
+    );
+  };
+
+  const deleteTask = (taskId) => {
+    setTasks((prevTasks) =>
+      prevTasks
+        .filter((task) => task.id !== taskId)
+        .map((task) => {
+          return task.id > taskId ? { ...task, id: task.id - 1 } : task;
+        })
+    );
+    console.log(tasks)
+  };
+
+  const addWorkProductToTask = (taskId, workProducts) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, workProducts: [...(task.workProducts || []), ...workProducts] };
+        }
+        return task;
+      })
+    );
+  };
+
+  const changeWorkProductName = (taskId, workProductId, newWorkProductName) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === taskId) {
+          const updatedWorkProducts = task.workProducts.map((workProduct) => {
+            if (workProduct.id === workProductId) {
+              return { ...workProduct, name: newWorkProductName };
+            }
+            return workProduct;
+          });
+          return { ...task, workProducts: updatedWorkProducts };
+        }
+        return task;
+      })
+    );
+  };
+
+  const deleteWorkProduct = (taskId, workProductId) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === taskId) {
+          const updatedWorkProducts = task.workProducts
+            .filter((workProduct) => workProduct.id !== workProductId)
+            .map((workProduct) => {
+              return workProduct.id > workProductId ? { ...workProduct, id: workProduct.id - 1 } : workProduct;
+            });
+          return { ...task, workProducts: updatedWorkProducts };
+        }
+        return task;
+      })
+    );
+  };  
+
   const addRole = (role) => {
     setRoles((prevRoles) => [...prevRoles, role]);
   };
@@ -55,36 +118,26 @@ const MappingProvider = ({ children }) => {
     );
   };
 
-  const updateAssignedWorkProducts = (roleId, workProductId, isChecked) => {
+  const updateAssignedWorkProducts = (roleId, taskId, workProductId, isChecked) => {
     setRoles((prevRoles) =>
       prevRoles.map((role) => {
         if (role.id === roleId) {
           let updatedAssignedWorkProducts;
 
           if (isChecked) {
-            updatedAssignedWorkProducts = [...(role.assignedWorkProducts || []), workProductId];
+            updatedAssignedWorkProducts = [...role.assignedWorkProducts, [taskId, workProductId]];
           } else {
-            updatedAssignedWorkProducts = (role.assignedWorkProducts || []).filter((id) => id !== workProductId);
+            updatedAssignedWorkProducts = role.assignedWorkProducts.filter((item) => item[0] !== taskId || item[1] !== workProductId);
           }
-
+  
           return { ...role, assignedWorkProducts: updatedAssignedWorkProducts };
         }
+        console.log(roles)
 
         return role;
       })
     );
-  };
-
-  const addWorkProductToTask = (taskId, workProducts) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id === taskId) {
-          return { ...task, workProducts: [...(task.workProducts || []), ...workProducts] };
-        }
-        return task;
-      })
-    );
-  };
+  };  
 
   const updateActivitySpaces = (activityId, activitySpaceId, isChecked) => {
     setTasks((prevActivities) =>
@@ -207,7 +260,7 @@ const MappingProvider = ({ children }) => {
             console.log('ada performed task')
             tasks.forEach((activity) => {
               console.log(activity);
-              if (role.performedTasks.includes(activity.id)) {
+              if (role.performedTasks.includes(String(activity.id))) {
                 relatedAreasOfConcern.push(...activity.areasOfConcern);
                 console.log('area of concern yg ditambah dari activity', activity.areasOfConcern)
               }
@@ -215,18 +268,9 @@ const MappingProvider = ({ children }) => {
           }
 
           if (role.assignedWorkProducts.length) {
-            console.log('ada assigned work product')
-            const allWorkProducts = tasks.reduce((result, task) => {
-              return result.concat(task.workProducts);
-            }, []);
-            console.log("all work products", allWorkProducts)
-
-            allWorkProducts.forEach((workProduct) => {
-              console.log("if",role.assignedWorkProducts, "includes", (workProduct.id))
-              if (role.assignedWorkProducts.includes(workProduct.id)) {
-                relatedAreasOfConcern.push(...tasks.find((activity) => activity.workProducts.find((wp) => wp.id === workProduct.id)).areasOfConcern);
-                console.log('area of concern yg ditambah dari product', tasks.find((activity) => activity.workProducts.find((wp) => wp.id === workProduct.id)).areasOfConcern)
-              }
+            role.assignedWorkProducts.forEach((idTuple) => {
+              const task = tasks.find((item) => item.id == idTuple[0]);
+              relatedAreasOfConcern.push(...task.areasOfConcern)
             });
           }
 
@@ -255,6 +299,10 @@ const MappingProvider = ({ children }) => {
     roles,
     setRoles,
     addTask,
+    changeTaskName,
+    deleteTask,
+    changeWorkProductName,
+    deleteWorkProduct,
     addRole,
     deleteRole,
     changeRoleName,

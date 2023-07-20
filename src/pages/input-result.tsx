@@ -46,15 +46,21 @@ const InputResult = () => {
             <h4>Performed Tasks:</h4>
             <ul>
               {role.performedTasks.map((taskId) => (
-                <li key={taskId}>{tasks.find((item) => item.id === taskId).name}</li>
+                <li key={taskId}>{tasks.find((item) => item.id == taskId).name}</li>
               ))}
             </ul>
 
             <h4>Assigned Work Products:</h4>
             <ul>
-              {role.assignedWorkProducts.map((workProductId) => (
-                <li key={workProductId}>{allWorkProducts.find((item) => item.id === workProductId).name}</li>
-              ))}
+              {role.assignedWorkProducts.map((idTuple) => {
+                const task = tasks.find((item) => item.id == idTuple[0]);
+                const workProduct = task?.workProducts.find((item) => item.id == idTuple[1]);
+                return (
+                  <li key={`${idTuple[0]}-${idTuple[1]}`}>
+                    {workProduct ? workProduct.name : "Work Product Not Found"}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}

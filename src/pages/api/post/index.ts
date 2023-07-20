@@ -11,7 +11,7 @@ export default async function handle(req, res) {
         description: description,
         tasks: {
           create: tasks.map((task) => ({
-            id: task.id,
+            id: methodId + "-task-" + task.id,
             name: task.name,
             areasOfConcern: { connect: task.areasOfConcern.map((areaId) => ({ id: Number(areaId) })) },
             activitySpaces: {
@@ -19,7 +19,7 @@ export default async function handle(req, res) {
             },
             workProducts: {
               create: task.workProducts.map((workProduct) => ({
-                id: workProduct.id,
+                id: methodId + "-task-" + task.id + "-wp-" + workProduct.id,
                 name: workProduct.name,
                 areasOfConcern: { connect: task.areasOfConcern.map((areaId) => ({ id: Number(areaId) })) },
                 alphas: { connect: workProduct.alphas.map((alphaId) => ({ id: Number(alphaId) })) },
@@ -33,8 +33,8 @@ export default async function handle(req, res) {
             name: role.name,
             areasOfConcern: { connect: role.areasOfConcern.map((areaId) => ({ id: Number(areaId) })) },
             competencies: { connect: role.competencies.map((competencyId) => ({ id: Number(competencyId) })) },
-            performedTasks: { connect: role.performedTasks.map((taskId) => ({ id: taskId })) },
-            assignedWorkProducts: { connect: role.assignedWorkProducts.map((wpId) => ({ id: wpId })) },
+            performedTasks: { connect: role.performedTasks.map((taskId) => ({ id: `${methodId}-task-${taskId}` })) },
+            assignedWorkProducts: { connect: role.assignedWorkProducts.map((idTuple) => ({ id: `${methodId}-task-${idTuple[0]}-wp-${idTuple[1]}` })) },
           }))
         },
       },
@@ -42,6 +42,6 @@ export default async function handle(req, res) {
 
     res.json(result);
   } catch (error) {
-    console.error(error)
+    console.log(error);
   }
 }

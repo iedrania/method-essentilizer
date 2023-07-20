@@ -1,38 +1,25 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import Link from 'next/link';
 import { MappingContext } from '../context/context';
-import WorkProductList from '@/components/WorkProductList';
+import Task from '@/components/Task';
 
 const InputTasks = () => {
-  const { methodId, tasks, addTask, addWorkProductToTask } = useContext(MappingContext);
-  const [taskName, setTaskName] = useState('');
+  const { tasks, addTask } = useContext(MappingContext);
 
   const handleAddTask = () => {
-    if (taskName) {
-      addTask({ id: methodId + "-task-" + (tasks.length + 1), name: taskName, workProducts: [], areasOfConcern: [], activitySpaces: [] });
-      setTaskName('');
-    }
+    addTask({ id: tasks.length + 1, name: '', workProducts: [], areasOfConcern: [], activitySpaces: [] });
   };
 
   return (
     <div>
       <h2>Insert Tasks</h2>
-      <input
-        type="text"
-        value={taskName}
-        onChange={(e) => setTaskName(e.target.value)}
-      />
+
+      {tasks.map((task) => (
+        <Task key={task.id} task={task} />
+      ))}
+
       <button onClick={handleAddTask}>Add Task</button>
 
-      <h3>Tasks:</h3>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            {task.name}
-            <WorkProductList task={task} addWorkProduct={addWorkProductToTask} />
-          </li>
-        ))}
-      </ul>
       <Link href="/input-roles">
         <button>Next</button>
       </Link>
