@@ -5,7 +5,7 @@ const WorkProductList = ({ task, addWorkProduct }) => {
 
   const handleAddWorkProduct = () => {
     if (workProductName) {
-      addWorkProduct(task.id, [{ id: task.id + "-wp-" + (task.workProducts.length + 1), name: workProductName }]);
+      addWorkProduct(task.id, [{ id: task.id + "-wp-" + (task.workProducts.length + 1), name: workProductName, alphas: [] }]);
       setWorkProductName('');
     }
   };

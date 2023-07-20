@@ -1,7 +1,7 @@
 import prisma from '../../../lib/prisma';
 
 export default async function handle(req, res) {
-  const { methodId, name, description, activities, rolesPattern } = req.body;
+  const { methodId, name, description, tasks, roles } = req.body;
 
   try {
     const result = await prisma.method.create({
@@ -10,7 +10,7 @@ export default async function handle(req, res) {
         name: name,
         description: description,
         tasks: {
-          create: activities.map((task) => ({
+          create: tasks.map((task) => ({
             id: task.id,
             name: task.name,
             areasOfConcern: { connect: task.areasOfConcern.map((areaId) => ({ id: Number(areaId) })) },
@@ -28,7 +28,7 @@ export default async function handle(req, res) {
           })),
         },
         roles: {
-          create: rolesPattern.map((role) => ({
+          create: roles.map((role) => ({
             id: methodId + "-role-" + role.id,
             name: role.name,
             areasOfConcern: { connect: role.areasOfConcern.map((areaId) => ({ id: Number(areaId) })) },

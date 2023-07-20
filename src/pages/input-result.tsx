@@ -3,15 +3,13 @@ import Router from 'next/router'
 import { MappingContext } from '../context/context';
 
 const InputResult = () => {
-  const { tasks, roles, mapTasksToActivities, mapRolesToPattern } = useContext(MappingContext);
+  const { tasks, roles } = useContext(MappingContext);
 
   const allWorkProducts = tasks.reduce((result, task) => {
     return result.concat(task.workProducts);
   }, []);
 
   const handleClick = () => {
-    mapTasksToActivities();
-    mapRolesToPattern();
     Router.push('/map-areas');
   };
 

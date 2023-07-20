@@ -101,7 +101,7 @@ export default async function handle(req, res) {
         return createdArea;
       })
     );
-  
+
     res.json(result);
   } catch (error) {
     console.error(error)

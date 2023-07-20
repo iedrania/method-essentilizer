@@ -9,7 +9,7 @@ const InputTasks = () => {
 
   const handleAddTask = () => {
     if (taskName) {
-      addTask({ id: methodId + "-task-" + (tasks.length + 1), name: taskName, workProducts: [] });
+      addTask({ id: methodId + "-task-" + (tasks.length + 1), name: taskName, workProducts: [], areasOfConcern: [], activitySpaces: [] });
       setTaskName('');
     }
   };

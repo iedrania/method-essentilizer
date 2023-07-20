@@ -15,14 +15,14 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
-  const { methodId, name, description, activities, rolesPattern } = useContext(MappingContext);
+  const { methodId, name, description, tasks, roles } = useContext(MappingContext);
 
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     // TODO P2 choose db or json
     // TODO P2 validate methodId
     try {
-      const body = { methodId, name, description, activities, rolesPattern };
+      const body = { methodId, name, description, tasks, roles };
       await fetch('/api/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -35,7 +35,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
   };
 
   const printConsole = () => {
-    console.log(methodId, name, description, activities, rolesPattern)
+    console.log(methodId, name, description, tasks, roles)
     // TODO P3 ganti index jadi id
   }
 
@@ -44,7 +44,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
       <h2>Mapping Result</h2>
 
       <h3>Activities:</h3>
-      {activities.map((activity) => (
+      {tasks.map((activity) => (
         <div key={activity.id}>
           <p>{activity.name}</p>
           <h4>Activity Spaces:</h4>
@@ -72,7 +72,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
       ))}
 
       <h3>Roles:</h3>
-      {rolesPattern.map((role) => (
+      {roles.map((role) => (
         <div key={role.id}>
           <p>{role.name}</p>
           <h4>Competencies:</h4>

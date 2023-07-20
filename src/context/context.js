@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 
-const MappingContext = React.createContext();
+const MappingContext = createContext();
 
 const MappingProvider = ({ children }) => {
   const [methodId, setMethodId] = useState(-1);
@@ -8,8 +8,6 @@ const MappingProvider = ({ children }) => {
   const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [activities, setActivities] = useState([]);
-  const [rolesPattern, setRolesPattern] = useState([]);
 
   const addTask = (task) => {
     setTasks((prevTasks) => [...prevTasks, task]);
@@ -88,37 +86,8 @@ const MappingProvider = ({ children }) => {
     );
   };
 
-  const mapTasksToActivities = () => {
-    const deepCopy = JSON.parse(JSON.stringify(tasks));
-    const activitiesData = deepCopy.map((task) => {
-      const mappedWorkProducts = task.workProducts.map((workProduct) => {
-        return { ...workProduct, alphas: [] };
-      });
-
-      return {
-        ...task,
-        areasOfConcern: [],
-        activitySpaces: [],
-        workProducts: mappedWorkProducts,
-      };
-    });
-    setActivities(activitiesData);
-  };
-
-  const mapRolesToPattern = () => {
-    const deepCopy = JSON.parse(JSON.stringify(roles));
-    const patternData = deepCopy.map((role) => {
-      return {
-        ...role,
-        areasOfConcern: [],
-        competencies: [],
-      };
-    });
-    setRolesPattern(patternData);
-  };
-
   const updateActivitySpaces = (activityId, activitySpaceId, isChecked) => {
-    setActivities((prevActivities) =>
+    setTasks((prevActivities) =>
       prevActivities.map((activity) => {
         if (activity.id === activityId) {
           let updatedSpaces;
@@ -138,7 +107,7 @@ const MappingProvider = ({ children }) => {
   };
 
   const updateAlphas = (activityId, workProductId, alphaId, isChecked) => {
-    setActivities((prevActivities) =>
+    setTasks((prevActivities) =>
       prevActivities.map((activity) => {
         if (activity.id === activityId) {
           const updatedWorkProducts = activity.workProducts.map((workProduct) => {
@@ -163,11 +132,11 @@ const MappingProvider = ({ children }) => {
         return activity;
       })
     );
-  };  
+  };
 
   const updateCompetencies = (roleId, competencyId, isChecked) => {
-    setRolesPattern((prevRolesPattern) =>
-      prevRolesPattern.map((role) => {
+    setRoles((prevRoles) =>
+      prevRoles.map((role) => {
         if (role.id === roleId) {
           let updatedCompetencies;
 
@@ -187,7 +156,7 @@ const MappingProvider = ({ children }) => {
 
   const updateAreas = (elementId, areaId, isChecked, elementType) => {
     if (elementType === 1) { // activity
-      setActivities((prevActivities) =>
+      setTasks((prevActivities) =>
         prevActivities.map((activity) => {
           if (activity.id === elementId) {
             let updatedAreas;
@@ -205,7 +174,7 @@ const MappingProvider = ({ children }) => {
         })
       );
     } else if (elementType === 2) { // role
-      setRolesPattern((prevRoles) =>
+      setRoles((prevRoles) =>
         prevRoles.map((role) => {
           if (role.id === elementId) {
             let updatedAreas;
@@ -228,7 +197,7 @@ const MappingProvider = ({ children }) => {
   };
 
   const fillRoleAreasFromRelated = () => {
-    setRolesPattern((prevRoles) =>
+    setRoles((prevRoles) =>
       prevRoles.map((role) => {
         if (!role.areasOfConcern.length) {
           const relatedAreasOfConcern = [];
@@ -236,7 +205,7 @@ const MappingProvider = ({ children }) => {
           console.log(role.performedTasks, "length adalah", role.performedTasks.length)
           if (role.performedTasks.length) {
             console.log('ada performed task')
-            activities.forEach((activity) => {
+            tasks.forEach((activity) => {
               console.log(activity);
               if (role.performedTasks.includes(activity.id)) {
                 relatedAreasOfConcern.push(...activity.areasOfConcern);
@@ -255,8 +224,8 @@ const MappingProvider = ({ children }) => {
             allWorkProducts.forEach((workProduct) => {
               console.log("if",role.assignedWorkProducts, "includes", (workProduct.id))
               if (role.assignedWorkProducts.includes(workProduct.id)) {
-                relatedAreasOfConcern.push(...activities.find((activity) => activity.workProducts.find((wp) => wp.id === workProduct.id)).areasOfConcern);
-                console.log('area of concern yg ditambah dari product', activities.find((activity) => activity.workProducts.find((wp) => wp.id === workProduct.id)).areasOfConcern)
+                relatedAreasOfConcern.push(...tasks.find((activity) => activity.workProducts.find((wp) => wp.id === workProduct.id)).areasOfConcern);
+                console.log('area of concern yg ditambah dari product', tasks.find((activity) => activity.workProducts.find((wp) => wp.id === workProduct.id)).areasOfConcern)
               }
             });
           }
@@ -285,10 +254,6 @@ const MappingProvider = ({ children }) => {
     setTasks,
     roles,
     setRoles,
-    activities,
-    setActivities,
-    rolesPattern,
-    setRolesPattern,
     addTask,
     addRole,
     deleteRole,
@@ -296,8 +261,6 @@ const MappingProvider = ({ children }) => {
     updatePerformedTasks,
     updateAssignedWorkProducts,
     addWorkProductToTask,
-    mapTasksToActivities,
-    mapRolesToPattern,
     updateAreas,
     updateActivitySpaces,
     updateAlphas,

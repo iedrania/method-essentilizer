@@ -7,7 +7,7 @@ const InputRoles = () => {
   const { roles, addRole } = useContext(MappingContext);
 
   const handleAddRole = () => {
-    addRole({ id: roles.length + 1, name: '', performedTasks: [], assignedWorkProducts: [] });
+    addRole({ id: roles.length + 1, name: '', performedTasks: [], assignedWorkProducts: [], areasOfConcern: [], competencies: [] });
   };
 
   return (

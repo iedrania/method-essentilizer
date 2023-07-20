@@ -14,9 +14,9 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapAreas: React.FC = ({ areas }) => {
-  const { activities, rolesPattern, fillRoleAreasFromRelated } = useContext(MappingContext);
+  const { tasks, roles, fillRoleAreasFromRelated } = useContext(MappingContext);
 
-  const filteredRoles = rolesPattern.filter(
+  const filteredRoles = roles.filter(
     (role) => role.assignedWorkProducts?.length === 0 && role.performedTasks?.length === 0
   );
 
@@ -31,7 +31,7 @@ const MapAreas: React.FC = ({ areas }) => {
 
       <h3>Activities:</h3>
       <ul>
-        {activities.map((activity) => (
+        {tasks.map((activity) => (
           <AreaList key={activity.id} element={activity} elementType={1} areasOfConcern={areas} />
         ))}
       </ul>

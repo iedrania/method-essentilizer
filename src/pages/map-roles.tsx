@@ -14,14 +14,14 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapRoles: React.FC = ({competencies}) => {
-  const { rolesPattern } = useContext(MappingContext);
+  const { roles } = useContext(MappingContext);
 
   return (
     <div>
       <h2>Map Roles</h2>
 
       <ul>
-        {rolesPattern.map((role) => (
+        {roles.map((role) => (
           <CompetencyList key={role.id} role={role} competencies={competencies.filter((item) => (role.areasOfConcern).includes(String(item.areaOfConcernId)))} />
         ))}
       </ul>

@@ -14,14 +14,14 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapWorkProducts: React.FC = ({alphas}) => {
-  const { activities } = useContext(MappingContext);
+  const { tasks } = useContext(MappingContext);
 
   return (
     <div>
       <h2>Map Alphas</h2>
 
       <ul>
-        {activities.map((activity) => (
+        {tasks.map((activity) => (
           <div key={activity.id}>
             <h3>{activity.name}</h3>
 
