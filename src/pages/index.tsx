@@ -1,9 +1,84 @@
+import prisma from '../lib/prisma';
 import React, { useContext } from 'react'
 import Router from 'next/router'
 import { MappingContext } from '../context/context'
+import Method from '@/components/Method';
 
-export default function Home() {
-  const { setName, setDescription, setTasks, setRoles } = useContext(MappingContext);
+export const getStaticProps: GetStaticProps = async () => {
+  const latestMethod = await prisma.method.findFirst({
+    orderBy: {
+      id: 'desc',
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const nextId = latestMethod ? latestMethod.id + 1 : 1;
+
+  const methods = await prisma.method.findMany({
+    select: {
+      name: true,
+      description: true,
+      tasks: {
+        include: {
+          areasOfConcern: {
+            select: {
+              id: true,
+            }
+          },
+          activitySpaces: {
+            select: {
+              id: true,
+            }
+          },
+          workProducts: {
+            include: {
+              alphas: {
+                select: {
+                  id: true,
+                }
+              },
+            }
+          }
+        },
+      },
+      roles: {
+        include: {
+          areasOfConcern: {
+            select: {
+              id: true,
+            }
+          },
+          competencies: {
+            select: {
+              id: true,
+            }
+          },
+          performedTasks: {
+            select: {
+              id: true,
+            }
+          },
+          assignedWorkProducts: {
+            select: {
+              id: true,
+              taskId: true,
+            }
+          },
+        }
+      }
+    },
+  });
+
+  return {
+    props: { nextId, methods },
+    revalidate: 10,
+  };
+};
+
+export default function Home({nextId, methods}) {
+  const { setMethodId, setName, setDescription, setTasks, setRoles } = useContext(MappingContext);
 
   const validateData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -18,6 +93,7 @@ export default function Home() {
   };
 
   const handleCreate = () => {
+    setMethodId(nextId)
     setName('');
     setDescription('');
     setTasks([]);
@@ -25,12 +101,24 @@ export default function Home() {
     Router.push('/input-method');
   };
 
+  const renderMethods = () => {
+    if (methods.length) {
+      return methods.map((method) => (
+        <Method key={method.id} method={method} nextId={nextId} />
+      ));
+    } else {
+      return <p>No methods available.</p>
+    }
+  };
+
   return (
     <div>
       <h1>Method Essentilizer</h1>
       <button onClick={handleCreate}>Create New Method</button>
       <button onClick={validateData}>Insert Database</button>
-      {/* TODO P1 display existing methods */}
+      <div>
+        {renderMethods()}
+      </div>
     </div>
   );
 }
