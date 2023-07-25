@@ -41,11 +41,12 @@ model Alpha {
 }
 
 model State {
-  id          Int    @id
+  id          Int      @id
   name        String
   description String
+  checklists  String[]
   alphaId     Int
-  alpha       Alpha  @relation(fields: [alphaId], references: [id])
+  alpha       Alpha    @relation(fields: [alphaId], references: [id])
 }
 
 model Competency {

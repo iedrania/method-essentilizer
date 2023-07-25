@@ -7,7 +7,7 @@ const InputResult = () => {
   const { name, author, description, tasks, roles } = useContext(MappingContext);
 
   const handleClick = () => {
-    Router.push('/map-areas');
+    Router.push('/input-sub-alphas');
   };
 
   const handleJsonClick = () => {

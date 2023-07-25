@@ -9,6 +9,7 @@ const MappingProvider = ({ children }) => {
   const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [subAlphas, setSubAlphas] = useState([]);
 
   const addTask = (task) => {
     setTasks((prevTasks) => [...prevTasks, task]);
@@ -30,7 +31,6 @@ const MappingProvider = ({ children }) => {
           return task.id > taskId ? { ...task, id: task.id - 1 } : task;
         })
     );
-    console.log(tasks)
   };
 
   const addWorkProductToTask = (taskId, workProducts) => {
@@ -288,6 +288,176 @@ const MappingProvider = ({ children }) => {
     );
   };
 
+  const addSubAlpha = (subAlpha) => {
+    setSubAlphas((prevSubAlphas) => [...prevSubAlphas, subAlpha]);
+  };
+
+  const changeSubAlphaName = (subAlphaId, newSubAlphaName) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) =>
+        subAlpha.id === subAlphaId ? { ...subAlpha, name: newSubAlphaName } : subAlpha
+      )
+    );
+  };
+
+  const changeSubAlphaDescription = (subAlphaId, newSubAlphaDescription) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) =>
+        subAlpha.id === subAlphaId ? { ...subAlpha, description: newSubAlphaDescription } : subAlpha
+      )
+    );
+  };
+
+  const deleteSubAlpha = (subAlphaId) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas
+        .filter((subAlpha) => subAlpha.id !== subAlphaId)
+        .map((subAlpha) => {
+          return subAlpha.id > subAlphaId ? { ...subAlpha, id: subAlpha.id - 1 } : subAlpha;
+        })
+    );
+  };
+
+  const updateAlphaOfSubAlpha = (subAlphaId, selectedAlphaId, newStates) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id === subAlphaId) {
+          return { ...subAlpha, alpha: selectedAlphaId, states: newStates };
+        }
+
+        return subAlpha;
+      })
+    );
+  };
+
+  const addState = (subAlphaId, newStateData) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id !== subAlphaId) return subAlpha;
+
+        return {
+          ...subAlpha,
+          states: [...subAlpha.states, ...newStateData],
+        };
+      })
+    );
+  };
+
+  const changeChecklistItem = (subAlphaId, stateId, index, newValue) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id !== subAlphaId) return subAlpha;
+
+        return {
+          ...subAlpha,
+          states: subAlpha.states.map((state) => {
+            if (state.id !== stateId) return state;
+
+            return {
+              ...state,
+              checklists: state.checklists.map((checklist, i) => (i === index ? newValue : checklist)),
+            };
+          }),
+        };
+      })
+    );
+  };
+
+  const deleteChecklistItem = (subAlphaId, stateId, index) => {
+    console.log(subAlphas)
+    console.log(subAlphaId, stateId, index)
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id !== subAlphaId) return subAlpha;
+
+        return {
+          ...subAlpha,
+          states: subAlpha.states.map((state) => {
+            if (state.id !== stateId) return state;
+
+            return {
+              ...state,
+              checklists: state.checklists.filter((_, i) => i !== index),
+            };
+          }),
+        };
+      })
+    );
+  };
+
+  const changeStateName = (subAlphaId, stateId, newName) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id !== subAlphaId) return subAlpha;
+
+        return {
+          ...subAlpha,
+          states: subAlpha.states.map((state) => {
+            if (state.id !== stateId) return state;
+
+            return {
+              ...state,
+              name: newName,
+            };
+          }),
+        };
+      })
+    );
+  };
+
+  const changeStateDescription = (subAlphaId, stateId, newDescription) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id !== subAlphaId) return subAlpha;
+
+        return {
+          ...subAlpha,
+          states: subAlpha.states.map((state) => {
+            if (state.id !== stateId) return state;
+
+            return {
+              ...state,
+              description: newDescription,
+            };
+          }),
+        };
+      })
+    );
+  };
+
+  const deleteState = (subAlphaId, stateId) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id !== subAlphaId) return subAlpha;
+
+        return {
+          ...subAlpha,
+          states: subAlpha.states.filter((state) => state.id !== stateId),
+        };
+      })
+    );
+  };
+  
+  const addChecklistItem = (subAlphaId, stateId) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id !== subAlphaId) return subAlpha;
+
+        return {
+          ...subAlpha,
+          states: subAlpha.states.map((state) => {
+            if (state.id !== stateId) return state;
+
+            return {
+              ...state,
+              checklists: [...state.checklists, ''],
+            };
+          }),
+        };
+      })
+    );
+  };
+
   const contextValue = {
     methodId,
     setMethodId,
@@ -297,6 +467,20 @@ const MappingProvider = ({ children }) => {
     setAuthor,
     description,
     setDescription,
+    subAlphas,
+    setSubAlphas,
+    addSubAlpha,
+    changeSubAlphaName,
+    changeSubAlphaDescription,
+    deleteSubAlpha,
+    updateAlphaOfSubAlpha,
+    addState,
+    changeChecklistItem,
+    deleteChecklistItem,
+    changeStateName,
+    changeStateDescription,
+    deleteState,
+    addChecklistItem,
     tasks,
     setTasks,
     roles,
