@@ -24,7 +24,7 @@ const ActivitySpaceList = ({ activity, activitySpaces }) => {
       <h3>{activity.name}</h3>
 
       <h4>Activity Spaces:</h4>
-      {/* TODO P3 add area of concern category */}
+      {/* TODO P1 add area of concern category */}
       {/* activity.areasOfConcern.map((area) => (
         <div key={area}>
           <p>{areasOfConcern.find(areaObj => areaObj.id.toString() === area)?.name || ''}</p>

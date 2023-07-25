@@ -108,4 +108,5 @@ export default async function handle(req, res) {
   }
 
   // TODO P1 insert presets into database
+  // TODO { id: 1, name: 'Recognized' },
 }

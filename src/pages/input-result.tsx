@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import Router from 'next/router'
 import { MappingContext } from '../context/context';
+import { downloadJson } from '@/utils/utils';
 
 const InputResult = () => {
-  const { tasks, roles } = useContext(MappingContext);
-
-  const allWorkProducts = tasks.reduce((result, task) => {
-    return result.concat(task.workProducts);
-  }, []);
+  const { name, author, description, tasks, roles } = useContext(MappingContext);
 
   const handleClick = () => {
     Router.push('/map-areas');
+  };
+
+  const handleJsonClick = () => {
+    downloadJson(`${name} by ${author}`, name, author, description, tasks, roles);
   };
 
   const printConsole = () => {
@@ -19,6 +20,10 @@ const InputResult = () => {
 
   return (
     <div>
+      <h1>{name}</h1>
+      <p>Author: {author}</p>
+      <p>Description: {description}</p>
+
       <h2>Insert Result</h2>
 
       <h3>Tasks:</h3>
@@ -67,6 +72,7 @@ const InputResult = () => {
       </ul>
 
       <button onClick={handleClick}>Next</button>
+      <button onClick={handleJsonClick}>Download JSON</button>
       <button onClick={printConsole}>Log</button>
     </div>
   );

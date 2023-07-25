@@ -5,6 +5,7 @@ const MappingContext = createContext();
 const MappingProvider = ({ children }) => {
   const [methodId, setMethodId] = useState(-1);
   const [name, setName] = useState('');
+  const [author, setAuthor] = useState('');
   const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -292,6 +293,8 @@ const MappingProvider = ({ children }) => {
     setMethodId,
     name,
     setName,
+    author,
+    setAuthor,
     description,
     setDescription,
     tasks,
