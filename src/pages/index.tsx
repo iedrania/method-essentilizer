@@ -92,6 +92,18 @@ export default function Home({nextId, methods}) {
     }
   };
 
+  const handleDelete = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      await fetch('/api/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCreate = () => {
     setMethodId(nextId)
     setName('');
@@ -115,6 +127,7 @@ export default function Home({nextId, methods}) {
     <div>
       <h1>Method Essentilizer</h1>
       <button onClick={handleCreate}>Create New Method</button>
+      <button onClick={handleDelete}>Clear Database</button>
       <button onClick={validateData}>Insert Database</button>
       <div>
         {renderMethods()}
