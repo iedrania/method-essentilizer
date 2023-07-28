@@ -32,7 +32,7 @@ const MapWorkProducts: React.FC = ({alphas}) => {
         ))}
       </ul>
 
-      <Link href="/map-roles">
+      <Link href="/map-tasks">
         <button>Next</button>
       </Link>
     </div>

@@ -26,7 +26,7 @@ const MapRoles: React.FC = ({competencies}) => {
         ))}
       </ul>
 
-      <Link href="/map-result">
+      <Link href="/map-criterions">
         <button>Next</button>
       </Link>
     </div>

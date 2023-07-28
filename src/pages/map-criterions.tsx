@@ -3,32 +3,34 @@ import React, { useContext } from 'react';
 import { GetStaticProps } from "next"
 import Link from 'next/link';
 import { MappingContext } from '../context/context';
-import ActivitySpaceList from '@/components/ActivitySpaceList';
+import AlphaStateList from '@/components/AlphaStateList';
 
 export const getStaticProps: GetStaticProps = async () => {
-  const spaces = await prisma.activitySpace.findMany();
+  const alphas = await prisma.alpha.findMany({
+    include: {
+      states: true,
+    }
+  });
   return {
-    props: { spaces },
+    props: { alphas },
     revalidate: 10,
   };
 };
 
-const MapTasks: React.FC = ({spaces}) => {
+const MapTasks: React.FC = ({alphas}) => {
   const { tasks } = useContext(MappingContext);
-
-  console.log("activities in map-tasks", tasks)
 
   return (
     <div>
-      <h2>Map Tasks</h2>
+      <h2>Choose Entry and Completion Criterions</h2>
 
       <ul>
         {tasks.map((activity) => (
-          <ActivitySpaceList key={activity.id} activity={activity} activitySpaces={ spaces.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) } />
+          <AlphaStateList key={activity.id} activity={activity} alphas={ alphas } />
         ))}
       </ul>
 
-      <Link href="/map-roles">
+      <Link href="/map-result"> {/* input-patterns */}
         <button>Next</button>
       </Link>
     </div>

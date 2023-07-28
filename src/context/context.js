@@ -458,6 +458,62 @@ const MappingProvider = ({ children }) => {
     );
   };
 
+  const updateEntryCriterions = (taskId, alphaId, stateId) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === taskId) {
+          let updatedCriterions;
+          if (!stateId) {
+            if (task.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alphaId}.`))) {
+              updatedCriterions = task.entryCriterions.filter((entryCriterion) => !entryCriterion.startsWith(`${alphaId}.`));
+            } else {
+              updatedCriterions = [...task.entryCriterions, `${alphaId}.${alphaId}0`];
+            }
+          } else {
+            if (task.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alphaId}.`))) {
+              updatedCriterions = task.entryCriterions.map((entryCriterion) =>
+                entryCriterion.startsWith(`${alphaId}.`) ? `${alphaId}.${stateId}` : entryCriterion
+              );
+            } else {
+              updatedCriterions = [...task.entryCriterions, `${alphaId}.${stateId}`];
+            }
+          }
+          console.log(updatedCriterions);
+          return { ...task, entryCriterions: updatedCriterions };
+        }
+        return task;
+      })
+    );
+  };  
+
+  const updateCompletionCriterions = (taskId, alphaId, stateId) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === taskId) {
+          let updatedCriterions;
+          if (!stateId) {
+            if (task.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alphaId}.`))) {
+              updatedCriterions = task.completionCriterions.filter((completionCriterion) => !completionCriterion.startsWith(`${alphaId}.`));
+            } else {
+              updatedCriterions = [...task.completionCriterions, `${alphaId}.${alphaId}0`];
+            }
+          } else {
+            if (task.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alphaId}.`))) {
+              updatedCriterions = task.completionCriterions.map((completionCriterion) =>
+                completionCriterion.startsWith(`${alphaId}.`) ? `${alphaId}.${stateId}` : completionCriterion
+              );
+            } else {
+              updatedCriterions = [...task.completionCriterions, `${alphaId}.${stateId}`];
+            }
+          }
+          console.log(updatedCriterions);
+          return { ...task, completionCriterions: updatedCriterions };
+        }
+        return task;
+      })
+    );
+  };
+
   const contextValue = {
     methodId,
     setMethodId,
@@ -481,6 +537,8 @@ const MappingProvider = ({ children }) => {
     changeStateDescription,
     deleteState,
     addChecklistItem,
+    updateEntryCriterions,
+    updateCompletionCriterions,
     tasks,
     setTasks,
     roles,

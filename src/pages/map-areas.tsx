@@ -22,7 +22,7 @@ const MapAreas: React.FC = ({ areas }) => {
 
   const handleClick = () => {
     fillRoleAreasFromRelated()
-    Router.push('/map-tasks');
+    Router.push('/map-work-products');
   }
 
   return (

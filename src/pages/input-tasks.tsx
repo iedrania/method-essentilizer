@@ -7,7 +7,15 @@ const InputTasks = () => {
   const { tasks, addTask } = useContext(MappingContext);
 
   const handleAddTask = () => {
-    addTask({ id: tasks.length + 1, name: '', workProducts: [], areasOfConcern: [], activitySpaces: [] });
+    addTask({
+      id: tasks.length + 1,
+      name: '',
+      workProducts: [],
+      areasOfConcern: [],
+      activitySpaces: [],
+      entryCriterions: [],
+      completionCriterions: []
+    });
   };
 
   return (
