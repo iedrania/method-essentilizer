@@ -14,7 +14,12 @@ const Task = ({ task }) => {
   };
 
   const handleAddWorkProduct = () => {
-    addWorkProductToTask(task.id, [{ id: task.workProducts.length + 1, name: '', alphas: [] }]);
+    addWorkProductToTask(task.id, [{
+      id: task.workProducts.length + 1,
+      name: '',
+      alphas: [],
+      subAlphas: [],
+    }]);
   };
 
   return (

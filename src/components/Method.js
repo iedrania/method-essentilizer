@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { MappingContext } from '../context/context';
 import Router from 'next/router'
+import styles from '@/styles/Method.module.css';
 
 const Method = ({ method, nextId }) => {
   const { setMethodId, setName, setDescription, setTasks, setRoles } = useContext(MappingContext);
@@ -59,10 +60,9 @@ const Method = ({ method, nextId }) => {
   };
 
   return (
-    <div onClick={handleMethodClick}>
-      <h3>{method.name}</h3>
-
-      <h4>{method.description}</h4>
+    <div className={styles.methodBox} onClick={handleMethodClick}>
+      <h3 className={styles.methodName}>{method.name}</h3>
+      <p className={styles.methodDescription}>{method.description}</p>
     </div>
   );
 };

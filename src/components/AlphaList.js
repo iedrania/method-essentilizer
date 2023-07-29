@@ -2,12 +2,18 @@ import React, { useContext } from 'react';
 import { MappingContext } from '../context/context';
 
 const AlphaList = ({ workProduct, alphas, activityId }) => {
-  const { updateAlphas } = useContext(MappingContext);
+  const { subAlphas, updateAlphas, updateSubAlphas } = useContext(MappingContext);
 
   const handleAlphaChange = (event) => {
     const alphaId = event.target.value;
     const isChecked = event.target.checked;
     updateAlphas(activityId, workProduct.id, alphaId, isChecked);
+  };
+
+  const handleSubAlphaChange = (event) => {
+    const subAlphaId = event.target.value;
+    const isChecked = event.target.checked;
+    updateSubAlphas(activityId, workProduct.id, subAlphaId, isChecked);
   };
 
   const renderAlphas = () => {
@@ -19,12 +25,22 @@ const AlphaList = ({ workProduct, alphas, activityId }) => {
     ));
   };
 
+  const renderSubAlphas = () => {
+    return subAlphas.map((subAlpha) => (
+      <label key={subAlpha.id}>
+        <input type="checkbox" value={subAlpha.id} onChange={handleSubAlphaChange} />
+        {subAlpha.name}
+      </label>
+    ));
+  };
+
   return (
     <li>
       <h3>{workProduct.name}</h3>
 
       <h4>Alphas:</h4>
       {renderAlphas()}
+      {renderSubAlphas()}
     </li>
   );
 };

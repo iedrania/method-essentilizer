@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import Router from 'next/router'
 import { MappingContext } from '../context/context'
 import Method from '@/components/Method';
+import styles from '@/styles/Home.module.css';
 
 export const getStaticProps: GetStaticProps = async () => {
   const latestMethod = await prisma.method.findFirst({
@@ -18,9 +19,11 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const methods = await prisma.method.findMany({
     select: {
+      id: true,
       name: true,
+      creator: true,
       description: true,
-      tasks: {
+      activities: {
         include: {
           areasOfConcern: {
             select: {
@@ -43,7 +46,7 @@ export const getStaticProps: GetStaticProps = async () => {
           }
         },
       },
-      roles: {
+      patterns: {
         include: {
           areasOfConcern: {
             select: {
@@ -57,16 +60,19 @@ export const getStaticProps: GetStaticProps = async () => {
           },
           performedTasks: {
             select: {
-              id: true,
+              nameId: true,
             }
           },
           assignedWorkProducts: {
             select: {
-              id: true,
-              taskId: true,
+              nameId: true,
+              activityNameId: true,
             }
           },
-        }
+        },
+        where: {
+          role: true,
+        },
       }
     },
   });
@@ -80,7 +86,19 @@ export const getStaticProps: GetStaticProps = async () => {
 export default function Home({nextId, methods}) {
   const { setMethodId, setName, setDescription, setTasks, setRoles } = useContext(MappingContext);
 
-  const validateData = async (e: React.SyntheticEvent) => {
+  const resetDatabase = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      await fetch('/api/delete/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const insertDatabase = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
       await fetch('/api/post/insert', {
@@ -124,12 +142,15 @@ export default function Home({nextId, methods}) {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>Method Essentilizer</h1>
-      <button onClick={handleCreate}>Create New Method</button>
-      <button onClick={handleDelete}>Clear Database</button>
-      <button onClick={validateData}>Insert Database</button>
-      <div>
+      <div className={styles.buttonContainer}>
+        <button onClick={handleCreate}>Create New Method</button>
+        <button onClick={handleDelete}>Clear User Data</button>
+        <button onClick={resetDatabase}>Reset Database</button>
+        <button onClick={insertDatabase}>Insert Database</button>
+      </div>
+      <div className={styles.gridContainer}>
         {renderMethods()}
       </div>
     </div>

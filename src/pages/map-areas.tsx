@@ -37,11 +37,19 @@ const MapAreas: React.FC = ({ areas }) => {
       </ul>
 
       <h3>Roles:</h3>
-      <ul>
-        {filteredRoles.map((role) => (
-          <AreaList key={role.id} element={role} elementType={2} areasOfConcern={areas} />
+      {filteredRoles.length > 0 ? (
+        <ul>
+          {filteredRoles.map((role) => (
+            <AreaList key={role.id} element={role} elementType={2} areasOfConcern={areas} />
+          ))}
+        </ul>
+      ) : <p>No roles to choose area of concern for.</p>}
+
+      {/* <ul>
+        {subAlphas.map((subAlpha) => (
+          <AreaList key={subAlpha.id} element={subAlpha} elementType={3} areasOfConcern={areas} />
         ))}
-      </ul>
+      </ul> */}
 
       <button onClick={handleClick}>Next</button>
     </div>

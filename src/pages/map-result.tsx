@@ -3,10 +3,15 @@ import React, { useContext } from 'react';
 import Router from 'next/router';
 import { GetStaticProps } from "next"
 import { MappingContext } from '../context/context';
+import { downloadEssenceJson } from '@/utils/utils';
 
 export const getStaticProps: GetStaticProps = async () => {
   const spaces = await prisma.activitySpace.findMany();
-  const alphas = await prisma.alpha.findMany();
+  const alphas = await prisma.alpha.findMany({
+    include: {
+      states: true,
+    }
+  });
   const competencies = await prisma.competency.findMany();
   return {
     props: { spaces, alphas, competencies },
@@ -15,14 +20,14 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
-  const { methodId, name, description, tasks, roles } = useContext(MappingContext);
+  const { methodId, name, creator, description, tasks, roles, subAlphas } = useContext(MappingContext);
 
-  const submitData = async (e: React.SyntheticEvent) => {
+  const handleSaveClick = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    // TODO P2 choose db or json
+    // TODO P1 fix json structure
     // TODO P2 validate methodId
     try {
-      const body = { methodId, name, description, tasks, roles };
+      const body = { methodId, name, creator, description, tasks, roles, subAlphas };
       await fetch('/api/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,13 +39,21 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
     }
   };
 
+  const handleJsonClick = () => {
+    downloadEssenceJson(`${name} by ${creator} - Essentialized`, name, creator, description, tasks, roles, subAlphas);
+  };
+
   const printConsole = () => {
-    console.log(methodId, name, description, tasks, roles)
+    console.log(methodId, name, creator, description, tasks, roles, subAlphas)
     // TODO P3 ganti index jadi id
   }
 
   return (
     <div>
+      <h1>{name}</h1>
+      <p>Creator: {creator}</p>
+      <p>Description: {description}</p>
+
       <h2>Mapping Result</h2>
 
       <h3>Activities:</h3>
@@ -64,14 +77,51 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
                   {workProduct.alphas.map((alpha, index) => (
                     <li key={index}>{alphas.find(alphaObj => alphaObj.id.toString() === alpha)?.name || alpha}</li>
                   ))}
+                  {workProduct.subAlphas.map((alpha, index) => (
+                    <li key={index}>{subAlphas.find(subAlpha => subAlpha.id === alpha)?.name || alpha}</li>
+                  ))}
                 </ul>
               </div>
+            ))}
+          </ul>
+
+          <h4>Entry Criterions:</h4>
+          <ul>
+            {activity.entryCriterions.map((criterion, index) => (
+              <li key={index}>
+                {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                  subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                  criterion}::
+                {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
+                  ?.states?.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                  subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
+                  ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                  "State Not Found"}
+                  {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
+              </li>            
+            ))}
+          </ul>
+
+          <h4>Completion Criterions:</h4>
+          <ul>
+            {activity.completionCriterions.map((criterion, index) => (
+              <li key={index}>
+                {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                  subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                  criterion}::
+                {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
+                  ?.states?.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                  subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
+                  ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                  "State Not Found"}
+                  {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
+              </li>            
             ))}
           </ul>
         </div>
       ))}
 
-      <h3>Roles:</h3>
+      <h3>Patterns (Roles):</h3>
       {roles.map((role) => (
         <div key={role.id}>
           <p>{role.name}</p>
@@ -84,7 +134,39 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
         </div>
       ))}
 
-      <button onClick={submitData}>Save</button>
+      <h3>Sub-Alphas:</h3>
+      {subAlphas.map((subAlpha) => (
+        <div key={subAlpha.id}>
+          <h4>{subAlpha.name}</h4>
+          <p>{subAlpha.description}</p>
+          <p>Alpha: {alphas.find(alpha => alpha.id.toString() === subAlpha.alpha)?.name || subAlpha.alpha}</p>
+
+          <h5>Work Products:</h5>
+          <ul>
+            {subAlpha.workProducts.map((workProduct, index) => (
+              <li key={index}>{(tasks[Number(workProduct.split("-")[2])-1]).workProducts[Number(workProduct.split("-")[4]-1)].name}</li>
+            ))}
+          </ul>
+
+          <h5>States:</h5>
+          <ul>
+            {subAlpha.states.map((state) => (
+              <li key={state.id}>
+                {state.name}
+                <p>{state.description}</p>
+                <ul>
+                  {state.checklist.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      <button onClick={handleSaveClick}>Save</button>
+      <button onClick={handleJsonClick}>Download JSON</button>
       <button onClick={printConsole}>Log</button>
     </div>
   );

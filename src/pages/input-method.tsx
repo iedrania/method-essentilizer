@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { MappingContext } from '../context/context';
 
 const InputMethod = () => {
-  const { name, setName, author, setAuthor, description, setDescription } = useContext(MappingContext);
+  const { name, setName, creator, setCreator, description, setDescription } = useContext(MappingContext);
 
   return (
     <div>
@@ -15,12 +15,12 @@ const InputMethod = () => {
         onChange={(event) => setName(event.target.value)}
       />
 
-      <label htmlFor="author">Author:</label>
+      <label htmlFor="creator">Creator:</label>
       <input
         type="text"
-        id="author"
-        value={author}
-        onChange={(event) => setAuthor(event.target.value)}
+        id="creator"
+        value={creator}
+        onChange={(event) => setCreator(event.target.value)}
       />
 
       <label htmlFor="description">Description:</label>

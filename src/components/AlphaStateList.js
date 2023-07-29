@@ -2,16 +2,16 @@ import React, { useContext } from 'react';
 import { MappingContext } from '../context/context';
 
 const AlphaStateList = ({ activity, alphas }) => {
-  const { updateEntryCriterions, updateCompletionCriterions } = useContext(MappingContext);
+  const { subAlphas, updateEntryAlpha, updateEntryCriterions, updateCompletionAlpha, updateCompletionCriterions } = useContext(MappingContext);
 
-  const handleEntryAlphaChange = (event) => {
+  const handleEntryAlphaChange = (event, stateId) => {
     const alphaId = event.target.value;
-    updateEntryCriterions(activity.id, alphaId);
+    updateEntryAlpha(activity.id, alphaId, stateId);
   };
 
-  const handleCompletionAlphaChange = (event) => {
+  const handleCompletionAlphaChange = (event, stateId) => {
     const alphaId = event.target.value;
-    updateCompletionCriterions(activity.id, alphaId);
+    updateCompletionAlpha(activity.id, alphaId, stateId);
   };
 
   const handleEntryStateChange = (event, alphaId) => {
@@ -27,23 +27,20 @@ const AlphaStateList = ({ activity, alphas }) => {
   const renderEntryCriterions = () => {
     return (
       <div>
-        <p>Entry Criteria</p>
-        {alphas.map((alpha) => (
+        <h4>Entry Criteria</h4>
+        {alphas.concat(subAlphas).map((alpha) => (
           <label key={alpha.id}>
             <input
               type="checkbox"
               name="entryCriteria"
               value={alpha.id}
-              onChange={(e) => handleEntryAlphaChange(e)}
+              onChange={(e) => handleEntryAlphaChange(e, alpha.states[0].id)}
             />
             {alpha.name}
             {activity.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`)) && (
               <div>
                 <p>States of {alpha.name}</p>
                 <select name={`entryCriterion-${alpha.id}`} onChange={(e) => handleEntryStateChange(e, alpha.id)}>
-                  {alpha.states.length && (
-                    <option value={alpha.states[alpha.states.length - 1].id}>{alpha.states[alpha.states.length - 1].name}</option>
-                  )}
                   {alpha.states.map((state) => (
                     <option key={state.id} value={state.id}>
                       {state.name}
@@ -61,23 +58,20 @@ const AlphaStateList = ({ activity, alphas }) => {
   const renderCompletionCriterions = () => {
     return (
       <div>
-        <p>Completion Criteria</p>
-        {alphas.map((alpha) => (
+        <h4>Completion Criteria</h4>
+        {alphas.concat(subAlphas).map((alpha) => (
           <label key={alpha.id}>
             <input
               type="checkbox"
               name="completionCriteria"
               value={alpha.id}
-              onChange={(e) => handleCompletionAlphaChange(e)}
+              onChange={(e) => handleCompletionAlphaChange(e, alpha.states[alpha.states.length-1].id)}
             />
             {alpha.name}
             {activity.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`)) && (
               <div>
                 <p>States of {alpha.name}</p>
                 <select name={`completionCriterion-${alpha.id}`} onChange={(e) => handleCompletionStateChange(e, alpha.id)}>
-                  {alpha.states.length && (
-                    <option value={alpha.states[alpha.states.length - 1].id}>{alpha.states[alpha.states.length - 1].name}</option>
-                  )}
                   {alpha.states.map((state) => (
                     <option key={state.id} value={state.id}>
                       {state.name}
@@ -90,13 +84,13 @@ const AlphaStateList = ({ activity, alphas }) => {
         ))}
       </div>
     );
-  };  
+  };
 
   return (
     <li>
       <h3>Criterions for {activity.name}</h3>
 
-      <h4>Choose Entry and Completion Criterias from Alpha States:</h4>
+      <p>Choose Entry and Completion Criterias from Alpha States:</p>
       {renderEntryCriterions()}
       {renderCompletionCriterions()}
     </li>

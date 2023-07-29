@@ -68,37 +68,37 @@ export default async function handle(req, res) {
       id: 1,
       name: 'Recognized',
       description: 'Stakeholders have been identified.',
-      checklists: stakeholderChecklist.Recognized,
+      checklist: stakeholderChecklist.Recognized,
     },
     {
       id: 2,
       name: 'Represented',
       description: 'The mechanisms for involving the stakeholders are agreed and the stakeholder representatives have been appointed.',
-      checklists: stakeholderChecklist.Represented,
+      checklist: stakeholderChecklist.Represented,
     },
     {
       id: 3,
       name: 'Involved',
       description: 'The stakeholder representatives are actively involved in the work and fulfilling their responsibilities.',
-      checklists: stakeholderChecklist.Involved,
+      checklist: stakeholderChecklist.Involved,
     },
     {
       id: 4,
       name: 'In Agreement',
       description: 'The stakeholder representatives are in agreement.',
-      checklists: stakeholderChecklist['In Agreement'],
+      checklist: stakeholderChecklist['In Agreement'],
     },
     {
       id: 5,
       name: 'Satisfied for Deployment',
       description: 'The minimal expectations of the stakeholder representatives have been achieved.',
-      checklists: stakeholderChecklist['Satisfied for Deployment'],
+      checklist: stakeholderChecklist['Satisfied for Deployment'],
     },
     {
       id: 6,
       name: 'Satisfied in Use',
       description: 'The system has met or exceeds the minimal stakeholder expectations.',
-      checklists: stakeholderChecklist['Satisfied in Use'],
+      checklist: stakeholderChecklist['Satisfied in Use'],
     },
   ];
 
@@ -146,37 +146,37 @@ export default async function handle(req, res) {
       id: 1,
       name: "Identified",
       description: "A commercial, social, or business opportunity has been identified that could be addressed by a software-based solution.",
-      checklists: opportunityChecklist.Identified,
+      checklist: opportunityChecklist.Identified,
     },
     {
       id: 2,
       name: "Solution Needed",
       description: "The need for a software-based solution has been confirmed.",
-      checklists: opportunityChecklist['Solution Needed'],
+      checklist: opportunityChecklist['Solution Needed'],
     },
     {
       id: 3,
       name: "Value Established",
       description: "The value of a successful solution has been established.",
-      checklists: opportunityChecklist['Value Established'],
+      checklist: opportunityChecklist['Value Established'],
     },
     {
       id: 4,
       name: "Viable",
       description: "It is agreed that a solution can be produced quickly and cheaply enough to successfully address the opportunity.",
-      checklists: opportunityChecklist.Viable,
+      checklist: opportunityChecklist.Viable,
     },
     {
       id: 5,
       name: "Addressed",
       description: "A solution has been produced that demonstrably addresses the opportunity.",
-      checklists: opportunityChecklist.Addressed,
+      checklist: opportunityChecklist.Addressed,
     },
     {
       id: 6,
       name: "Benefit Accrued",
       description: "The operational use or sale of the solution is creating tangible benefits.",
-      checklists: opportunityChecklist['Benefit Accrued'],
+      checklist: opportunityChecklist['Benefit Accrued'],
     },
   ];
 
@@ -234,37 +234,37 @@ export default async function handle(req, res) {
       id: 1,
       name: "Conceived",
       description: "The need for a new system has been agreed.",
-      checklists: requirementsChecklist.Conceived,
+      checklist: requirementsChecklist.Conceived,
     },
     {
       id: 2,
       name: "Bounded",
       description: "The purpose and extent of the new system are clear.",
-      checklists: requirementsChecklist.Bounded,
+      checklist: requirementsChecklist.Bounded,
     },
     {
       id: 3,
       name: "Coherent",
       description: "The requirements provide a consistent description of the essential characteristics of the new system.",
-      checklists: requirementsChecklist.Coherent,
+      checklist: requirementsChecklist.Coherent,
     },
     {
       id: 4,
       name: "Acceptable",
       description: "The requirements describe a system that is acceptable to the stakeholders.",
-      checklists: requirementsChecklist.Acceptable,
+      checklist: requirementsChecklist.Acceptable,
     },
     {
       id: 5,
       name: "Addressed",
       description: "Enough of the requirements have been addressed to satisfy the need for a new system in a way that is acceptable to the stakeholders.",
-      checklists: requirementsChecklist.Addressed,
+      checklist: requirementsChecklist.Addressed,
     },
     {
       id: 6,
       name: "Fulfilled",
       description: "The requirements that have been addressed fully satisfy the need for a new system.",
-      checklists: requirementsChecklist.Fulfilled
+      checklist: requirementsChecklist.Fulfilled
     },
   ];  
 
@@ -319,37 +319,37 @@ export default async function handle(req, res) {
       id: 1,
       name: "Architecture Selected",
       description: "An architecture has been selected that addresses the key technical risks and any applicable organizational constraints.",
-      checklists: systemChecklist['Architecture Selected'],
+      checklist: systemChecklist['Architecture Selected'],
     },
     {
       id: 2,
       name: "Demonstrable",
       description: "An executable version of the system is available that demonstrates the architecture is fit for purpose and supports testing.",
-      checklists: systemChecklist.Demonstrable,
+      checklist: systemChecklist.Demonstrable,
     },
     {
       id: 3,
       name: "Usable",
       description: "The system is usable and demonstrates all of the quality characteristics of an operational system.",
-      checklists: systemChecklist.Usable,
+      checklist: systemChecklist.Usable,
     },
     {
       id: 4,
       name: "Ready",
       description: "The system (as a whole) has been accepted for deployment in a live environment.",
-      checklists: systemChecklist.Ready,
+      checklist: systemChecklist.Ready,
     },
     {
       id: 5,
       name: "Operational",
       description: "The system is in use in an operational environment.",
-      checklists: systemChecklist.Operational,
+      checklist: systemChecklist.Operational,
     },
     {
       id: 6,
       name: "Retired",
       description: "The system is no longer supported.",
-      checklists: systemChecklist.Retired,
+      checklist: systemChecklist.Retired,
     },
   ];  
   
@@ -404,31 +404,31 @@ export default async function handle(req, res) {
       id: 1,
       name: "Seeded",
       description: "The team’s mission is clear and the know-how needed to grow the team is in place.",
-      checklists: teamChecklist.Seeded,
+      checklist: teamChecklist.Seeded,
     },
     {
       id: 2,
       name: "Formed",
       description: "The team has been populated with enough committed people to start pursuing the team mission.",
-      checklists: teamChecklist.Formed,
+      checklist: teamChecklist.Formed,
     },
     {
       id: 3,
       name: "Collaborating",
       description: "The team members are working together as one unit.",
-      checklists: teamChecklist.Collaborating,
+      checklist: teamChecklist.Collaborating,
     },
     {
       id: 4,
       name: "Performing",
       description: "The team is working effectively and efficiently.",
-      checklists: teamChecklist.Performing,
+      checklist: teamChecklist.Performing,
     },
     {
       id: 5,
       name: "Adjourned",
       description: "The team is no longer accountable for carrying out its mission.",
-      checklists: teamChecklist.Adjourned,
+      checklist: teamChecklist.Adjourned,
     },
   ];  
   
@@ -491,37 +491,37 @@ export default async function handle(req, res) {
       id: 1,
       name: "Initiated",
       description: "The work has been requested.",
-      checklists: workChecklist.Initiated,
+      checklist: workChecklist.Initiated,
     },
     {
       id: 2,
       name: "Prepared",
       description: "All pre-conditions for starting the work have been met.",
-      checklists: workChecklist.Prepared,
+      checklist: workChecklist.Prepared,
     },
     {
       id: 3,
       name: "Started",
       description: "The work is proceeding.",
-      checklists: workChecklist.Started,
+      checklist: workChecklist.Started,
     },
     {
       id: 4,
       name: "Under Control",
       description: "The work is going well, risks are under control, and productivity levels are sufficient to achieve a satisfactory result.",
-      checklists: workChecklist['Under Control'],
+      checklist: workChecklist['Under Control'],
     },
     {
       id: 5,
       name: "Concluded",
       description: "The work to produce the results has been concluded.",
-      checklists: workChecklist.Concluded,
+      checklist: workChecklist.Concluded,
     },
     {
       id: 6,
       name: "Closed",
       description: "All remaining housekeeping tasks have been completed and the work has been officially closed.",
-      checklists: workChecklist.Closed,
+      checklist: workChecklist.Closed,
     },
   ];  
 
@@ -569,37 +569,37 @@ export default async function handle(req, res) {
       id: 1,
       name: "Principles Established",
       description: "The principles, and constraints, that shape the way-of-working are established.",
-      checklists: wayChecklist['Principles Established'],
+      checklist: wayChecklist['Principles Established'],
     },
     {
       id: 2,
       name: "Foundation Established",
       description: "The key practices, and tools, that form the foundation of the way of working are selected and ready for use.",
-      checklists: wayChecklist['Foundation Established'],
+      checklist: wayChecklist['Foundation Established'],
     },
     {
       id: 3,
       name: "In Use",
       description: "Some members of the team are using, and adapting, the way-of-working.",
-      checklists: wayChecklist['In Use'],
+      checklist: wayChecklist['In Use'],
     },
     {
       id: 4,
       name: "In Place",
       description: "All team members are using the way of working to accomplish their work.",
-      checklists: wayChecklist['In Place'],
+      checklist: wayChecklist['In Place'],
     },
     {
       id: 5,
       name: "Working well",
       description: "The team's way of working is working well for the team.",
-      checklists: wayChecklist['Working well'],
+      checklist: wayChecklist['Working well'],
     },
     {
       id: 6,
       name: "Retired",
       description: "The way of working is no longer in use by the team.",
-      checklists: wayChecklist.Retired,
+      checklist: wayChecklist.Retired,
     },
   ];
   
@@ -615,6 +615,29 @@ export default async function handle(req, res) {
       { id: 6, name: 'Work', description: '', states: workStates.map((state) => ({...state, id: state.id + 60, })) },
       { id: 7, name: 'Way-of-Working', description: '', states: wayStates.map((state) => ({...state, id: state.id + 70, })) },
     ],
+  ];
+
+  const levels = [
+    {
+      name: "Assists",
+      description: "Demonstrates a basic understanding of the concepts and can follow instructions.",
+    },
+    {
+      name: "Applies",
+      description: "Able to apply the concepts in simple contexts by routinely applying the experience gained so far.",
+    },
+    {
+      name: "Masters",
+      description: "Able to apply the concepts in most contexts and has the experience to work without supervision.",
+    },
+    {
+      name: "Adapts",
+      description: "Able to apply judgment on when and how to apply the concepts to more complex contexts. Can enable others to apply the concepts.",
+    },
+    {
+      name: "Innovates",
+      description: "A recognized expert, able to extend the concepts to new contexts and inspire others.",
+    }
   ];
   
   const competencies = [
@@ -642,7 +665,7 @@ export default async function handle(req, res) {
                 id: activitySpace.id,
                 name: activitySpace.name,
                 description: activitySpace.description,
-                tasks: {
+                activities: {
                   create: [],
                 },
               }))
@@ -658,6 +681,7 @@ export default async function handle(req, res) {
                 states: {
                   create: alpha.states,
                 },
+                subAlphaIds: [],
               }))
             },
             competencies: {
@@ -665,6 +689,7 @@ export default async function handle(req, res) {
                 id: competency.id,
                 name: competency.name,
                 description: competency.description,
+                levels: levels,
                 roles: {
                   create: [],
                 },
@@ -677,8 +702,9 @@ export default async function handle(req, res) {
     );
 
     res.json(result);
+    console.log('Database created successfully.');
   } catch (error) {
-    console.error(error)
+    console.log(error)
   }
 
   // TODO P1 insert presets into database

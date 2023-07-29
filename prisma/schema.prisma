@@ -10,15 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Essence
+
 model AreaOfConcern {
   id             Int             @id
   name           String
   activitySpaces ActivitySpace[]
   alphas         Alpha[]
   competencies   Competency[]
-  tasks          Task[]
+  activities     Activity[]
   workProducts   WorkProduct[]
-  roles          Role[]
+  roles          Pattern[]
 }
 
 model ActivitySpace {
@@ -27,24 +29,25 @@ model ActivitySpace {
   description     String
   areaOfConcernId Int
   areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
-  tasks           Task[]
+  activities      Activity[]
 }
 
 model Alpha {
   id              Int           @id
   name            String
   description     String
+  states          State[]
+  subAlphaIds     String[]
   areaOfConcernId Int
   areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
   workProducts    WorkProduct[]
-  states          State[]
 }
 
 model State {
   id          Int      @id
   name        String
   description String
-  checklists  String[]
+  checklist   String[]
   alphaId     Int
   alpha       Alpha    @relation(fields: [alphaId], references: [id])
 }
@@ -53,47 +56,87 @@ model Competency {
   id              Int           @id
   name            String
   description     String
+  levels          Json[]
   areaOfConcernId Int
-  AreaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
-  roles           Role[]
+  areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
+  roles           Pattern[]
 }
+
+// Essence Extention
+
+model SubAlpha {
+  nameId       String          @id
+  name         String
+  description  String
+  states       SubAlphaState[]
+  // subAlphaIds  String[]
+  methodId     Int
+  method       Method          @relation(fields: [methodId], references: [id])
+  // areaOfConcernId Int
+  // areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
+  workProducts WorkProduct[]
+}
+
+model SubAlphaState {
+  nameId         String    @id
+  name           String
+  description    String
+  checklist      String[]
+  subAlphaNameId String?
+  subAlpha       SubAlpha? @relation(fields: [subAlphaNameId], references: [nameId])
+}
+
+// Method
 
 model Method {
-  id          Int    @id
+  id          Int        @id
   name        String
+  creator     String
   description String
-  tasks       Task[]
-  roles       Role[]
+  activities  Activity[]
+  patterns    Pattern[]
+  subAlphas   SubAlpha[]
 }
 
-model Task {
-  id             String          @id
-  name           String
-  areasOfConcern AreaOfConcern[]
-  activitySpaces ActivitySpace[]
-  methodId       Int
-  method         Method          @relation(fields: [methodId], references: [id])
-  workProducts   WorkProduct[]
-  performerRoles Role[]
+model Activity {
+  nameId               String          @id
+  name                 String
+  description          String
+  completionCriterions Json
+  entryCriterions      Json
+  areasOfConcern       AreaOfConcern[]
+  activitySpaces       ActivitySpace[]
+  methodId             Int
+  method               Method          @relation(fields: [methodId], references: [id])
+  performerRoles       Pattern[]
+  workProducts         WorkProduct[]
 }
 
 model WorkProduct {
-  id             String          @id
+  nameId         String          @id
   name           String
+  description    String
+  levelOfDetails String[]
   areasOfConcern AreaOfConcern[]
   alphas         Alpha[]
-  taskId         String
-  task           Task            @relation(fields: [taskId], references: [id])
-  assigneeRoles  Role[]
+  subAlphas      SubAlpha[]
+  assigneeRoles  Pattern[]
+  activityNameId String
+  activity       Activity        @relation(fields: [activityNameId], references: [nameId])
 }
 
-model Role {
-  id                   String          @id
+model Pattern {
+  nameId               String          @id
   name                 String
-  areasOfConcern       AreaOfConcern[]
+  description          String
   competencies         Competency[]
+  role                 Boolean
+  areasOfConcern       AreaOfConcern[]
   methodId             Int
   method               Method          @relation(fields: [methodId], references: [id])
-  performedTasks       Task[]
+  performedTasks       Activity[]
   assignedWorkProducts WorkProduct[]
+  // subpatternIds        String[]
+  // alphas               String[]
+  // activities           String[]
 }
