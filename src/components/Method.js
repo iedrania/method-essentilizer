@@ -30,8 +30,8 @@ const Method = ({ method, nextId }) => {
       return array.map((item) => [getStringIdFromString(item.taskId), getStringIdFromString(item.id)]);
     }
 
-    method.tasks.forEach((task) => {
-      task.id = getNumberIdFromString(task.id);
+    method.activities.forEach((task) => {
+      task.id = getNumberIdFromString(task.nameId);
       task.areasOfConcern = idsToArray(task.areasOfConcern)
       task.activitySpaces = idsToArray(task.activitySpaces)
       task.workProducts.forEach((workProduct) => {
@@ -54,7 +54,7 @@ const Method = ({ method, nextId }) => {
     setMethodId(nextId)
     setName(method.name);
     setDescription(method.description);
-    setTasks(method.tasks);
+    setTasks(method.activities);
     setRoles(method.roles);
     Router.push('/input-method');
   };
