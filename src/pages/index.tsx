@@ -84,7 +84,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function Home({nextId, methods}) {
-  const { setMethodId, setName, setDescription, setTasks, setRoles } = useContext(MappingContext);
+  const { setMethodId, setName, setCreator, setDescription, setTasks, setRoles } = useContext(MappingContext);
 
   const resetDatabase = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -125,6 +125,7 @@ export default function Home({nextId, methods}) {
   const handleCreate = () => {
     setMethodId(nextId)
     setName('');
+    setCreator('');
     setDescription('');
     setTasks([]);
     setRoles([]);

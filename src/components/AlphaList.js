@@ -19,7 +19,7 @@ const AlphaList = ({ workProduct, alphas, activityId }) => {
   const renderAlphas = () => {
     return alphas.map((alpha) => (
       <label key={alpha.id}>
-        <input type="checkbox" value={alpha.id} onChange={handleAlphaChange} />
+        <input type="checkbox" value={alpha.id} checked={workProduct.alphas.includes(alpha.id.toString())} onChange={handleAlphaChange} />
         {alpha.name}
       </label>
     ));
@@ -28,7 +28,7 @@ const AlphaList = ({ workProduct, alphas, activityId }) => {
   const renderSubAlphas = () => {
     return subAlphas.map((subAlpha) => (
       <label key={subAlpha.id}>
-        <input type="checkbox" value={subAlpha.id} onChange={handleSubAlphaChange} />
+        <input type="checkbox" value={subAlpha.id} checked={workProduct.subAlphas.includes(subAlpha.id.toString())} onChange={handleSubAlphaChange} />
         {subAlpha.name}
       </label>
     ));

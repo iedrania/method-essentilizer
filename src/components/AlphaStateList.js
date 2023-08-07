@@ -34,6 +34,7 @@ const AlphaStateList = ({ activity, alphas }) => {
               type="checkbox"
               name="entryCriteria"
               value={alpha.id}
+              checked={activity.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`))}
               onChange={(e) => handleEntryAlphaChange(e, alpha.states[0].id)}
             />
             {alpha.name}
@@ -65,6 +66,7 @@ const AlphaStateList = ({ activity, alphas }) => {
               type="checkbox"
               name="completionCriteria"
               value={alpha.id}
+              checked={activity.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`))}
               onChange={(e) => handleCompletionAlphaChange(e, alpha.states[alpha.states.length-1].id)}
             />
             {alpha.name}

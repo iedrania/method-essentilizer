@@ -13,7 +13,7 @@ const CompetencyList = ({ role, competencies }) => {
   const renderCompetencies = () => {
     return competencies.map((competency) => (
       <label key={competency.id}>
-        <input type="checkbox" value={competency.id} onChange={handleCompetencyChange} />
+        <input type="checkbox" value={competency.id} checked={role.competencies.includes(competency.id.toString())} onChange={handleCompetencyChange} />
         {competency.name}
       </label>
     ));

@@ -28,7 +28,7 @@ const Role = ({ role }) => {
   const renderTasks = () => {
     return tasks.map((task) => (
       <label key={task.id}>
-        <input type="checkbox" value={task.id} onChange={handleTaskChange} />
+        <input type="checkbox" value={task.id} checked={role.performedTasks.includes(task.id.toString())} onChange={handleTaskChange} />
         {task.name}
       </label>
     ));
@@ -39,7 +39,7 @@ const Role = ({ role }) => {
     return tasks.map((task) =>
       task.workProducts.map((workProduct) => (
         <label key={workProduct.id}>
-          <input type="checkbox" value={[task.id, workProduct.id]} onChange={handleWorkProductChange} />
+          <input type="checkbox" value={[task.id, workProduct.id]} checked={role.assignedWorkProducts.some((arr) => JSON.stringify(arr) === JSON.stringify([task.id.toString(), workProduct.id.toString()]))} onChange={handleWorkProductChange} />
           {workProduct.name}
         </label>
       ))

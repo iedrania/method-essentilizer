@@ -13,7 +13,7 @@ const AreaList = ({ element, elementType, areasOfConcern }) => {
   const renderAreaOfConcern = () => {
     return areasOfConcern.map((areaOfConcern) => (
       <label key={areaOfConcern.id}>
-        <input type="checkbox" value={areaOfConcern.id} onChange={handleAreaOfConcernChange} />
+        <input type="checkbox" value={areaOfConcern.id} checked={element.areasOfConcern.includes(areaOfConcern.id.toString())} onChange={handleAreaOfConcernChange} />
         {areaOfConcern.name}
       </label>
     ));

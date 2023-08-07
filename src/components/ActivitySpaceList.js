@@ -13,7 +13,7 @@ const ActivitySpaceList = ({ activity, activitySpaces }) => {
   const renderActivitySpaces = () => {
     return activitySpaces.map((activitySpace) => (
       <label key={activitySpace.id}>
-        <input type="checkbox" value={activitySpace.id} onChange={handleActivitySpaceChange} />
+        <input type="checkbox" value={activitySpace.id} checked={activity.activitySpaces.includes(activitySpace.id.toString())} onChange={handleActivitySpaceChange} />
         {activitySpace.name}
       </label>
     ));
