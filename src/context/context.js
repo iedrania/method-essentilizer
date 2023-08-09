@@ -10,6 +10,7 @@ const MappingProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
   const [roles, setRoles] = useState([]);
   const [subAlphas, setSubAlphas] = useState([]);
+  const [patterns, setPatterns] = useState([]);
 
   const addTask = (task) => {
     setTasks((prevTasks) => [...prevTasks, task]);
@@ -585,6 +586,120 @@ const MappingProvider = ({ children }) => {
     );
   };
 
+  const addPattern = (pattern) => {
+    setPatterns((prevPatterns) => [...prevPatterns, pattern]);
+  };
+
+  const changePatternName = (patternId, newPatternName) => {
+    setPatterns((prevPatterns) =>
+      prevPatterns.map((pattern) =>
+        pattern.id === patternId ? { ...pattern, name: newPatternName } : pattern
+      )
+    );
+  };
+
+  const changePatternDescription = (patternId, newPatternDescription) => {
+    setPatterns((prevPatterns) =>
+      prevPatterns.map((pattern) =>
+        pattern.id === patternId ? { ...pattern, description: newPatternDescription } : pattern
+      )
+    );
+  };
+
+  const deletePattern = (patternId) => {
+    setPatterns((prevPatterns) =>
+      prevPatterns
+        .filter((pattern) => pattern.id !== patternId)
+        .map((pattern) => {
+          return pattern.id > patternId ? { ...pattern, id: pattern.id - 1 } : pattern;
+        })
+    );
+  };
+
+  const updatePatternAlphas = (patternId, alphaId, isChecked) => {
+    setPatterns((prevPatterns) =>
+      prevPatterns.map((pattern) => {
+        if (pattern.id === patternId) {
+          let updatedAlphas;
+
+          if (isChecked) {
+            updatedAlphas = [...(pattern.alphas || []), alphaId];
+          } else {
+            updatedAlphas = (pattern.alphas || []).filter((id) => id !== alphaId);
+          }
+
+          return { ...pattern, alphas: updatedAlphas };
+        }
+
+        return pattern;
+      })
+    );
+  };
+
+  const updatePatternActivities = (patternId, activityId, isChecked) => {
+    setPatterns((prevPatterns) =>
+      prevPatterns.map((pattern) => {
+        if (pattern.id === patternId) {
+          let updatedActivities;
+
+          if (isChecked) {
+            updatedActivities = [...(pattern.activities || []), activityId];
+          } else {
+            updatedActivities = (pattern.activities || []).filter((id) => id !== activityId);
+          }
+
+          return { ...pattern, activities: updatedActivities };
+        }
+
+        return pattern;
+      })
+    );
+  };
+
+  const updatePatternCompetencies = (patternId, competencyId, isChecked) => {
+    setPatterns((prevPatterns) =>
+      prevPatterns.map((pattern) => {
+        if (pattern.id === patternId) {
+          let updatedCompetencies;
+
+          if (isChecked) {
+            updatedCompetencies = [...(pattern.competencies || []), competencyId];
+          } else {
+            updatedCompetencies = (pattern.competencies || []).filter((id) => id !== competencyId);
+          }
+
+          return { ...pattern, competencies: updatedCompetencies };
+        }
+
+        return pattern;
+      })
+    );
+  };
+
+  const updatePatternSubPatterns = (patternId, subPatternId, isChecked) => {
+    setPatterns((prevPatterns) =>
+      prevPatterns.map((pattern) => {
+        if (pattern.id === patternId) {
+          let updatedSubPatterns;
+
+          if (isChecked) {
+            updatedSubPatterns = [...(pattern.subPatterns || []), subPatternId];
+          } else {
+            updatedSubPatterns = (pattern.subPatterns || []).filter((id) => id !== subPatternId);
+          }
+
+          console.log(patternId, subPatternId, isChecked)
+
+          console.log(updatedSubPatterns)
+
+          return { ...pattern, subPatterns: updatedSubPatterns };
+        }
+
+        return pattern;
+      })
+    );
+  };
+
   const contextValue = {
     methodId,
     setMethodId,
@@ -633,6 +748,16 @@ const MappingProvider = ({ children }) => {
     updateSubAlphas,
     updateCompetencies,
     fillRoleAreasFromRelated,
+    patterns,
+    setPatterns,
+    addPattern,
+    changePatternName,
+    changePatternDescription,
+    deletePattern,
+    updatePatternAlphas,
+    updatePatternActivities,
+    updatePatternCompetencies,
+    updatePatternSubPatterns,
   };
 
   return <MappingContext.Provider value={contextValue}>{children}</MappingContext.Provider>;

@@ -30,7 +30,7 @@ const MapTasks: React.FC = ({alphas}) => {
         ))}
       </ul>
 
-      <Link href="/map-result"> {/* input-patterns */}
+      <Link href="/input-patterns">
         <button>Next</button>
       </Link>
     </div>
