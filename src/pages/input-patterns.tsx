@@ -25,7 +25,7 @@ const InputPatterns: React.FC = ({alphas, competencies}) => {
       alphas: [],
       activities: [],
       competencies: [],
-      subPatternIds: [],
+      subPatterns: [],
     });
   };
 

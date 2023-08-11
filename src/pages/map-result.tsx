@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import Router from 'next/router';
 import { GetStaticProps } from "next"
 import { MappingContext } from '../context/context';
-import { downloadEssenceJson } from '@/utils/utils';
+import { downloadEssenceJson } from '@/utils/utilsEssence';
 
 export const getStaticProps: GetStaticProps = async () => {
   const spaces = await prisma.activitySpace.findMany();
@@ -20,11 +20,10 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
-  const { methodId, name, creator, description, tasks, roles, subAlphas } = useContext(MappingContext);
+  const { methodId, name, creator, description, tasks, roles, subAlphas, patterns } = useContext(MappingContext);
 
   const handleSaveClick = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    // TODO P1 fix json structure
     // TODO P2 validate methodId
     try {
       const body = { methodId, name, creator, description, tasks, roles, subAlphas };
@@ -40,11 +39,11 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
   };
 
   const handleJsonClick = () => {
-    downloadEssenceJson(`${name} by ${creator} - Essentialized`, name, creator, description, tasks, roles, subAlphas);
+    downloadEssenceJson(`${name} by ${creator} - Essentialized`, methodId, name, creator, description, tasks, roles, subAlphas, patterns, spaces, alphas, competencies);
   };
 
   const printConsole = () => {
-    console.log(methodId, name, creator, description, tasks, roles, subAlphas)
+    console.log(methodId, name, creator, description, tasks, roles, subAlphas, patterns)
     // TODO P3 ganti index jadi id
   }
 
@@ -165,7 +164,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
         </div>
       ))}
 
-      <button onClick={handleSaveClick}>Save</button>
+      <button onClick={handleSaveClick}>Save to Database</button>
       <button onClick={handleJsonClick}>Download JSON</button>
       <button onClick={printConsole}>Log</button>
     </div>
