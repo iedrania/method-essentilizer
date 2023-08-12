@@ -86,7 +86,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
 
           <h4>Entry Criterions:</h4>
           <ul>
-            {activity.entryCriterions.map((criterion, index) => (
+            {activity.entryCriterions.alphas.map((criterion, index) => (
               <li key={index}>
                 {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
                   subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
@@ -103,7 +103,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
 
           <h4>Completion Criterions:</h4>
           <ul>
-            {activity.completionCriterions.map((criterion, index) => (
+            {activity.completionCriterions.alphas.map((criterion, index) => (
               <li key={index}>
                 {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
                   subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||

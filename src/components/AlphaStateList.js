@@ -34,16 +34,16 @@ const AlphaStateList = ({ activity, alphas }) => {
               type="checkbox"
               name="entryCriteria"
               value={alpha.id}
-              checked={activity.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`))}
+              checked={activity.entryCriterions.alphas.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`))}
               onChange={(e) => handleEntryAlphaChange(e, alpha.states[0].id)}
             />
             {alpha.name}
-            {activity.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`)) && (
+            {activity.entryCriterions.alphas.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`)) && (
               <div>
                 <p>States of {alpha.name}</p>
                 <select
                   name={`entryCriterion-${alpha.id}`}
-                  value={activity.entryCriterions.find((entryCriterion) =>
+                  value={activity.entryCriterions.alphas.find((entryCriterion) =>
                     entryCriterion.startsWith(`${alpha.id}.`)
                   ).split(".")[1]}
                   onChange={(e) => handleEntryStateChange(e, alpha.id)}
@@ -72,16 +72,16 @@ const AlphaStateList = ({ activity, alphas }) => {
               type="checkbox"
               name="completionCriteria"
               value={alpha.id}
-              checked={activity.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`))}
+              checked={activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`))}
               onChange={(e) => handleCompletionAlphaChange(e, alpha.states[alpha.states.length-1].id)}
             />
             {alpha.name}
-            {activity.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`)) && (
+            {activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`)) && (
               <div>
                 <p>States of {alpha.name}</p>
                 <select
                   name={`completionCriterion-${alpha.id}`}
-                  value={activity.completionCriterions.find((completionCriterion) =>
+                  value={activity.completionCriterions.alphas.find((completionCriterion) =>
                     completionCriterion.startsWith(`${alpha.id}.`)
                   ).split(".")[1]}
                   onChange={(e) => handleCompletionStateChange(e, alpha.id)}

@@ -533,16 +533,16 @@ const MappingProvider = ({ children }) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
         if (task.id === taskId) {
-          let updatedCriterions;
+          let updatedAlphaCriterions;
 
-          if (task.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alphaId}.`))) {
-            updatedCriterions = task.entryCriterions.filter((entryCriterion) => !entryCriterion.startsWith(`${alphaId}.`));
+          if (task.entryCriterions.alphas.some((entryCriterion) => entryCriterion.startsWith(`${alphaId}.`))) {
+            updatedAlphaCriterions = task.entryCriterions.alphas.filter((entryCriterion) => !entryCriterion.startsWith(`${alphaId}.`));
           } else {
-            updatedCriterions = [...task.entryCriterions, `${alphaId}.${stateId}`];
+            updatedAlphaCriterions = [...task.entryCriterions.alphas, `${alphaId}.${stateId}`];
           }
 
-          console.log(updatedCriterions);
-          return { ...task, entryCriterions: updatedCriterions };
+          console.log("updatedAlphaCriterions", updatedAlphaCriterions);
+          return { ...task, entryCriterions: { ...task.entryCriterions, alphas: updatedAlphaCriterions } };
         }
         return task;
       })
@@ -553,18 +553,18 @@ const MappingProvider = ({ children }) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
         if (task.id === taskId) {
-          let updatedCriterions;
+          let updatedAlphaCriterions;
 
-          if (task.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alphaId}.`))) {
-            updatedCriterions = task.entryCriterions.map((entryCriterion) =>
+          if (task.entryCriterions.alphas.some((entryCriterion) => entryCriterion.startsWith(`${alphaId}.`))) {
+            updatedAlphaCriterions = task.entryCriterions.alphas.map((entryCriterion) =>
               entryCriterion.startsWith(`${alphaId}.`) ? `${alphaId}.${stateId}` : entryCriterion
             );
           } else {
-            updatedCriterions = [...task.entryCriterions, `${alphaId}.${stateId}`];
+            updatedAlphaCriterions = [...task.entryCriterions.alphas, `${alphaId}.${stateId}`];
           }
 
-          console.log(updatedCriterions);
-          return { ...task, entryCriterions: updatedCriterions };
+          console.log("updatedAlphaCriterions", updatedAlphaCriterions);
+          return { ...task, entryCriterions: {...task.entryCriterions, alphas: updatedAlphaCriterions} };
         }
         return task;
       })
@@ -575,16 +575,16 @@ const MappingProvider = ({ children }) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
         if (task.id === taskId) {
-          let updatedCriterions;
+          let updatedAlphaCriterions;
 
-          if (task.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alphaId}.`))) {
-            updatedCriterions = task.completionCriterions.filter((completionCriterion) => !completionCriterion.startsWith(`${alphaId}.`));
+          if (task.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alphaId}.`))) {
+            updatedAlphaCriterions = task.completionCriterions.alphas.filter((completionCriterion) => !completionCriterion.startsWith(`${alphaId}.`));
           } else {
-            updatedCriterions = [...task.completionCriterions, `${alphaId}.${stateId}`];
+            updatedAlphaCriterions = [...task.completionCriterions.alphas, `${alphaId}.${stateId}`];
           }
 
-          console.log(updatedCriterions);
-          return { ...task, completionCriterions: updatedCriterions };
+          console.log("updatedAlphaCriterions", updatedAlphaCriterions);
+          return { ...task, completionCriterions: {...task.completionCriterions, alphas: updatedAlphaCriterions} };
         }
         return task;
       })
@@ -595,18 +595,18 @@ const MappingProvider = ({ children }) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
         if (task.id === taskId) {
-          let updatedCriterions;
+          let updatedAlphaCriterions;
 
-          if (task.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alphaId}.`))) {
-            updatedCriterions = task.completionCriterions.map((completionCriterion) =>
+          if (task.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alphaId}.`))) {
+            updatedAlphaCriterions = task.completionCriterions.alphas.map((completionCriterion) =>
               completionCriterion.startsWith(`${alphaId}.`) ? `${alphaId}.${stateId}` : completionCriterion
             );
           } else {
-            updatedCriterions = [...task.completionCriterions, `${alphaId}.${stateId}`];
+            updatedAlphaCriterions = [...task.completionCriterions.alphas, `${alphaId}.${stateId}`];
           }
 
-          console.log(updatedCriterions);
-          return { ...task, completionCriterions: updatedCriterions };
+          console.log("updatedAlphaCriterions", updatedAlphaCriterions);
+          return { ...task, completionCriterions: {...task.completionCriterions, alphas: updatedAlphaCriterions} };
         }
         return task;
       })

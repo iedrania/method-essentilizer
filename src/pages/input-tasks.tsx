@@ -13,8 +13,14 @@ const InputTasks = () => {
       workProducts: [],
       areasOfConcern: [],
       activitySpaces: [],
-      entryCriterions: [],
-      completionCriterions: []
+      entryCriterions: {
+        alphas: [],
+        workProducts: []
+      },
+      completionCriterions: {
+        alphas: [],
+        workProducts: []
+      }
     });
   };
 
