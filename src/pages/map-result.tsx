@@ -86,8 +86,8 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
 
           <h4>Entry Criterions:</h4>
           <ul>
-            {activity.entryCriterions.alphas.map((criterion, index) => (
-              <li key={index}>
+            {activity.entryCriterions.alphas.map((criterion) => (
+              <li key={criterion}>
                 {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
                   subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
                   criterion}::
@@ -97,6 +97,14 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
                   ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
                   "State Not Found"}
                   {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
+              </li>            
+            ))}
+            {activity.entryCriterions.workProducts.map((criterion) => (
+              <li key={criterion}>
+                {tasks.find((task) => task.id.toString() === criterion.split("-")[0])?.
+                  workProducts.find((workProduct) => workProduct.id.toString() === criterion.split(".")[0].split("-")[2])?.
+                  name || criterion}::
+                {criterion.split(".")[1] || "Level Not Found"}
               </li>            
             ))}
           </ul>
@@ -114,6 +122,14 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
                   ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
                   "State Not Found"}
                   {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
+              </li>            
+            ))}
+            {activity.completionCriterions.workProducts.map((criterion) => (
+              <li key={criterion}>
+                {tasks.find((task) => task.id.toString() === criterion.split("-")[0])?.
+                  workProducts.find((workProduct) => workProduct.id.toString() === criterion.split(".")[0].split("-")[2])?.
+                  name || criterion}::
+                {criterion.split(".")[1] || "Level Not Found"}
               </li>            
             ))}
           </ul>

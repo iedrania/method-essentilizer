@@ -3,7 +3,10 @@ import React, { useContext } from 'react';
 import { GetStaticProps } from "next"
 import Link from 'next/link';
 import { MappingContext } from '../context/context';
-import AlphaStateList from '@/components/AlphaStateList';
+import EntryStateList from '@/components/criterions/EntryStateList';
+import CompletionStateList from '@/components/criterions/CompletionStateList';
+import EntryWorkProductList from '@/components/criterions/EntryWorkProductList';
+import CompletionWorkProductList from '@/components/criterions/CompletionWorkProductList';
 
 export const getStaticProps: GetStaticProps = async () => {
   const alphas = await prisma.alpha.findMany({
@@ -24,11 +27,17 @@ const MapTasks: React.FC = ({alphas}) => {
     <div>
       <h2>Choose Entry and Completion Criterions</h2>
 
-      <ul>
-        {tasks.map((activity) => (
-          <AlphaStateList key={activity.id} activity={activity} alphas={ alphas } />
-        ))}
-      </ul>
+      {tasks.map((activity) => (
+        <div key={activity.id}>
+          <h3>Criterions for {activity.name}</h3>
+
+          <EntryStateList activity={activity} alphas={ alphas } />
+          <EntryWorkProductList activity={activity} workProducts={activity.workProducts}/>
+
+          <CompletionStateList activity={activity} alphas={ alphas } />
+          <CompletionWorkProductList activity={activity} workProducts={activity.workProducts}/>
+        </div>
+      ))}
 
       <Link href="/input-patterns">
         <button>Next</button>

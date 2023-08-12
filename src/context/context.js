@@ -820,6 +820,60 @@ const MappingProvider = ({ children }) => {
     );
   };
 
+  const updateEntryLevel = (activityId, workProductId, levelName, isChecked) => {
+    setTasks((prevActivities) =>
+      prevActivities.map((activity) => {
+        if (activity.id === activityId) {
+          let updatedLevels;
+
+          if (isChecked) {
+            if (activity.entryCriterions.workProducts.some((entryCriterion) => entryCriterion.startsWith(`${activityId}-wp-${workProductId}.`))) {
+              updatedLevels = activity.entryCriterions.workProducts.map((entryCriterion) =>
+                entryCriterion.startsWith(`${activityId}-wp-${workProductId}.`) ? `${activityId}-wp-${workProductId}.${levelName}` : entryCriterion
+              );
+            } else {
+              updatedLevels = [...activity.entryCriterions.workProducts, `${activityId}-wp-${workProductId}.${levelName}`];
+            }
+          } else {
+            console.log("remove", workProductId, "from entryCriterions.workProducts")
+            updatedLevels = activity.entryCriterions.workProducts.filter((entryCriterion) => !entryCriterion.startsWith(`${activityId}-wp-${workProductId}.`));
+          }
+
+          console.log("updatedLevels", updatedLevels);
+          return { ...activity, entryCriterions: { ...activity.entryCriterions, workProducts: updatedLevels } };
+        }
+        return activity;
+      })
+    );
+  };
+
+  const updateCompletionLevel = (activityId, workProductId, levelName, isChecked) => {
+    setTasks((prevActivities) =>
+      prevActivities.map((activity) => {
+        if (activity.id === activityId) {
+          let updatedLevels;
+
+          if (isChecked) {
+            if (activity.completionCriterions.workProducts.some((completionCriterion) => completionCriterion.startsWith(`${activityId}-wp-${workProductId}.`))) {
+              updatedLevels = activity.completionCriterions.workProducts.map((completionCriterion) =>
+                completionCriterion.startsWith(`${activityId}-wp-${workProductId}.`) ? `${activityId}-wp-${workProductId}.${levelName}` : completionCriterion
+              );
+            } else {
+              updatedLevels = [...activity.completionCriterions.workProducts, `${activityId}-wp-${workProductId}.${levelName}`];
+            }
+          } else {
+            console.log("remove", workProductId, "from completionCriterions.workProducts")
+            updatedLevels = activity.completionCriterions.workProducts.filter((completionCriterion) => !completionCriterion.startsWith(`${activityId}-wp-${workProductId}.`));
+          }
+
+          console.log("updatedLevels", updatedLevels);
+          return { ...activity, completionCriterions: { ...activity.completionCriterions, workProducts: updatedLevels } };
+        }
+        return activity;
+      })
+    );
+  };
+
   const contextValue = {
     methodId,
     setMethodId,
@@ -884,7 +938,9 @@ const MappingProvider = ({ children }) => {
     updatePatternSubPatterns,
     addLevelOfDetailItem,
     changeLevelOfDetailItem,
-    deleteLevelOfDetailItem
+    deleteLevelOfDetailItem,
+    updateEntryLevel,
+    updateCompletionLevel,
   };
 
   return <MappingContext.Provider value={contextValue}>{children}</MappingContext.Provider>;
