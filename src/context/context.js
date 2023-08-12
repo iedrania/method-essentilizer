@@ -760,6 +760,66 @@ const MappingProvider = ({ children }) => {
     );
   };
 
+  const addLevelOfDetailItem = (taskId, workProductId) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id !== taskId) return task;
+
+        return {
+          ...task,
+          workProducts: task.workProducts.map((workProduct) => {
+            if (workProduct.id !== workProductId) return workProduct;
+
+            return {
+              ...workProduct,
+              levelOfDetails: [...workProduct.levelOfDetails, ''],
+            };
+          }),
+        };
+      })
+    );
+  };
+
+  const changeLevelOfDetailItem = (taskId, workProductId, index, newValue) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id !== taskId) return task;
+
+        return {
+          ...task,
+          workProducts: task.workProducts.map((workProduct) => {
+            if (workProduct.id !== workProductId) return workProduct;
+
+            return {
+              ...workProduct,
+              levelOfDetails: workProduct.levelOfDetails?.map((levelOfDetail, i) => (i === index ? newValue : levelOfDetail)),
+            };
+          }),
+        };
+      })
+    );
+  };
+
+  const deleteLevelOfDetailItem = (taskId, workProductId, index) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id !== taskId) return task;
+
+        return {
+          ...task,
+          workProducts: task.workProducts.map((workProduct) => {
+            if (workProduct.id !== workProductId) return workProduct;
+
+            return {
+              ...workProduct,
+              levelOfDetail: workProduct.levelOfDetail.filter((_, i) => i !== index),
+            };
+          }),
+        };
+      })
+    );
+  };
+
   const contextValue = {
     methodId,
     setMethodId,
@@ -822,6 +882,9 @@ const MappingProvider = ({ children }) => {
     updatePatternActivities,
     updatePatternCompetencies,
     updatePatternSubPatterns,
+    addLevelOfDetailItem,
+    changeLevelOfDetailItem,
+    deleteLevelOfDetailItem
   };
 
   return <MappingContext.Provider value={contextValue}>{children}</MappingContext.Provider>;

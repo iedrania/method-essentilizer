@@ -29,6 +29,7 @@ const Task = ({ task }) => {
       name: '',
       alphas: [],
       subAlphas: [],
+      levelOfDetails: []
     }]);
   };
 
