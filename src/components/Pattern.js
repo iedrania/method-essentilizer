@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { MappingContext } from '../context/context';
 
-const Pattern = ({ pattern, alphas, competencies }) => {
+const Pattern = ({ pattern, alphas, competencies, subAlphas }) => {
   const {
     changePatternName,
     changePatternDescription,
@@ -65,6 +65,12 @@ const Pattern = ({ pattern, alphas, competencies }) => {
           <label key={alpha.id}>
             <input type="checkbox" value={alpha.id} checked={pattern.alphas.includes(alpha.id.toString())} onChange={handleAlphaChange} />
             {alpha.name}
+          </label>
+        ))}
+        {subAlphas.map((subAlpha) => (
+          <label key={subAlpha.id}>
+            <input type="checkbox" value={subAlpha.id} checked={pattern.alphas.includes(subAlpha.id)} onChange={handleAlphaChange} />
+            {subAlpha.name}
           </label>
         ))}
       </div>

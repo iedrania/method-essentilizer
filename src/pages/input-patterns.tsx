@@ -15,7 +15,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const InputPatterns: React.FC = ({alphas, competencies}) => {
-  const { patterns, addPattern } = useContext(MappingContext);
+  const { patterns, addPattern, subAlphas } = useContext(MappingContext);
 
   const handleAddPattern = () => {
     addPattern({
@@ -35,7 +35,7 @@ const InputPatterns: React.FC = ({alphas, competencies}) => {
 
       <ul>
         {patterns.map((pattern) => (
-          <Pattern key={pattern.id} pattern={pattern} alphas={alphas} competencies={competencies} />
+          <Pattern key={pattern.id} pattern={pattern} alphas={alphas} competencies={competencies} subAlphas={subAlphas} />
         ))}
       </ul>
 

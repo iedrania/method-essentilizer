@@ -136,7 +136,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
         </div>
       ))}
 
-      <h3>Patterns (Roles):</h3>
+      <h3>Role Patterns:</h3>
       {roles.map((role) => (
         <div key={role.id}>
           <p>{role.name}</p>
@@ -144,6 +144,50 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
           <ul>
             {role.competencies.map((competency) => (
               <li key={competency.id}>{competencies.find(compObj => compObj.id.toString() === competency)?.name || competency}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      <h3>Other Patterns:</h3>
+      {patterns.map((pattern) => (
+        <div key={pattern.id}>
+          <h4>{pattern.name}</h4>
+          <p>{pattern.description}</p>
+          <h5>Alphas:</h5>
+          <ul>
+            {pattern.alphas.map((alpha) => (
+              <li key={alpha}>
+                {
+                  alphas.find((alphaObj) => alphaObj.id.toString() === alpha)?.name ||
+                  subAlphas.find((alphaObj) => alphaObj.id === alpha)?.name ||
+                  alpha
+                }
+              </li>
+            ))}
+          </ul>
+          <h5>Activities:</h5>
+          <ul>
+            {pattern.activities.map((activity) => (
+              <li key={activity}>
+                {tasks.find(activityObj => activityObj.id.toString() === activity)?.name || activity}
+              </li>
+            ))}
+          </ul>
+          <h5>Competencies:</h5>
+          <ul>
+            {pattern.competencies.map((competency) => (
+              <li key={competency}>
+                {competencies.find(compObj => compObj.id.toString() === competency)?.name || competency}
+              </li>
+            ))}
+          </ul>
+          <h5>Sub-Patterns:</h5>
+          <ul>
+            {pattern.subPatterns.map((subPattern) => (
+              <li key={subPattern}>
+                {patterns.find(pattern => pattern.id.toString() === subPattern)?.name || subPattern}
+              </li>
             ))}
           </ul>
         </div>
