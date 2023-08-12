@@ -16,9 +16,9 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
         const activity = {
           nameId: methodId + "-task-" + task.id,
           name: task.name,
-          description: "No description", // TODO P1 add field task.description,
-          completionCriterions: task.completionCriterions, // TODO P0 separate alphas
-          entryCriterions: task.entryCriterions,// TODO P0 separate alphas
+          description: task.description || "No description",
+          completionCriterions: task.completionCriterions,
+          entryCriterions: task.entryCriterions,
           competencies: getCompetenciesForRolesWithTaskId(roles, task.id)
         };
 
@@ -66,7 +66,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
           const wp = {
             nameId: methodId + "-task-" + task.id + "-wp-" + workProduct.id,
             name: workProduct.name,
-            description: workProduct.description || "No description", // TODO P1 add field
+            description: workProduct.description || "No description",
             levelOfDetails: [], // TODO P1 add field levelOfDetails array of string
           };
 
@@ -179,7 +179,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
     const rolePattern = {
       nameId: `role-${role.id}`,
       name: role.name,
-      description: role.description || "No description", // TODO P1 add field
+      description: role.description || "No description",
       activities: [],
       alphas: [],
       competencies: role.competencies || [],

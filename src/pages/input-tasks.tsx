@@ -10,6 +10,7 @@ const InputTasks = () => {
     addTask({
       id: tasks.length + 1,
       name: '',
+      description: '',
       workProducts: [],
       areasOfConcern: [],
       activitySpaces: [],

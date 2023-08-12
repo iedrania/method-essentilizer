@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { MappingContext } from '../context/context';
 import WorkProduct from '@/components/WorkProduct';
 
 const Task = ({ task }) => {
-  const { changeTaskName, deleteTask, addWorkProductToTask } = useContext(MappingContext);
+  const { changeTaskName, changeTaskDescription, deleteTask, addWorkProductToTask } = useContext(MappingContext);
+
+  const [showDescription, setShowDescription] = useState(false);
 
   const handleDelete = () => {
     deleteTask(task.id);
@@ -11,6 +13,14 @@ const Task = ({ task }) => {
 
   const setTaskName = (newName) => {
     changeTaskName(task.id, newName);
+  };
+
+  const setTaskDescription = (newDescription) => {
+    changeTaskDescription(task.id, newDescription);
+  };
+
+  const toggleDescriptionVisibility = () => {
+    setShowDescription((prev) => !prev);
   };
 
   const handleAddWorkProduct = () => {
@@ -24,7 +34,19 @@ const Task = ({ task }) => {
 
   return (
     <div>
-      <input type="text" value={task.name} onChange={(e) => setTaskName(e.target.value)} />
+      <label htmlFor="title">Name:</label>
+      <input type="text" id="title" value={task.name} onChange={(e) => setTaskName(e.target.value)} />
+
+      {showDescription && (
+        <div>
+          <label htmlFor="description">Description:</label>
+          <input type="text" id="description" value={task.description} onChange={(e) => setTaskDescription(e.target.value)} />
+        </div>
+      )}
+
+      <button onClick={toggleDescriptionVisibility}>
+        {showDescription ? 'Hide Description' : 'Show Description'}
+      </button>
 
       <h4>Does this task results in any Work Product?</h4>
       {task.workProducts.map((workProduct) => (

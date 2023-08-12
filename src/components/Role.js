@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { MappingContext } from '../context/context';
 
 const Role = ({ role }) => {
-  const { changeRoleName, tasks, deleteRole, updatePerformedTasks, updateAssignedWorkProducts } = useContext(MappingContext);
+  const { changeRoleName, changeRoleDescription, tasks, deleteRole, updatePerformedTasks, updateAssignedWorkProducts } = useContext(MappingContext);
+
+  const [showDescription, setShowDescription] = useState(false);
 
   const handleDelete = () => {
     deleteRole(role.id);
@@ -10,6 +12,14 @@ const Role = ({ role }) => {
 
   const setRoleName = (newName) => {
     changeRoleName(role.id, newName);
+  };
+
+  const setRoleDescription = (newDescription) => {
+    changeRoleDescription(role.id, newDescription);
+  };
+
+  const toggleDescriptionVisibility = () => {
+    setShowDescription((prev) => !prev);
   };
 
   const handleTaskChange = (event) => {
@@ -48,7 +58,19 @@ const Role = ({ role }) => {
 
   return (
     <div>
-      <input type="text" value={role.name} onChange={(e) => setRoleName(e.target.value)} />
+      <label htmlFor="title">Name:</label>
+      <input type="text" id="title" value={role.name} onChange={(e) => setRoleName(e.target.value)} />
+
+      {showDescription && (
+        <div>
+          <label htmlFor="description">Description:</label>
+          <input type="text" id="description" value={role.description} onChange={(e) => setRoleDescription(e.target.value)} />
+        </div>
+      )}
+
+      <button onClick={toggleDescriptionVisibility}>
+        {showDescription ? 'Hide Description' : 'Show Description'}
+      </button>
 
       <h4>Does this role perform any task?</h4>
       {renderTasks()}

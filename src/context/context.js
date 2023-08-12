@@ -24,6 +24,14 @@ const MappingProvider = ({ children }) => {
     );
   };
 
+  const changeTaskDescription = (taskId, newTaskDescription) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, description: newTaskDescription } : task
+      )
+    );
+  };
+
   const deleteTask = (taskId) => {
     setTasks((prevTasks) =>
       prevTasks
@@ -52,6 +60,23 @@ const MappingProvider = ({ children }) => {
           const updatedWorkProducts = task.workProducts.map((workProduct) => {
             if (workProduct.id === workProductId) {
               return { ...workProduct, name: newWorkProductName };
+            }
+            return workProduct;
+          });
+          return { ...task, workProducts: updatedWorkProducts };
+        }
+        return task;
+      })
+    );
+  };
+
+  const changeWorkProductDescription = (taskId, workProductId, newWorkProductDescription) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === taskId) {
+          const updatedWorkProducts = task.workProducts.map((workProduct) => {
+            if (workProduct.id === workProductId) {
+              return { ...workProduct, description: newWorkProductDescription };
             }
             return workProduct;
           });
@@ -96,6 +121,14 @@ const MappingProvider = ({ children }) => {
     setRoles((prevRoles) =>
       prevRoles.map((role) =>
         role.id === roleId ? { ...role, name: newRoleName } : role
+      )
+    );
+  };
+
+  const changeRoleDescription = (roleId, newRoleDescription) => {
+    setRoles((prevRoles) =>
+      prevRoles.map((role) =>
+        role.id === roleId ? { ...role, description: newRoleDescription } : role
       )
     );
   };
@@ -760,12 +793,15 @@ const MappingProvider = ({ children }) => {
     setRoles,
     addTask,
     changeTaskName,
+    changeTaskDescription,
     deleteTask,
     changeWorkProductName,
+    changeWorkProductDescription,
     deleteWorkProduct,
     addRole,
     deleteRole,
     changeRoleName,
+    changeRoleDescription,
     updatePerformedTasks,
     updateAssignedWorkProducts,
     addWorkProductToTask,
