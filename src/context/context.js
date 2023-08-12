@@ -252,6 +252,33 @@ const MappingProvider = ({ children }) => {
     );
   };
 
+  const updateCompetencyLevel = (roleId, competencyId, levelName, isChecked) => {
+    setRoles((prevRoles) =>
+      prevRoles.map((role) => {
+        if (role.id === roleId) {
+          let updatedLevels;
+
+          if (isChecked) {
+            if (role.competencyLevels.some((competencyLevel) => competencyLevel.startsWith(`${competencyId}.`))) {
+              updatedLevels = role.competencyLevels.map((competencyLevel) =>
+                competencyLevel.startsWith(`${competencyId}.`) ? `${competencyId}.${levelName}` : competencyLevel
+              );
+            } else {
+              updatedLevels = [...role.competencyLevels, `${competencyId}.${levelName}`];
+            }
+          } else {
+            console.log("remove", competencyId, "from competencyLevels")
+            updatedLevels = role.competencyLevels.filter((competencyLevel) => !competencyLevel.startsWith(`${competencyId}.`));
+          }
+
+          console.log("updatedLevels", updatedLevels);
+          return { ...role, competencyLevels: updatedLevels };
+        }
+        return role;
+      })
+    );
+  };
+
   const updateAreas = (elementId, areaId, isChecked, elementType) => {
     if (elementType === 1) { // activity
       setTasks((prevActivities) =>
@@ -747,6 +774,7 @@ const MappingProvider = ({ children }) => {
     updateAlphas,
     updateSubAlphas,
     updateCompetencies,
+    updateCompetencyLevel,
     fillRoleAreasFromRelated,
     patterns,
     setPatterns,

@@ -14,7 +14,8 @@ const InputRoles = () => {
       performedTasks: [],
       assignedWorkProducts: [],
       areasOfConcern: [],
-      competencies: []
+      competencies: [],
+      competencyLevels: []
     });
   };
 

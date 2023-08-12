@@ -5,7 +5,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
 
     console.log(`roles for for task ${taskId}`, rolesWithTaskId)
     const competencies = rolesWithTaskId
-      .flatMap((role) => role.competencies); // TODO P0 competency level
+      .flatMap((role) => role.competencyLevels);
 
     return competencies;
   }
@@ -77,7 +77,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
               description: essAlphas.find((alpha) => alpha.id == alphaId)?.description || "No description", // TODO P1 add in db
               workProducts: [wp],
               states: restructureStates(essAlphas.find((alpha) => alpha.id == alphaId)?.states || []),
-              subalphaIds: getSubAlphaIdsByAlphaId(alphaId), // TODO P0 merge alphas with subalphas
+              subalphaIds: getSubAlphaIdsByAlphaId(alphaId),
             };
           } else {
             result[alphaId].workProducts.push(wp);
@@ -129,7 +129,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
       description: subAlpha.description,
       workProducts: findWorkProductsById(tasks, subAlpha.workProducts),
       states: restructureStates(subAlpha.states),
-      subalphaIds: [], // TODO P0 add subalphas to subalphas dropdown
+      subalphaIds: [], // TODO P1 add subalphas to subalphas dropdown
     }));
   }
 
@@ -195,7 +195,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
       name: pattern.name,
       description: pattern.description,
       activities: pattern.activities,
-      alphas: pattern.alphas,
+      alphas: pattern.alphas, // TODO P1 accept subalphas as alphas
       competencies: pattern.competencies,
       subpatternIds: pattern.subPatterns,
     }));

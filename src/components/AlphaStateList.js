@@ -41,7 +41,13 @@ const AlphaStateList = ({ activity, alphas }) => {
             {activity.entryCriterions.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`)) && (
               <div>
                 <p>States of {alpha.name}</p>
-                <select name={`entryCriterion-${alpha.id}`} onChange={(e) => handleEntryStateChange(e, alpha.id)}>
+                <select
+                  name={`entryCriterion-${alpha.id}`}
+                  value={activity.entryCriterions.find((entryCriterion) =>
+                    entryCriterion.startsWith(`${alpha.id}.`)
+                  ).split(".")[1]}
+                  onChange={(e) => handleEntryStateChange(e, alpha.id)}
+                >
                   {alpha.states.map((state) => (
                     <option key={state.id} value={state.id}>
                       {state.name}
@@ -73,7 +79,13 @@ const AlphaStateList = ({ activity, alphas }) => {
             {activity.completionCriterions.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`)) && (
               <div>
                 <p>States of {alpha.name}</p>
-                <select name={`completionCriterion-${alpha.id}`} onChange={(e) => handleCompletionStateChange(e, alpha.id)}>
+                <select
+                  name={`completionCriterion-${alpha.id}`}
+                  value={activity.completionCriterions.find((completionCriterion) =>
+                    completionCriterion.startsWith(`${alpha.id}.`)
+                  ).split(".")[1]}
+                  onChange={(e) => handleCompletionStateChange(e, alpha.id)}
+                  >
                   {alpha.states.map((state) => (
                     <option key={state.id} value={state.id}>
                       {state.name}
