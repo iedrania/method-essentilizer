@@ -27,7 +27,7 @@ const InputSubAlphas = ({alphas}) => {
       description: '',
       workProducts: [],
       states: [],
-      alpha: null,
+      alpha: "1",
     });
   };
 
