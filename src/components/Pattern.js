@@ -69,7 +69,7 @@ const Pattern = ({ pattern, alphas, competencies, subAlphas }) => {
         ))}
         {subAlphas.map((subAlpha) => (
           <label key={subAlpha.id}>
-            <input type="checkbox" value={subAlpha.id} checked={pattern.alphas.includes(subAlpha.id)} onChange={handleAlphaChange} />
+            <input type="checkbox" value={subAlpha.id} checked={pattern.alphas.includes(subAlpha.id.toString())} onChange={handleAlphaChange} />
             {subAlpha.name}
           </label>
         ))}

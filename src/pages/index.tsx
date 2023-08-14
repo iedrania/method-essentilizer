@@ -46,7 +46,7 @@ export const getStaticProps: GetStaticProps = async () => {
           }
         },
       },
-      patterns: {
+      roles: {
         include: {
           areasOfConcern: {
             select: {
@@ -69,9 +69,6 @@ export const getStaticProps: GetStaticProps = async () => {
               activityNameId: true,
             }
           },
-        },
-        where: {
-          role: true,
         },
       }
     },

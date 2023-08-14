@@ -17,7 +17,7 @@ const EntryStateList = ({ activity, alphas }) => {
   const renderEntryCriterions = () => {
     return (
       <div>
-        {alphas.concat(subAlphas).map((alpha) => (
+        {alphas.concat(subAlphas).filter((alpha) => alpha.states.length).map((alpha) => (
           <label key={alpha.id}>
             <input
               type="checkbox"

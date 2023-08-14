@@ -422,11 +422,11 @@ const MappingProvider = ({ children }) => {
     );
   };
 
-  const updateAlphaOfSubAlpha = (subAlphaId, selectedAlphaId, newStates) => {
+  const updateAlphaOfSubAlpha = (subAlphaId, selectedAlphaId, newStates, areaOfConcernId) => {
     setSubAlphas((prevSubAlphas) =>
       prevSubAlphas.map((subAlpha) => {
         if (subAlpha.id === subAlphaId) {
-          return { ...subAlpha, alpha: selectedAlphaId, states: newStates };
+          return { ...subAlpha, alpha: selectedAlphaId, states: newStates, areaOfConcernId: areaOfConcernId };
         }
 
         return subAlpha;
@@ -438,6 +438,7 @@ const MappingProvider = ({ children }) => {
     setSubAlphas((prevSubAlphas) =>
       prevSubAlphas.map((subAlpha) => {
         if (subAlpha.id !== subAlphaId) return subAlpha;
+        console.log("old and new states", subAlpha.states, newStateData)
 
         return {
           ...subAlpha,
@@ -536,7 +537,11 @@ const MappingProvider = ({ children }) => {
 
         return {
           ...subAlpha,
-          states: subAlpha.states.filter((state) => state.id !== stateId),
+          states: subAlpha.states
+            .filter((state) => state.id !== stateId)
+            .map((state) => {
+              return state.id > stateId ? { ...state, id: state.id - 1 } : state;
+            }),
         };
       })
     );

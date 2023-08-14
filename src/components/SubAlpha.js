@@ -3,7 +3,7 @@ import { MappingContext } from '../context/context';
 import StateItem from '@/components/StateItem';
 
 const SubAlpha = ({ subAlpha, alphas }) => {
-  const { changeSubAlphaName, changeSubAlphaDescription, deleteSubAlpha, updateAlphaOfSubAlpha, addState } = useContext(MappingContext);
+  const { subAlphas, changeSubAlphaName, changeSubAlphaDescription, deleteSubAlpha, updateAlphaOfSubAlpha, addState } = useContext(MappingContext);
 
   const [showStates, setShowStates] = useState(false);
 
@@ -21,7 +21,14 @@ const SubAlpha = ({ subAlpha, alphas }) => {
 
   const handleAlphaChange = (event) => {
     const alphaId = event.target.value;
-    updateAlphaOfSubAlpha(subAlpha.id, alphaId, alphas.find((alpha) => alpha.id == alphaId)?.states || []);
+    const selectedAlpha = alphas.concat(subAlphas).find((alpha) => alpha.id == alphaId);
+    const updatedStates = selectedAlpha?.states.map((state, index) => ({
+      ...state,
+      id: index + 1,
+    })) || [];
+
+    updateAlphaOfSubAlpha(subAlpha.id, alphaId, updatedStates, selectedAlpha.areaOfConcernId);
+    console.log(updatedStates)
   };
 
   const handleAddState = () => {
@@ -50,11 +57,16 @@ const SubAlpha = ({ subAlpha, alphas }) => {
         <option value="default" disabled hidden>
           Choose an Alpha
         </option>
-        {alphas.map((alpha) => (
-          <option key={alpha.id} value={alpha.id}>
-            {alpha.name}
-          </option>
-        ))}
+        {alphas.concat(subAlphas).map((alpha) => {
+          if (alpha.id !== subAlpha.id) {
+            return (
+              <option key={alpha.id} value={alpha.id}>
+                {alpha.name}
+              </option>
+            );
+          }
+          return null;
+        })}
       </select>
 
       <button onClick={toggleStatesVisibility}>

@@ -26,7 +26,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
     e.preventDefault();
     // TODO P2 validate methodId
     try {
-      const body = { methodId, name, creator, description, tasks, roles, subAlphas };
+      const body = { methodId, name, creator, description, tasks, roles, subAlphas, patterns };
       await fetch('/api/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,7 +77,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
                     <li key={index}>{alphas.find(alphaObj => alphaObj.id.toString() === alpha)?.name || alpha}</li>
                   ))}
                   {workProduct.subAlphas.map((alpha, index) => (
-                    <li key={index}>{subAlphas.find(subAlpha => subAlpha.id === alpha)?.name || alpha}</li>
+                    <li key={index}>{subAlphas.find(subAlpha => subAlpha.id.toString() === alpha)?.name || alpha}</li>
                   ))}
                 </ul>
               </div>
@@ -160,7 +160,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
               <li key={alpha}>
                 {
                   alphas.find((alphaObj) => alphaObj.id.toString() === alpha)?.name ||
-                  subAlphas.find((alphaObj) => alphaObj.id === alpha)?.name ||
+                  subAlphas.find((alphaObj) => alphaObj.id.toString() === alpha)?.name ||
                   alpha
                 }
               </li>
@@ -198,7 +198,11 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
         <div key={subAlpha.id}>
           <h4>{subAlpha.name}</h4>
           <p>{subAlpha.description}</p>
-          <p>Alpha: {alphas.find(alpha => alpha.id.toString() === subAlpha.alpha)?.name || subAlpha.alpha}</p>
+          <p>Alpha: {
+            alphas.find(alpha => alpha.id.toString() === subAlpha.alpha)?.name ||
+            subAlphas.find(alpha => alpha.id.toString() === subAlpha.alpha)?.name ||
+            subAlpha.alpha
+          }</p>
 
           <h5>Work Products:</h5>
           <ul>

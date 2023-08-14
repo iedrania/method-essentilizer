@@ -18,7 +18,7 @@ const EntryWorkProductList = ({ activity, workProducts }) => {
   const renderEntryCriterions = () => {
     return (
       <div>
-        {workProducts.map((workProduct) => (
+        {workProducts.filter((workProduct) => workProduct.levelOfDetails.length).map((workProduct) => (
           <label key={workProduct.id}>
             <input
               type="checkbox"

@@ -17,7 +17,7 @@ const CompletionStateList = ({ activity, alphas }) => {
   const renderCompletionCriterions = () => {
     return (
       <div>
-        {alphas.concat(subAlphas).map((alpha) => (
+        {alphas.concat(subAlphas).filter((alpha) => alpha.states.length).map((alpha) => (
           <label key={alpha.id}>
             <input
               type="checkbox"

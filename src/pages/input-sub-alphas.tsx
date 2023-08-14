@@ -18,16 +18,22 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const InputSubAlphas = ({alphas}) => {
-  const { methodId, subAlphas, addSubAlpha } = useContext(MappingContext);
+  const { subAlphas, addSubAlpha } = useContext(MappingContext);
 
   const handleAddSubAlpha = () => {
+    const updatedStates = alphas[0].states.map((state, index) => ({
+      ...state,
+      id: index + 1,
+    })) || [];
+
     addSubAlpha({
-      id: `${methodId}-sub-${subAlphas.length + 1}`,
+      id: subAlphas.length + 1,
       name: '',
       description: '',
       workProducts: [],
-      states: [],
-      alpha: "1",
+      states: updatedStates,
+      alpha: alphas[0].nameId,
+      areaOfConcernId: alphas[0].areaOfConcernId,
     });
   };
 

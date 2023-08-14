@@ -18,7 +18,7 @@ const CompletionWorkProductList = ({ activity, workProducts }) => {
   const renderCompletionCriterions = () => {
     return (
       <div>
-        {workProducts.map((workProduct) => (
+        {workProducts.filter((workProduct) => workProduct.levelOfDetails.length).map((workProduct) => (
           <label key={workProduct.id}>
             <input
               type="checkbox"

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { MappingContext } from '../context/context';
 
-const AlphaList = ({ workProduct, alphas, activityId }) => {
-  const { subAlphas, updateAlphas, updateSubAlphas } = useContext(MappingContext);
+const AlphaList = ({ workProduct, alphas, activityId, subAlphas }) => {
+  const { updateAlphas, updateSubAlphas } = useContext(MappingContext);
 
   const handleAlphaChange = (event) => {
     const alphaId = event.target.value;

@@ -13,53 +13,55 @@ datasource db {
 // Essence
 
 model AreaOfConcern {
-  id             Int             @id
+  id             String          @id
   name           String
   activitySpaces ActivitySpace[]
   alphas         Alpha[]
   competencies   Competency[]
   activities     Activity[]
   workProducts   WorkProduct[]
-  roles          Pattern[]
+  roles          Role[]
 }
 
 model ActivitySpace {
-  id              Int           @id
+  id              String        @id
   name            String
   description     String
-  areaOfConcernId Int
+  areaOfConcernId String
   areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
   activities      Activity[]
 }
 
 model Alpha {
-  id              Int           @id
+  id              String        @id
   name            String
   description     String
   states          State[]
   subAlphaIds     String[]
-  areaOfConcernId Int
-  areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
   workProducts    WorkProduct[]
+  patterns        Pattern[]
+  areaOfConcernId String
+  areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
 }
 
 model State {
-  id          Int      @id
+  id          String   @id
   name        String
   description String
   checklist   String[]
-  alphaId     Int
+  alphaId     String
   alpha       Alpha    @relation(fields: [alphaId], references: [id])
 }
 
 model Competency {
-  id              Int           @id
+  id              String        @id
   name            String
   description     String
   levels          Json[]
-  areaOfConcernId Int
+  areaOfConcernId String
   areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
-  roles           Pattern[]
+  roles           Role[]
+  patterns        Pattern[]
 }
 
 // Essence Extention
@@ -72,7 +74,7 @@ model SubAlpha {
   // subAlphaIds  String[]
   methodId     Int
   method       Method          @relation(fields: [methodId], references: [id])
-  // areaOfConcernId Int
+  // areaOfConcernId String
   // areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
   workProducts WorkProduct[]
 }
@@ -94,6 +96,7 @@ model Method {
   creator     String
   description String
   activities  Activity[]
+  roles       Role[]
   patterns    Pattern[]
   subAlphas   SubAlpha[]
 }
@@ -110,6 +113,7 @@ model Activity {
   method               Method          @relation(fields: [methodId], references: [id])
   performerRoles       Pattern[]
   workProducts         WorkProduct[]
+  roles                Role[]
 }
 
 model WorkProduct {
@@ -123,20 +127,31 @@ model WorkProduct {
   assigneeRoles  Pattern[]
   activityNameId String
   activity       Activity        @relation(fields: [activityNameId], references: [nameId])
+  roles          Role[]
 }
 
-model Pattern {
+model Role {
   nameId               String          @id
   name                 String
   description          String
   competencies         Competency[]
-  role                 Boolean
   areasOfConcern       AreaOfConcern[]
-  methodId             Int
-  method               Method          @relation(fields: [methodId], references: [id])
   performedTasks       Activity[]
   assignedWorkProducts WorkProduct[]
-  // subpatternIds        String[]
-  // alphas               String[]
-  // activities           String[]
+  methodId             Int
+  method               Method          @relation(fields: [methodId], references: [id])
+}
+
+model Pattern {
+  nameId            String       @id
+  name              String
+  description       String
+  competencies      Competency[]
+  subPatternIds     String[]
+  alphas            Alpha[]
+  activities        Activity[]
+  methodId          Int
+  method            Method       @relation(fields: [methodId], references: [id])
+  workProduct       WorkProduct? @relation(fields: [workProductNameId], references: [nameId])
+  workProductNameId String?
 }

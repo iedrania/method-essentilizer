@@ -2,30 +2,30 @@ import prisma from '../../../lib/prisma';
 
 export default async function handle(req, res) {
   const areasOfConcern = [
-    { id: 1, name: 'Customer' },
-    { id: 2, name: 'Solution' },
-    { id: 3, name: 'Work' },
+    { id: 1, nameId: 'customer', name: 'Customer' },
+    { id: 2, nameId: 'solution', name: 'Solution' },
+    { id: 3, nameId: 'work', name: 'Work' },
   ];
   
   const activitySpaces = [
     [
-      { id: 1, name: 'Explore Possibilities', description: '', entryCriteria: [], completionCriteria: ['Stakeholders::Recognized, Opportunity::Value Established'] },
-      { id: 2, name: 'Understand Stakeholder Needs', description: '', entryCriteria: ['Stakeholders::Recognized, Opportunity::Value Established'], completionCriteria: ['Stakeholders::In Agreement, Opportunity::Viable'] },
-      { id: 3, name: 'Ensure Stakeholder Satisfaction', description: '', entryCriteria: ['Stakeholders::In Agreement, Opportunity::Value Established'], completionCriteria: ['Stakeholders::Satisfied for Deployment, Opportunity::Addressed'] },
-      { id: 4, name: 'Use the System', description: '', entryCriteria: ['Stakeholders::Satisfied for Deployment, Opportunity::Addressed'], completionCriteria: ['Stakeholders::Satisfied in Use, Opportunity::Benefit Accrued'] },
+      { id: 1, nameId: 'explore', name: 'Explore Possibilities', description: '', entryCriteria: [], completionCriteria: ['Stakeholders::Recognized, Opportunity::Value Established'] },
+      { id: 2, nameId: 'needs', name: 'Understand Stakeholder Needs', description: '', entryCriteria: ['Stakeholders::Recognized, Opportunity::Value Established'], completionCriteria: ['Stakeholders::In Agreement, Opportunity::Viable'] },
+      { id: 3, nameId: 'ensure', name: 'Ensure Stakeholder Satisfaction', description: '', entryCriteria: ['Stakeholders::In Agreement, Opportunity::Value Established'], completionCriteria: ['Stakeholders::Satisfied for Deployment, Opportunity::Addressed'] },
+      { id: 4, nameId: 'use', name: 'Use the System', description: '', entryCriteria: ['Stakeholders::Satisfied for Deployment, Opportunity::Addressed'], completionCriteria: ['Stakeholders::Satisfied in Use, Opportunity::Benefit Accrued'] },
     ], [
-      { id: 5, name: 'Understand the Requirements', description: '', entryCriteria: [], completionCriteria: ['Requirements::Coherent'] },
-      { id: 6, name: 'Shape the System', description: '', entryCriteria: ['Requirements::Coherent'], completionCriteria: ['Requirements::Acceptable, Software System::Architecture Selected'] },
-      { id: 7, name: 'Implement the System', description: '', entryCriteria: ['Software System::Architecture Selected'], completionCriteria: ['Software System::Ready'] },
-      { id: 8, name: 'Test the System', description: '', entryCriteria: ['Requirements::Acceptable, Software System::Architecture Selected'], completionCriteria: ['Requirements::Fulfilled, Software System::Ready'] },
-      { id: 9, name: 'Deploy the System', description: '', entryCriteria: [' Software System::Ready'], completionCriteria: ['Software System::Operational'] },
-      { id: 10, name: 'Operate the System', description: '', entryCriteria: ['Software System::Ready'], completionCriteria: ['Software System::Retired'] },
+      { id: 5, nameId: 'requirements', name: 'Understand the Requirements', description: '', entryCriteria: [], completionCriteria: ['Requirements::Coherent'] },
+      { id: 6, nameId: 'shape', name: 'Shape the System', description: '', entryCriteria: ['Requirements::Coherent'], completionCriteria: ['Requirements::Acceptable, Software System::Architecture Selected'] },
+      { id: 7, nameId: 'implement', name: 'Implement the System', description: '', entryCriteria: ['Software System::Architecture Selected'], completionCriteria: ['Software System::Ready'] },
+      { id: 8, nameId: 'test', name: 'Test the System', description: '', entryCriteria: ['Requirements::Acceptable, Software System::Architecture Selected'], completionCriteria: ['Requirements::Fulfilled, Software System::Ready'] },
+      { id: 9, nameId: 'deploy', name: 'Deploy the System', description: '', entryCriteria: [' Software System::Ready'], completionCriteria: ['Software System::Operational'] },
+      { id: 10, nameId: 'operate', name: 'Operate the System', description: '', entryCriteria: ['Software System::Ready'], completionCriteria: ['Software System::Retired'] },
     ], [
-      { id: 11, name: 'Prepare to do the Work', description: '', entryCriteria: [], completionCriteria: ['Team::Seeded, Way of Working::Foundation Established, Work::Prepared'] },
-      { id: 12, name: 'Coordinate Activity', description: '', entryCriteria: ['Team::Seeded, Work::Prepared'], completionCriteria: ['Team::Formed, Work::Under Control'] },
-      { id: 13, name: 'Support the Team', description: '', entryCriteria: ['Team::Formed, Way of Working::Foundation Established'], completionCriteria: ['Team::Collaborating, Way of Working::In Place'] },
-      { id: 14, name: 'Track Progress', description: '', entryCriteria: ['Team::Collaborating, Way of Working::In Place, Work::Started'], completionCriteria: ['Team::Performing, Way of Working::Working Well, Work::Concluded'] },
-      { id: 15, name: 'Stop the Work', description: '', entryCriteria: ['Team::Performing, Way of Working::Working Well, Work::Concluded'], completionCriteria: ['Team::Adjourned, Way of Working::Retired, Work::Closed'] },
+      { id: 11, nameId: 'prepare', name: 'Prepare to do the Work', description: '', entryCriteria: [], completionCriteria: ['Team::Seeded, Way of Working::Foundation Established, Work::Prepared'] },
+      { id: 12, nameId: 'coordinate', name: 'Coordinate Activity', description: '', entryCriteria: ['Team::Seeded, Work::Prepared'], completionCriteria: ['Team::Formed, Work::Under Control'] },
+      { id: 13, nameId: 'support', name: 'Support the Team', description: '', entryCriteria: ['Team::Formed, Way of Working::Foundation Established'], completionCriteria: ['Team::Collaborating, Way of Working::In Place'] },
+      { id: 14, nameId: 'track', name: 'Track Progress', description: '', entryCriteria: ['Team::Collaborating, Way of Working::In Place, Work::Started'], completionCriteria: ['Team::Performing, Way of Working::Working Well, Work::Concluded'] },
+      { id: 15, nameId: 'stop', name: 'Stop the Work', description: '', entryCriteria: ['Team::Performing, Way of Working::Working Well, Work::Concluded'], completionCriteria: ['Team::Adjourned, Way of Working::Retired, Work::Closed'] },
     ],
   ];
 
@@ -403,7 +403,7 @@ export default async function handle(req, res) {
     {
       id: 1,
       name: "Seeded",
-      description: "The team’s mission is clear and the know-how needed to grow the team is in place.",
+      description: "The team's mission is clear and the know-how needed to grow the team is in place.",
       checklist: teamChecklist.Seeded,
     },
     {
@@ -435,7 +435,7 @@ export default async function handle(req, res) {
   const workChecklist = {
     "Initiated": [
       "The result required of the work being initiated is clear.",
-      "Any constraints on the work’s performance are clearly identified.",
+      "Any constraints on the work's performance are clearly identified.",
       "The stakeholders that will fund the work are known.",
       "The initiator of the work is clearly identified.",
       "The stakeholders that will accept the results are known.",
@@ -466,7 +466,7 @@ export default async function handle(req, res) {
       "Tasks are being completed.",
       "Unplanned work is under control.",
       "Risks are under control as the impact if they occur and the likelihood of them occurring have been reduced to acceptable levels.",
-      "Estimates are revised to reflect the team’s performance.",
+      "Estimates are revised to reflect the team's performance.",
       "Measures are available to show progress and velocity.",
       "Re-work is under control.",
       "Tasks are consistently completed on time and within their estimates.",
@@ -545,9 +545,9 @@ export default async function handle(req, res) {
     "In Use": [
       "The practices and tools are being used to do real work.",
       "The use of the practices and tools selected is regularly inspected.",
-      "The practices and tools are being adapted to the team’s context.",
+      "The practices and tools are being adapted to the team's context.",
       "The use of the practices and tools is supported by the team.",
-      "Procedures are in place to handle feedback on the team’s way of working.",
+      "Procedures are in place to handle feedback on the team's way of working.",
       "The practices and tools support team communication and collaboration.",
     ],
     "In Place": [
@@ -605,15 +605,15 @@ export default async function handle(req, res) {
   
   const alphas = [
     [
-      { id: 1, name: 'Stakeholders', description: '', states: stakeholdersStates.map((state) => ({...state, id: state.id + 10, })) },
-      { id: 2, name: 'Opportunity', description: '', states: opportunityStates.map((state) => ({...state, id: state.id + 20, })) },
+      { id: 1, nameId: 'stakeholders', name: 'Stakeholders', description: '', states: stakeholdersStates.map((state) => ({...state, nameId: "stakeholders-state-" + state.id })) },
+      { id: 2, nameId: 'opportunity', name: 'Opportunity', description: '', states: opportunityStates.map((state) => ({...state, nameId: "opportunity-state-" + state.id })) },
     ], [
-      { id: 3, name: 'Requirements', description: '', states: requirementsStates.map((state) => ({...state, id: state.id + 30, })) },
-      { id: 4, name: 'Software System', description: '', states: systemStates.map((state) => ({...state, id: state.id + 40, })) },
+      { id: 3, nameId: 'requirements', name: 'Requirements', description: '', states: requirementsStates.map((state) => ({...state, nameId: "requirements-state-" + state.id })) },
+      { id: 4, nameId: 'software', name: 'Software System', description: '', states: systemStates.map((state) => ({...state, nameId: "software-state-" + state.id })) },
     ], [
-      { id: 5, name: 'Team', description: '', states: teamStates.map((state) => ({...state, id: state.id + 50, })) },
-      { id: 6, name: 'Work', description: '', states: workStates.map((state) => ({...state, id: state.id + 60, })) },
-      { id: 7, name: 'Way-of-Working', description: '', states: wayStates.map((state) => ({...state, id: state.id + 70, })) },
+      { id: 5, nameId: 'team', name: 'Team', description: '', states: teamStates.map((state) => ({...state, nameId: "team-state-" + state.id })) },
+      { id: 6, nameId: 'work', name: 'Work', description: '', states: workStates.map((state) => ({...state, nameId: "work-state-" + state.id })) },
+      { id: 7, nameId: 'way', name: 'Way-of-Working', description: '', states: wayStates.map((state) => ({...state, nameId: "way-state-" + state.id })) },
     ],
   ];
 
@@ -642,14 +642,14 @@ export default async function handle(req, res) {
   
   const competencies = [
     [
-      { id: 1, name: 'Stakeholder Representation', description: '' },
+      { id: 1, nameId: 'stakeholder', name: 'Stakeholder Representation', description: '' },
     ], [
-      { id: 2, name: 'Analysis', description: '' },
-      { id: 3, name: 'Development', description: '' },
-      { id: 4, name: 'Testing', description: '' },
+      { id: 2, nameId: 'analysis', name: 'Analysis', description: '' },
+      { id: 3, nameId: 'development', name: 'Development', description: '' },
+      { id: 4, nameId: 'testing', name: 'Testing', description: '' },
     ], [
-      { id: 5, name: 'Leadership', description: '' },
-      { id: 6, name: 'Management', description: '' },
+      { id: 5, nameId: 'leadership', name: 'Leadership', description: '' },
+      { id: 6, nameId: 'management', name: 'Management', description: '' },
     ]
   ];
 
@@ -658,11 +658,11 @@ export default async function handle(req, res) {
       areasOfConcern.map(async (areaOfConcern) => {
         const createdArea = await prisma.areaOfConcern.create({
           data: {
-            id: areaOfConcern.id,
+            id: areaOfConcern.nameId,
             name: areaOfConcern.name,
             activitySpaces: {
               create: activitySpaces[areaOfConcern.id-1].map((activitySpace) => ({
-                id: activitySpace.id,
+                id: activitySpace.nameId,
                 name: activitySpace.name,
                 description: activitySpace.description,
                 activities: {
@@ -672,21 +672,26 @@ export default async function handle(req, res) {
             },
             alphas: {
               create: alphas[areaOfConcern.id-1].map((alpha) => ({
-                id: alpha.id,
+                id: alpha.nameId,
                 name: alpha.name,
                 description: alpha.description,
                 workProducts: {
                   create: [],
                 },
                 states: {
-                  create: alpha.states,
+                  create: alpha.states.map((state) => ({
+                    id: state.nameId,
+                    name: state.name,
+                    description: state.description,
+                    checklist: state.checklist,
+                  }))
                 },
                 subAlphaIds: [],
               }))
             },
             competencies: {
               create: competencies[areaOfConcern.id-1].map((competency) => ({
-                id: competency.id,
+                id: competency.nameId,
                 name: competency.name,
                 description: competency.description,
                 levels: levels,
