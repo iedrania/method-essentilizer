@@ -36,7 +36,7 @@ const MapTasks: React.FC = ({alphas}) => {
 
                     <EntryStateList activity={activity} alphas={ alphas } />
                     <EntryWorkProductList activity={activity} workProducts={activity.workProducts}/>
-
+                    {/* TODO P0 all work products */}
                     <CompletionStateList activity={activity} alphas={ alphas } />
                     <CompletionWorkProductList activity={activity} workProducts={activity.workProducts}/>
                   </div>

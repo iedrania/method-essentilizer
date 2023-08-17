@@ -29,6 +29,7 @@ const Task = ({ task }) => {
       {
         id: task.workProducts.length + 1,
         name: "",
+        description: "",
         alphas: [],
         subAlphas: [],
         levelOfDetails: [],

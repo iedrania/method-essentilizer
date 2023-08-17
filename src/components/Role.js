@@ -60,7 +60,6 @@ const Role = ({ role }) => {
             className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
           <label
-            for={`${task.id + randomNumber}-checkbox`}
             className="ml-2 text-sm font-medium text-gray-600 "
           >
             {task.name}
@@ -86,7 +85,6 @@ const Role = ({ role }) => {
               className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
             />
             <label
-              for={`${workProduct.id + randomNumber}-checkbox`}
               className="ml-2 text-sm font-medium text-gray-600 "
             >
               {workProduct.name}

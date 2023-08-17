@@ -39,7 +39,7 @@ const ActivitySpaceList = ({ activity, activitySpaces }) => {
 
       <div className="flex flex-col gap-3">
         <h4>Activity Spaces:</h4>
-        {/* TODO P2 add area of concern category and show other categories */}
+        {/* TODO P3 show other categories */}
         {/* activity.areasOfConcern.map((area) => (
           <div key={area}>
             <p>{areasOfConcern.find(areaObj => areaObj.id.toString() === area)?.name || ''}</p>

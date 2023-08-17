@@ -24,7 +24,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
 
   const handleSaveClick = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    // TODO P2 validate methodId
+    // TODO P2 make sure all delete removes from other lists
     try {
       const body = { methodId, name, creator, description, tasks, roles, subAlphas, patterns };
       await fetch("/api/post", {
@@ -39,12 +39,12 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
   };
 
   const handleJsonClick = () => {
-    downloadEssenceJson(`${name} by ${creator} - Essentialized`, methodId, name, creator, description, tasks, roles, subAlphas, patterns, spaces, alphas, competencies);
+    downloadEssenceJson(`${methodId} ${name} by ${creator} - Essentialized`, methodId, name, creator, description, tasks, roles, subAlphas, patterns, spaces, alphas, competencies);
   };
 
   const printConsole = () => {
     console.log(methodId, name, creator, description, tasks, roles, subAlphas, patterns);
-    // TODO P3 ganti index jadi id
+    // TODO P3 ganti index jadi id/otherwise
   }
 
   return (

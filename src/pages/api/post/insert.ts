@@ -605,15 +605,15 @@ export default async function handle(req, res) {
   
   const alphas = [
     [
-      { id: 1, nameId: 'stakeholders', name: 'Stakeholders', description: '', states: stakeholdersStates.map((state) => ({...state, nameId: "stakeholders-state-" + state.id })) },
-      { id: 2, nameId: 'opportunity', name: 'Opportunity', description: '', states: opportunityStates.map((state) => ({...state, nameId: "opportunity-state-" + state.id })) },
+      { id: 1, nameId: 'Stakeholders', name: 'Stakeholders', description: '', states: stakeholdersStates.map((state) => ({...state, nameId: "stakeholders-state-" + state.id })) },
+      { id: 2, nameId: 'Opportunity', name: 'Opportunity', description: '', states: opportunityStates.map((state) => ({...state, nameId: "opportunity-state-" + state.id })) },
     ], [
-      { id: 3, nameId: 'requirements', name: 'Requirements', description: '', states: requirementsStates.map((state) => ({...state, nameId: "requirements-state-" + state.id })) },
-      { id: 4, nameId: 'software', name: 'Software System', description: '', states: systemStates.map((state) => ({...state, nameId: "software-state-" + state.id })) },
+      { id: 3, nameId: 'Requirements', name: 'Requirements', description: '', states: requirementsStates.map((state) => ({...state, nameId: "requirements-state-" + state.id })) },
+      { id: 4, nameId: 'Software', name: 'Software System', description: '', states: systemStates.map((state) => ({...state, nameId: "software-state-" + state.id })) },
     ], [
-      { id: 5, nameId: 'team', name: 'Team', description: '', states: teamStates.map((state) => ({...state, nameId: "team-state-" + state.id })) },
-      { id: 6, nameId: 'work', name: 'Work', description: '', states: workStates.map((state) => ({...state, nameId: "work-state-" + state.id })) },
-      { id: 7, nameId: 'way', name: 'Way-of-Working', description: '', states: wayStates.map((state) => ({...state, nameId: "way-state-" + state.id })) },
+      { id: 5, nameId: 'Team', name: 'Team', description: '', states: teamStates.map((state) => ({...state, nameId: "team-state-" + state.id })) },
+      { id: 6, nameId: 'Work', name: 'Work', description: '', states: workStates.map((state) => ({...state, nameId: "work-state-" + state.id })) },
+      { id: 7, nameId: 'WayofWorking', name: 'Way-of-Working', description: '', states: wayStates.map((state) => ({...state, nameId: "way-state-" + state.id })) },
     ],
   ];
 
@@ -658,11 +658,11 @@ export default async function handle(req, res) {
       areasOfConcern.map(async (areaOfConcern) => {
         const createdArea = await prisma.areaOfConcern.create({
           data: {
-            id: areaOfConcern.nameId,
+            id: areaOfConcern.name,
             name: areaOfConcern.name,
             activitySpaces: {
               create: activitySpaces[areaOfConcern.id-1].map((activitySpace) => ({
-                id: activitySpace.nameId,
+                id: activitySpace.name,
                 name: activitySpace.name,
                 description: activitySpace.description,
                 activities: {
@@ -680,7 +680,7 @@ export default async function handle(req, res) {
                 },
                 states: {
                   create: alpha.states.map((state) => ({
-                    id: state.nameId,
+                    id: state.name,
                     name: state.name,
                     description: state.description,
                     checklist: state.checklist,
@@ -691,7 +691,7 @@ export default async function handle(req, res) {
             },
             competencies: {
               create: competencies[areaOfConcern.id-1].map((competency) => ({
-                id: competency.nameId,
+                id: competency.name,
                 name: competency.name,
                 description: competency.description,
                 levels: levels,

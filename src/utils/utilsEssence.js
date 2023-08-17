@@ -67,7 +67,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
             nameId: methodId + "-task-" + task.id + "-wp-" + workProduct.id,
             name: workProduct.name,
             description: workProduct.description || "No description",
-            levelOfDetails: [], // TODO P1 add field levelOfDetails array of string
+            levelOfDetails: [],
           };
 
           if (!result[alphaId]) {
@@ -129,7 +129,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
       description: subAlpha.description,
       workProducts: findWorkProductsById(tasks, subAlpha.workProducts),
       states: restructureStates(subAlpha.states),
-      subalphaIds: [], // TODO P1 add subalphas to subalphas dropdown
+      subalphaIds: [],
     }));
   }
 
@@ -195,7 +195,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
       name: pattern.name,
       description: pattern.description,
       activities: pattern.activities,
-      alphas: pattern.alphas, // TODO P1 accept subalphas as alphas
+      alphas: pattern.alphas,
       competencies: pattern.competencies,
       subpatternIds: pattern.subPatterns,
     }));
