@@ -817,7 +817,7 @@ const MappingProvider = ({ children }) => {
 
             return {
               ...workProduct,
-              levelOfDetail: workProduct.levelOfDetail.filter((_, i) => i !== index),
+              levelOfDetails: workProduct.levelOfDetails.filter((_, i) => i !== index),
             };
           }),
         };

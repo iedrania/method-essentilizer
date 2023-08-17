@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import Link from "next/link";
 import { MappingContext } from "../context/context";
-import styles from "@/styles/all.module.css";
 
 const InputMethod = () => {
   const { name, setName, creator, setCreator, description, setDescription } =
@@ -23,22 +22,23 @@ const InputMethod = () => {
               <input
                 onChange={(event) => setName(event.target.value)}
                 placeholder="Name"
+                value={name}
                 className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-4 text-base   transition duration-200 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-200 focus:outline-none focus:shadow-outline focus:ring-1 ring-offset-current ring-offset-1 ring-gray-200"
               />
               <input
                 onChange={(event) => setCreator(event.target.value)}
                 placeholder="Creator"
+                value={creator}
                 className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-4 text-base   transition duration-200 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-200 focus:outline-none focus:shadow-outline focus:ring-1 ring-offset-current ring-offset-1 ring-gray-200"
               />
 
               <textarea
                 onChange={(event) => setDescription(event.target.value)}
                 className=" text-black placeholder-gray-600 w-full  px-4 py-2.5 mt-4 text-base   transition duration-200 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-200 focus:outline-none focus:shadow-outline focus:ring-1 ring-offset-current ring-offset-1 ring-gray-200"
-                name=""
-                id=""
                 cols={30}
                 rows={10}
                 placeholder="Description"
+                value={description}
               ></textarea>
 
               <div className="flex flex-col gap-3 items-center pt-3">

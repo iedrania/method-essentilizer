@@ -16,12 +16,14 @@ const LevelOfDetails = ({ activityId, workProduct }) => {
   };
 
   return (
-    <div>
-      <h3>{workProduct.name}</h3>
+    <div className="px-5 pb-5 bg-white rounded-lg shadow">
+      <h3 className="text-black my-4 text-xl">
+        {workProduct.name}
+      </h3>
 
-      <h4>Levels of Detail:</h4>
       {showLevelOfDetails && (
         <div>
+          <h4>Levels of Detail:</h4>
           {workProduct.levelOfDetails.map((levelOfDetail, index) => (
             <LevelOfDetailItem
               key={index}
@@ -31,13 +33,23 @@ const LevelOfDetails = ({ activityId, workProduct }) => {
               levelOfDetailItem={levelOfDetail}
             />
           ))}
-          <button onClick={handleAddLevelOfDetailItem}>Add Level of Detail Item</button>
+          <button
+            className="relative w-full flex justify-center items-center py-2 text-sm  tracking-wide capitalize  rounded-md bg-black hover:bg-gray-800 text-white outline-1 border-2 border-gray-800 outline-black  transition duration-300 transform active:scale-95 ease-in-out"
+            onClick={handleAddLevelOfDetailItem}
+          >
+            Add Level of Detail Item
+          </button>
         </div>
       )}
 
-      <button onClick={toggleLevelOfDetailsVisibility}>
-        {showLevelOfDetails ? 'Hide Level of Details' : 'Show Level of Details'}
-      </button>
+      <div className="flex flex-col gap-2 mt-4">
+        <button
+          className="relative w-full flex justify-center items-center py-2 text-sm  tracking-wide capitalize  rounded-md bg-black hover:bg-gray-800 text-white outline-1 border-2 border-gray-800 outline-black  transition duration-300 transform active:scale-95 ease-in-out"
+          onClick={toggleLevelOfDetailsVisibility}
+        >
+          {showLevelOfDetails ? 'Hide Level of Details' : 'Show Level of Details'}
+        </button>
+      </div>
     </div>
   );
 };

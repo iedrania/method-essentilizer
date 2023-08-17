@@ -1,16 +1,16 @@
-import prisma from '../lib/prisma';
-import React, { useContext } from 'react';
-import Router from 'next/router';
-import { GetStaticProps } from "next"
-import { MappingContext } from '../context/context';
-import { downloadEssenceJson } from '@/utils/utilsEssence';
+import prisma from "../lib/prisma";
+import React, { useContext } from "react";
+import Router from "next/router";
+import { GetStaticProps } from "next";
+import { MappingContext } from "../context/context";
+import { downloadEssenceJson } from "@/utils/utilsEssence";
 
 export const getStaticProps: GetStaticProps = async () => {
   const spaces = await prisma.activitySpace.findMany();
   const alphas = await prisma.alpha.findMany({
     include: {
       states: true,
-    }
+    },
   });
   const competencies = await prisma.competency.findMany();
   return {
@@ -27,15 +27,15 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
     // TODO P2 validate methodId
     try {
       const body = { methodId, name, creator, description, tasks, roles, subAlphas, patterns };
-      await fetch('/api/post', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/api/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      await Router.push('/');
+      await Router.push("/");
     } catch (error) {
       console.error(error);
-    }
+    };
   };
 
   const handleJsonClick = () => {
@@ -43,194 +43,279 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
   };
 
   const printConsole = () => {
-    console.log(methodId, name, creator, description, tasks, roles, subAlphas, patterns)
+    console.log(methodId, name, creator, description, tasks, roles, subAlphas, patterns);
     // TODO P3 ganti index jadi id
   }
 
   return (
-    <div>
-      <h1>{name}</h1>
-      <p>Creator: {creator}</p>
-      <p>Description: {description}</p>
+    <div className="bg-gray-100 ">
+      <div className="flex flex-col items-center justify-center gap-5 ">
+        <div className="m-auto my-3 w-11/12">
+          <div className="my-5 bg-white rounded-lg shadow p-5">
+            <div className="text-center">
+              <h1 className="text-3xl">{name}</h1>
+              <p>by {creator}</p>
+              <p>Description:</p>
+              <p>{description}</p>
+            </div>
 
-      <h2>Mapping Result</h2>
+            <h2 className="mt-5 text-center font-semibold">Mapping Result</h2>
 
-      <h3>Activities:</h3>
-      {tasks.map((activity) => (
-        <div key={activity.id}>
-          <p>{activity.name}</p>
-          <h4>Activity Spaces:</h4>
-          <ul>
-            {activity.activitySpaces.map((activitySpace, index) => (
-              <li key={index}>{spaces.find(spaceObj => spaceObj.id.toString() === activitySpace)?.name || activitySpace}</li>
-            ))}
-          </ul>
-
-          <h4>Work Products:</h4>
-          <ul>
-            {activity.workProducts.map((workProduct, index) => (
-              <div key={index}>
-                <li>{workProduct.name}</li>
-                <h5>Alphas:</h5>
+            {tasks.length > 0 && (
+              <div>
+                <h3 className="text-center font-semibold">Activities:</h3>
                 <ul>
-                  {workProduct.alphas.map((alpha, index) => (
-                    <li key={index}>{alphas.find(alphaObj => alphaObj.id.toString() === alpha)?.name || alpha}</li>
-                  ))}
-                  {workProduct.subAlphas.map((alpha, index) => (
-                    <li key={index}>{subAlphas.find(subAlpha => subAlpha.id.toString() === alpha)?.name || alpha}</li>
-                  ))}
+                  <div className="grid grid-cols-3">
+                    {tasks.map((activity) => (
+                      <div key={activity.id} className="px-5 pb-5 bg-white rounded-lg shadow">
+                        <li className="font-semibold">{activity.name}</li>
+
+                        <div>
+                          <h4>Activity Spaces:</h4>
+                          {activity.activitySpaces.length > 0 ? (
+                            <ul>
+                              {activity.activitySpaces.map((activitySpace, index) => (
+                                <li key={index}>{spaces.find(spaceObj => spaceObj.id.toString() === activitySpace)?.name || activitySpace}</li>
+                              ))}
+                            </ul>
+                          ) : <p>No Activity Spaces chosen.</p>}
+                        </div>
+
+                        {activity.workProducts.length > 0 && (
+                          <div>
+                            <h4>Work Products:</h4>
+                            <ul>
+                              {activity.workProducts.map((workProduct, index) => (
+                                <div key={index}>
+                                  <li>{workProduct.name}</li>
+
+                                  {workProduct.alphas.length > 0 ? (
+                                    <div>
+                                    <h5>Alphas:</h5>
+                                    <ul>
+                                      {workProduct.alphas.map((alpha, index) => (
+                                        <li key={index}>{alphas.find(alphaObj => alphaObj.id.toString() === alpha)?.name || alpha}</li>
+                                      ))}
+                                      {workProduct.subAlphas.map((alpha, index) => (
+                                        <li key={index}>{subAlphas.find(subAlpha => subAlpha.id.toString() === alpha)?.name || alpha}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                  ) : <p>No Alphas chosen.</p>}
+                                </div>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <div>
+                          <h4>Entry Criterions:</h4>
+                          {activity.entryCriterions.alphas.length + activity.entryCriterions.workProducts.length > 0 ? (
+                            <ul>
+                              {activity.entryCriterions.alphas.map((criterion) => (
+                                <li key={criterion}>
+                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                                    criterion}::
+                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
+                                    ?.states?.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
+                                    ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                                    "State Not Found"}
+                                    {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
+                                </li>            
+                              ))}
+                              {activity.entryCriterions.workProducts.map((criterion) => (
+                                <li key={criterion}>
+                                  {tasks.find((task) => task.id.toString() === criterion.split("-")[0])?.
+                                    workProducts.find((workProduct) => workProduct.id.toString() === criterion.split(".")[0].split("-")[2])?.
+                                    name || criterion}::
+                                  {criterion.split(".")[1] || "Level Not Found"}
+                                </li>            
+                              ))}
+                            </ul>
+                          ) : <p>No Entry Criterions chosen.</p>}
+                        </div>
+
+                        <div>
+                          <h4>Completion Criterions:</h4>
+                          {activity.completionCriterions.alphas.length + activity.completionCriterions.workProducts.length > 0 ? (
+                            <ul>
+                              {activity.completionCriterions.alphas.map((criterion, index) => (
+                                <li key={index}>
+                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                                    criterion}::
+                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
+                                    ?.states?.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
+                                    ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                                    "State Not Found"}
+                                    {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
+                                </li>            
+                              ))}
+                              {activity.completionCriterions.workProducts.map((criterion) => (
+                                <li key={criterion}>
+                                  {tasks.find((task) => task.id.toString() === criterion.split("-")[0])?.
+                                    workProducts.find((workProduct) => workProduct.id.toString() === criterion.split(".")[0].split("-")[2])?.
+                                    name || criterion}::
+                                  {criterion.split(".")[1] || "Level Not Found"}
+                                </li>            
+                              ))}
+                            </ul>
+                          ) : <p>No Completion Criterions chosen.</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </ul>
               </div>
-            ))}
-          </ul>
+            )}
 
-          <h4>Entry Criterions:</h4>
-          <ul>
-            {activity.entryCriterions.alphas.map((criterion) => (
-              <li key={criterion}>
-                {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
-                  subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
-                  criterion}::
-                {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
-                  ?.states?.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
-                  subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
-                  ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
-                  "State Not Found"}
-                  {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
-              </li>            
-            ))}
-            {activity.entryCriterions.workProducts.map((criterion) => (
-              <li key={criterion}>
-                {tasks.find((task) => task.id.toString() === criterion.split("-")[0])?.
-                  workProducts.find((workProduct) => workProduct.id.toString() === criterion.split(".")[0].split("-")[2])?.
-                  name || criterion}::
-                {criterion.split(".")[1] || "Level Not Found"}
-              </li>            
-            ))}
-          </ul>
-
-          <h4>Completion Criterions:</h4>
-          <ul>
-            {activity.completionCriterions.alphas.map((criterion, index) => (
-              <li key={index}>
-                {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
-                  subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
-                  criterion}::
-                {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
-                  ?.states?.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
-                  subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
-                  ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
-                  "State Not Found"}
-                  {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
-              </li>            
-            ))}
-            {activity.completionCriterions.workProducts.map((criterion) => (
-              <li key={criterion}>
-                {tasks.find((task) => task.id.toString() === criterion.split("-")[0])?.
-                  workProducts.find((workProduct) => workProduct.id.toString() === criterion.split(".")[0].split("-")[2])?.
-                  name || criterion}::
-                {criterion.split(".")[1] || "Level Not Found"}
-              </li>            
-            ))}
-          </ul>
-        </div>
-      ))}
-
-      <h3>Role Patterns:</h3>
-      {roles.map((role) => (
-        <div key={role.id}>
-          <p>{role.name}</p>
-          <h4>Competencies:</h4>
-          <ul>
-            {role.competencies.map((competency) => (
-              <li key={competency.id}>{competencies.find(compObj => compObj.id.toString() === competency)?.name || competency}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
-
-      <h3>Other Patterns:</h3>
-      {patterns.map((pattern) => (
-        <div key={pattern.id}>
-          <h4>{pattern.name}</h4>
-          <p>{pattern.description}</p>
-          <h5>Alphas:</h5>
-          <ul>
-            {pattern.alphas.map((alpha) => (
-              <li key={alpha}>
-                {
-                  alphas.find((alphaObj) => alphaObj.id.toString() === alpha)?.name ||
-                  subAlphas.find((alphaObj) => alphaObj.id.toString() === alpha)?.name ||
-                  alpha
-                }
-              </li>
-            ))}
-          </ul>
-          <h5>Activities:</h5>
-          <ul>
-            {pattern.activities.map((activity) => (
-              <li key={activity}>
-                {tasks.find(activityObj => activityObj.id.toString() === activity)?.name || activity}
-              </li>
-            ))}
-          </ul>
-          <h5>Competencies:</h5>
-          <ul>
-            {pattern.competencies.map((competency) => (
-              <li key={competency}>
-                {competencies.find(compObj => compObj.id.toString() === competency)?.name || competency}
-              </li>
-            ))}
-          </ul>
-          <h5>Sub-Patterns:</h5>
-          <ul>
-            {pattern.subPatterns.map((subPattern) => (
-              <li key={subPattern}>
-                {patterns.find(pattern => pattern.id.toString() === subPattern)?.name || subPattern}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-
-      <h3>Sub-Alphas:</h3>
-      {subAlphas.map((subAlpha) => (
-        <div key={subAlpha.id}>
-          <h4>{subAlpha.name}</h4>
-          <p>{subAlpha.description}</p>
-          <p>Alpha: {
-            alphas.find(alpha => alpha.id.toString() === subAlpha.alpha)?.name ||
-            subAlphas.find(alpha => alpha.id.toString() === subAlpha.alpha)?.name ||
-            subAlpha.alpha
-          }</p>
-
-          <h5>Work Products:</h5>
-          <ul>
-            {subAlpha.workProducts.map((workProduct, index) => (
-              <li key={index}>{(tasks[Number(workProduct.split("-")[2])-1]).workProducts[Number(workProduct.split("-")[4]-1)].name}</li>
-            ))}
-          </ul>
-
-          <h5>States:</h5>
-          <ul>
-            {subAlpha.states.map((state) => (
-              <li key={state.id}>
-                {state.name}
-                <p>{state.description}</p>
+            {roles.length > 0 && (
+              <div>
+                <h3 className="text-center font-semibold">Role Patterns:</h3>
                 <ul>
-                  {state.checklist.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
+                  <div className="grid grid-cols-3">
+                    {roles.map((role) => (
+                      <div key={role.id} className="px-5 pb-5 bg-white rounded-lg shadow">
+                        <li className="font-semibold">{role.name}</li>
+                        
+                        <div>
+                          <h4>Competencies:</h4>
+                          {role.competencies.length > 0 ? (
+                            <ul>
+                            {role.competencies.map((competency) => (
+                              <li key={competency.id}>{competencies.find(compObj => compObj.id.toString() === competency)?.name || competency}</li>
+                            ))}
+                            </ul>
+                          ) : <p>No Competencies chosen.</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </ul>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+              </div>
+            )}
 
-      <button onClick={handleSaveClick}>Save to Database</button>
-      <button onClick={handleJsonClick}>Download JSON</button>
-      <button onClick={printConsole}>Log</button>
+            {patterns.length > 0 && (
+              <div>
+                <h3 className="text-center font-semibold">Other Patterns:</h3>
+                <ul>
+                  <div className="grid grid-cols-2">
+                    {patterns.map((pattern) => (
+                      <div key={pattern.id}>
+                        <h4>{pattern.name}</h4>
+                        <p>{pattern.description}</p>
+                        <h5>Alphas:</h5>
+                        <ul>
+                          {pattern.alphas.map((alpha) => (
+                            <li key={alpha}>
+                              {
+                                alphas.find((alphaObj) => alphaObj.id.toString() === alpha)?.name ||
+                                subAlphas.find((alphaObj) => alphaObj.id.toString() === alpha)?.name ||
+                                alpha
+                              }
+                            </li>
+                          ))}
+                        </ul>
+                        <h5>Activities:</h5>
+                        <ul>
+                          {pattern.activities.map((activity) => (
+                            <li key={activity}>
+                              {tasks.find(activityObj => activityObj.id.toString() === activity)?.name || activity}
+                            </li>
+                          ))}
+                        </ul>
+                        <h5>Competencies:</h5>
+                        <ul>
+                          {pattern.competencies.map((competency) => (
+                            <li key={competency}>
+                              {competencies.find(compObj => compObj.id.toString() === competency)?.name || competency}
+                            </li>
+                          ))}
+                        </ul>
+                        <h5>Sub-Patterns:</h5>
+                        <ul>
+                          {pattern.subPatterns.map((subPattern) => (
+                            <li key={subPattern}>
+                              {patterns.find(pattern => pattern.id.toString() === subPattern)?.name || subPattern}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </ul>
+              </div>
+            )}
+
+            {subAlphas.length > 0 && (
+              <div>
+                <h3 className="text-center font-semibold">Sub-Alphas:</h3>
+                <ul>
+                  <div className="grid grid-cols-2">
+                    {subAlphas.map((subAlpha) => (
+                      <div key={subAlpha.id}>
+                        <h4>{subAlpha.name}</h4>
+                        <p>{subAlpha.description}</p>
+                        <p>Alpha: {
+                          alphas.find(alpha => alpha.id.toString() === subAlpha.alpha)?.name ||
+                          subAlphas.find(alpha => alpha.id.toString() === subAlpha.alpha)?.name ||
+                          subAlpha.alpha
+                        }</p>
+
+                        <h5>Work Products:</h5>
+                        <ul>
+                          {/* {subAlpha.workProducts.map((workProduct, index) => (
+                            <li key={index}>{(tasks[Number(workProduct.split("-")[2])-1])?.workProducts[Number(workProduct.split("-")[4]-1)].name}</li>
+                          ))} */}
+                        </ul>
+
+                        <h5>States:</h5>
+                        <ul>
+                          {subAlpha.states.map((state) => (
+                            <li key={state.id}>
+                              {state.name}
+                              <p>{state.description}</p>
+                              <ul>
+                                {state.checklist.map((item, index) => (
+                                  <li key={index}>{item}</li>
+                                ))}
+                              </ul>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </ul>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2 mt-5">
+              <button
+                className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-700  focus:outline-none   transition duration-300 transform active:scale-95 ease-in-out"
+                onClick={handleSaveClick}
+              >
+                Save to Database
+              </button>
+              <button
+                className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-700  focus:outline-none   transition duration-300 transform active:scale-95 ease-in-out"
+                onClick={handleJsonClick}
+              >
+                Download JSON
+              </button>
+              <button
+                className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-700  focus:outline-none   transition duration-300 transform active:scale-95 ease-in-out"
+                onClick={printConsole}
+              >
+                Log
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -20,9 +20,9 @@ const InputRoles = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-5 bg-gray-100">
-      <div className="m-auto my-3 w-11/12">
-        <div>
+    <div className="bg-gray-100 h-screen py-4">
+      <div className=" flex flex-col items-center justify-center gap-5 bg-gray-100 m-auto">
+        <div className="m-auto my-3 w-11/12">
           <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
             {roles.map((role) => (
               <Role key={role.id} role={role} />

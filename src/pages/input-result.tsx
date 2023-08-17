@@ -40,72 +40,80 @@ const InputResult = () => {
 
             <h2 className="mt-5 text-center font-semibold">Insert Result</h2>
 
-            <h3 className="text-center font-semibold">Tasks</h3>
-            <ul className="text-center">
-              <div className="grid grid-cols-3">
-                {tasks.map((task, index) => (
-                  <div key={index}>
-                    <li className="font-semibold">{task.name}</li>
+            {tasks.length > 0 && (
+              <div>
+                <h3 className="text-center font-semibold">Tasks</h3>
+                <ul className="text-center">
+                  <div className="grid grid-cols-3">
+                    {tasks.map((task, index) => (
+                      <div key={index} className="px-5 pb-5 bg-white rounded-lg shadow">
+                        <li className="font-semibold">{task.name}</li>
 
-                    {task.workProducts.length > 0 && (
-                      <div>
-                        <h4>Work Products:</h4>
-                        <ul>
-                          {task.workProducts.map((workProduct) => (
-                            <li key={workProduct.id}>{workProduct.name}</li>
-                          ))}
-                        </ul>
+                        {task.workProducts.length > 0 && (
+                          <div>
+                            <h4>Work Products:</h4>
+                            <ul>
+                              {task.workProducts.map((workProduct) => (
+                                <li key={workProduct.id}>{workProduct.name}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
+                </ul>
               </div>
-            </ul>
+            )}
 
-            <h3 className="text-center font-semibold mt-3">Roles</h3>
-            <ul className="grid grid-cols-3 text-center">
-              {roles.map((role, index) => (
-                <div key={index}>
-                  <li className="font-semibold">{role.name}</li>
+            {roles.length > 0 && (
+              <div>
+                <h3 className="text-center font-semibold mt-3">Roles</h3>
+                <ul className="grid grid-cols-3 text-center">
+                  {roles.map((role, index) => (
+                    <div key={index} className="px-5 pb-5 bg-white rounded-lg shadow">
+                      <li className="font-semibold">{role.name}</li>
 
-                  {role.performedTasks.length > 0 && (
-                    <div>
-                      <h4>Performed Tasks:</h4>
-                      <ul>
-                        {role.performedTasks.map((taskId) => (
-                          <li key={taskId}>
-                            {tasks.find((item) => item.id == taskId).name}
-                          </li>
-                        ))}
-                      </ul>
+                      {role.performedTasks.length > 0 && (
+                        <div>
+                          <h4>Performed Tasks:</h4>
+                          <ul>
+                            {role.performedTasks.map((taskId) => (
+                              <li key={taskId}>
+                                {tasks.find((item) => item.id == taskId).name}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {role.assignedWorkProducts.length > 0 && (
+                        <div>
+                          <h4>Assigned Work Products:</h4>
+                          <ul>
+                            {role.assignedWorkProducts.map((idTuple) => {
+                              const task = tasks.find(
+                                (item) => item.id == idTuple[0]
+                              );
+                              const workProduct = task?.workProducts.find(
+                                (item) => item.id == idTuple[1]
+                              );
+                              return (
+                                <li key={`${idTuple[0]}-${idTuple[1]}`}>
+                                  {workProduct
+                                    ? workProduct.name
+                                    : "Work Product Not Found"}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                  )}
-
-                  {role.assignedWorkProducts.length > 0 && (
-                    <div>
-                      <h4>Assigned Work Products:</h4>
-                      <ul>
-                        {role.assignedWorkProducts.map((idTuple) => {
-                          const task = tasks.find(
-                            (item) => item.id == idTuple[0]
-                          );
-                          const workProduct = task?.workProducts.find(
-                            (item) => item.id == idTuple[1]
-                          );
-                          return (
-                            <li key={`${idTuple[0]}-${idTuple[1]}`}>
-                              {workProduct
-                                ? workProduct.name
-                                : "Work Product Not Found"}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </ul>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="flex flex-col gap-2 mt-5">
               <button
