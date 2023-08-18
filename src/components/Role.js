@@ -6,6 +6,7 @@ const Role = ({ role }) => {
     changeRoleName,
     changeRoleDescription,
     tasks,
+    workProducts,
     deleteRole,
     updatePerformedTasks,
     updateAssignedWorkProducts,
@@ -36,10 +37,9 @@ const Role = ({ role }) => {
   };
 
   const handleWorkProductChange = (event) => {
-    const taskId = event.target.value[0];
-    const workProductId = event.target.value[2];
+    const workProductId = event.target.value;
     const isChecked = event.target.checked;
-    updateAssignedWorkProducts(role.id, taskId, workProductId, isChecked);
+    updateAssignedWorkProducts(role.id, workProductId, isChecked);
   };
 
   const getRandomNumber = (min, max) => {
@@ -71,28 +71,26 @@ const Role = ({ role }) => {
 
   const renderWorkProducts = () => {
     // TODO P3 add task category
-    return tasks.map((task) =>
-      task.workProducts.map((workProduct) => {
-        const randomNumber = getRandomNumber(1001, 2000);
-        return (
-          <div key={workProduct.id} className="flex items-center mr-4">
-            <input
-              id={`${workProduct.id + randomNumber}-checkbox`}
-              type="checkbox"
-              value={[task.id, workProduct.id]}
-              checked={role.assignedWorkProducts.some((arr) => JSON.stringify(arr) === JSON.stringify([task.id.toString(), workProduct.id.toString()]))}
-              onChange={handleWorkProductChange}
-              className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <label
-              className="ml-2 text-sm font-medium text-gray-600 "
-            >
-              {workProduct.name}
-            </label>
-          </div>
-        );
-      })
-    );
+    return workProducts.map((workProduct) => {
+      const randomNumber = getRandomNumber(1001, 2000);
+      return (
+        <div key={workProduct.id} className="flex items-center mr-4">
+          <input
+            id={`${workProduct.id + randomNumber}-checkbox`}
+            type="checkbox"
+            value={workProduct.id}
+            checked={role.assignedWorkProducts.includes(workProduct.id.toString())}
+            onChange={handleWorkProductChange}
+            className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+          />
+          <label
+            className="ml-2 text-sm font-medium text-gray-600 "
+          >
+            {workProduct.name}
+          </label>
+        </div>
+      );
+    });
   };
 
   return (

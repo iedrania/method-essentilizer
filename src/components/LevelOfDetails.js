@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react';
 import { MappingContext } from '../context/context';
 import LevelOfDetailItem from '@/components/LevelOfDetailItem'
 
-const LevelOfDetails = ({ activityId, workProduct }) => {
+const LevelOfDetails = ({ workProduct }) => {
   const { addLevelOfDetailItem } = useContext(MappingContext);
 
   const [showLevelOfDetails, setShowLevelOfDetails] = useState(false);
 
   const handleAddLevelOfDetailItem = () => {
-    addLevelOfDetailItem(activityId, workProduct.id);
+    addLevelOfDetailItem(workProduct.id);
   };
 
   const toggleLevelOfDetailsVisibility = () => {
@@ -28,7 +28,6 @@ const LevelOfDetails = ({ activityId, workProduct }) => {
             <LevelOfDetailItem
               key={index}
               index={index}
-              activityId={activityId}
               workProductId={workProduct.id}
               levelOfDetailItem={levelOfDetail}
             />

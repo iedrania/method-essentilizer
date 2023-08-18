@@ -1,22 +1,22 @@
 import React, { useContext, useState } from "react";
 import { MappingContext } from "../context/context";
 
-const WorkProduct = ({ taskId, workProduct }) => {
+const WorkProduct = ({ workProduct }) => {
   const { changeWorkProductName, changeWorkProductDescription, deleteWorkProduct } =
     useContext(MappingContext);
 
   const [showDescription, setShowDescription] = useState(false);
 
   const handleDelete = () => {
-    deleteWorkProduct(taskId, workProduct.id);
+    deleteWorkProduct(workProduct.id);
   };
 
   const setWorkProductName = (newName) => {
-    changeWorkProductName(taskId, workProduct.id, newName);
+    changeWorkProductName(workProduct.id, newName);
   };
 
   const setWorkProductDescription = (newDescription) => {
-    changeWorkProductDescription(taskId, workProduct.id, newDescription);
+    changeWorkProductDescription(workProduct.id, newDescription);
   };
 
   const toggleDescriptionVisibility = () => {

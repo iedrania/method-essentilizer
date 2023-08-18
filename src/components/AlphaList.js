@@ -1,19 +1,19 @@
 import React, { useContext } from 'react';
 import { MappingContext } from '../context/context';
 
-const AlphaList = ({ workProduct, alphas, activityId, subAlphas }) => {
+const AlphaList = ({ workProduct, alphas, subAlphas }) => {
   const { updateAlphas, updateSubAlphas } = useContext(MappingContext);
 
   const handleAlphaChange = (event) => {
     const alphaId = event.target.value;
     const isChecked = event.target.checked;
-    updateAlphas(activityId, workProduct.id, alphaId, isChecked);
+    updateAlphas(workProduct.id, alphaId, isChecked);
   };
 
   const handleSubAlphaChange = (event) => {
     const subAlphaId = event.target.value;
     const isChecked = event.target.checked;
-    updateSubAlphas(activityId, workProduct.id, subAlphaId, isChecked);
+    updateSubAlphas(workProduct.id, subAlphaId, isChecked);
   };
 
   const renderAlphas = () => {

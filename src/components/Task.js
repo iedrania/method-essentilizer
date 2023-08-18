@@ -3,7 +3,7 @@ import { MappingContext } from "../context/context";
 import WorkProduct from "@/components/WorkProduct";
 
 const Task = ({ task }) => {
-  const { changeTaskName, changeTaskDescription, deleteTask, addWorkProductToTask } =
+  const { changeTaskName, changeTaskDescription, deleteTask, workProducts, addWorkProduct } =
     useContext(MappingContext);
 
   const [showDescription, setShowDescription] = useState(false);
@@ -25,16 +25,16 @@ const Task = ({ task }) => {
   };
 
   const handleAddWorkProduct = () => {
-    addWorkProductToTask(task.id, [
-      {
-        id: task.workProducts.length + 1,
-        name: "",
-        description: "",
-        alphas: [],
-        subAlphas: [],
-        levelOfDetails: [],
-      },
-    ]);
+    addWorkProduct({
+      id: workProducts.length + 1,
+      name: "",
+      description: "",
+      alphas: [],
+      subAlphas: [],
+      levelOfDetails: [],
+      taskId: task.id,
+      areasOfConcern: [],
+    });
   };
 
   return (
@@ -69,13 +69,15 @@ const Task = ({ task }) => {
       </div>
 
       <h4>Does this task results in any Work Product?</h4>
-      {task.workProducts.map((workProduct) => (
-        <WorkProduct
-          key={workProduct.id}
-          taskId={task.id}
-          workProduct={workProduct}
-        />
-      ))}
+      {workProducts
+        .filter((workProduct) => workProduct.taskId === task.id)
+        .map((workProduct) => (
+          <WorkProduct
+            key={workProduct.id}
+            workProduct={workProduct}
+          />
+        ))
+      }
 
       <div className="flex flex-col gap-2 mt-4">
         <button

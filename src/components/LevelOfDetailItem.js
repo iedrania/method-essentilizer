@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
 import { MappingContext } from '../context/context';
 
-const LevelOfDetailItem = ({ index, activityId, workProductId, levelOfDetailItem }) => {
+const LevelOfDetailItem = ({ index, workProductId, levelOfDetailItem }) => {
   const { changeLevelOfDetailItem, deleteLevelOfDetailItem } = useContext(MappingContext);
 
   const handleLevelOfDetailItemDelete = () => {
-    deleteLevelOfDetailItem(activityId, workProductId, index);
+    deleteLevelOfDetailItem(workProductId, index);
   };
 
   const setLevelOfDetailItem = (newName) => {
-    changeLevelOfDetailItem(activityId, workProductId, index, newName);
+    changeLevelOfDetailItem(workProductId, index, newName);
   };
 
   return (

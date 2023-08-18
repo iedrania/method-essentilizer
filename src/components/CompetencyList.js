@@ -37,8 +37,8 @@ const CompetencyList = ({ role, competencies }) => {
             <p>Choose level of {competency.name}</p>
             <select
               value={role.competencyLevels.find((competencyLevel) =>
-                competencyLevel.startsWith(`${competency.id}.`)
-              ).split(".")[1]}
+                competencyLevel[0] === competency.id
+              )[1]}
               onChange={(e) => handleCompetencyLevelChange(e, competency.id)}
             >
               {competency.levels.map((level) => (

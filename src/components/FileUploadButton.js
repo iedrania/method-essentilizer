@@ -1,9 +1,10 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef } from "react";
+import Router from "next/router";
 import { MappingContext } from "../context/context";
-import { read, utils } from 'xlsx';
+import { read, utils } from "xlsx";
 
 const FileUploadButton = () => {
-  const { setMethodId, setName, setCreator, setDescription, setTasks, setRoles, setSubAlphas } = useContext(MappingContext);
+  const { setInputExcel, setMethodId, setName, setCreator, setDescription, setTasks, setRoles, setSubAlphas } = useContext(MappingContext);
 
   const fileInputRef = useRef(null);
 
@@ -25,6 +26,9 @@ const FileUploadButton = () => {
 
         if (dataArray) {
           convertExcelToContext(dataArray);
+
+          setInputExcel(true);
+          Router.push("/input-sub-alphas");
         };
       };
       fileReader.readAsArrayBuffer(file);
@@ -43,8 +47,11 @@ const FileUploadButton = () => {
     const restructuredTasks = restructureTasks(tasks);
     setTasks(restructuredTasks); // BUG P1 cek todo
 
-    const restructuredRoles = restructureRoles(roles);
+    const restructuredRoles = restructureRoles(roles, restructuredTasks);
     setRoles(restructuredRoles); // BUG P0 cek todo change all stored ids in checkboxes to names?
+
+    console.log("restructured tasks", restructuredTasks);
+    console.log("restructured roles", restructuredRoles);
   };
 
   const extractTasksFromExcel = (array) => {
@@ -115,33 +122,41 @@ const FileUploadButton = () => {
       })
     }
 
-    console.log("restructured tasks", result);
     return result;
   };
 
-  function restructureRoles(roles) {
+  function restructureRoles(roles, tasks) {
     const result = [];
 
     for (const role of roles) {
       const extractedTasks = extractColumnContents(role, 0, 'Performed Tasks', undefined);
-      console.log('Extracted Tasks:', extractedTasks);
+      const performedTasks = extractedTasks.map((line) => (line[0]));
+      const performedTaskIds = performedTasks.map((taskName) => tasks.find((task) => task.name === taskName).id);
+      console.log('Extracted Tasks:', performedTaskIds);
 
       const extractedWorkProducts = extractColumnContents(role, 3, 'Assigned Work Products', undefined);
-      console.log('Extracted Work Products:', extractedWorkProducts);
+      const assignedWorkProducts = extractedWorkProducts.map((line) => (line[0]));
+      const assignedWorkProductIds = assignedWorkProducts.map((workProductName) =>
+        [
+          tasks.find((task) => task.workProducts.find((workProduct) => workProduct.name = workProductName)).id,
+          tasks.find((task) => task.workProducts.find((workProduct) => workProduct.name = workProductName)).workProducts
+            .find((workProduct) => workProduct.name === workProductName).id
+        ]
+      );
+      console.log('Extracted Work Products:', assignedWorkProductIds);
 
       result.push({
         id: result.length + 1,
         name: role[0][1],
         description: role[1][1] || "No description",
-        performedTasks: extractedTasks.map((line) => (line[0])),
-        assignedWorkProducts: extractedWorkProducts.map((line) => (line[0])), // TODO P0 ganti semua id jadi nameId
+        performedTasks: performedTaskIds,
+        assignedWorkProducts: assignedWorkProductIds,
         areasOfConcern: [],
         competencies: [],
         competencyLevels: [],
       })
     }
 
-    console.log("restructured roles", result);
     return result;
   };
 

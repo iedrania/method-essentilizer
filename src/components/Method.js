@@ -3,7 +3,7 @@ import { MappingContext } from '../context/context';
 import Router from 'next/router'
 import styles from '@/styles/Method.module.css';
 
-const Method = ({ method, nextId }) => {
+const Method = ({ method }) => {
   const { setMethodId, setName, setDescription, setTasks, setRoles } = useContext(MappingContext);
 
   const handleMethodClick = () => {

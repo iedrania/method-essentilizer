@@ -4,7 +4,7 @@ import { MappingContext } from "../context/context";
 import { downloadJson } from "@/utils/utils";
 
 const InputResult = () => {
-  const { name, creator, description, tasks, roles } =
+  const { name, creator, description, tasks, workProducts, roles } =
     useContext(MappingContext);
 
   const handleClick = () => {
@@ -23,7 +23,7 @@ const InputResult = () => {
   };
 
   const printConsole = () => {
-    console.log(tasks, roles);
+    console.log(tasks, workProducts, roles);
   };
 
   return (
@@ -49,11 +49,11 @@ const InputResult = () => {
                       <div key={index} className="px-5 pb-5 bg-white rounded-lg shadow">
                         <li className="font-semibold">{task.name}</li>
 
-                        {task.workProducts.length > 0 && (
+                        {workProducts.filter((workProduct) => workProduct.taskId === task.id).length > 0 && (
                           <div>
                             <h4>Work Products:</h4>
                             <ul>
-                              {task.workProducts.map((workProduct) => (
+                              {workProducts.filter((workProduct) => workProduct.taskId === task.id).map((workProduct) => (
                                 <li key={workProduct.id}>{workProduct.name}</li>
                               ))}
                             </ul>
@@ -80,7 +80,7 @@ const InputResult = () => {
                           <ul>
                             {role.performedTasks.map((taskId) => (
                               <li key={taskId}>
-                                {tasks.find((item) => item.id == taskId).name}
+                                {tasks.find((item) => item.id == taskId)?.name || "No name"}
                               </li>
                             ))}
                           </ul>
@@ -91,21 +91,11 @@ const InputResult = () => {
                         <div>
                           <h4>Assigned Work Products:</h4>
                           <ul>
-                            {role.assignedWorkProducts.map((idTuple) => {
-                              const task = tasks.find(
-                                (item) => item.id == idTuple[0]
-                              );
-                              const workProduct = task?.workProducts.find(
-                                (item) => item.id == idTuple[1]
-                              );
-                              return (
-                                <li key={`${idTuple[0]}-${idTuple[1]}`}>
-                                  {workProduct
-                                    ? workProduct.name
-                                    : "Work Product Not Found"}
-                                </li>
-                              );
-                            })}
+                            {role.assignedWorkProducts.map((workProductId) => (
+                              <li key={workProductId}>
+                                {workProducts.find((item) => item.id == workProductId)?.name || "No name"}
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       )}

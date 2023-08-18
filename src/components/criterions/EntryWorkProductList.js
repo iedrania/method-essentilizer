@@ -12,36 +12,36 @@ const EntryWorkProductList = ({ activity, workProducts }) => {
 
   const handleEntryLevelChange = (event, workProductId) => {
     const levelOfDetail = event.target.value;
-    updateEntryLevel(activity.id, workProductId, levelOfDetail, true);
+    updateEntryLevel(activity.id, workProductId.toString(), levelOfDetail, true);
   };
 
   const renderEntryCriterions = () => {
-    return workProducts.filter((workProduct) => workProduct.levelOfDetails.length).map((workProduct) => (
-      <div key={workProduct.id}>
+    return workProducts.filter((workProduct) => workProduct.levelOfDetails.length).map((workProduct, index) => (
+      <div key={`${activity.id}-${index}`}>
         <div className="flex items-center mr-4">
           <input
             type="checkbox"
             value={workProduct.id}
-            checked={activity.entryCriterions.workProducts.some((entryCriterion) => entryCriterion.startsWith(`${activity.id}-wp-${workProduct.id}.`))}
+            checked={activity.entryCriterions.workProducts.some((entryCriterion) => entryCriterion[0] === workProduct.id.toString())}
             onChange={(e) => handleEntryWorkProductChange(e, workProduct.levelOfDetails[0])}
             className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
-          <label key={workProduct.id} className="ml-2 text-sm font-medium text-gray-600">
+          <label className="ml-2 text-sm font-medium text-gray-600">
             {workProduct.name}
           </label>
         </div>
 
-        {activity.entryCriterions.workProducts.some((entryCriterion) => entryCriterion.startsWith(`${activity.id}-wp-${workProduct.id}.`)) && (
+        {activity.entryCriterions.workProducts.some((entryCriterion) => entryCriterion[0] === workProduct.id.toString()) && (
           <div>
             <p>Levels of {workProduct.name}</p>
             <select
               value={activity.entryCriterions.workProducts.find((entryCriterion) =>
-                entryCriterion.startsWith(`${activity.id}-wp-${workProduct.id}.`)
-              ).split(".")[1]}
+                entryCriterion[0] === workProduct.id.toString()
+              )[1]}
               onChange={(e) => handleEntryLevelChange(e, workProduct.id)}
             >
               {workProduct.levelOfDetails.map((level, index) => (
-                <option key={index} value={level}>
+                <option key={`${workProduct.taskId}-${workProduct.id}-${index}`} value={level}>
                   {level}
                 </option>
               ))}

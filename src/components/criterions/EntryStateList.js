@@ -6,12 +6,12 @@ const EntryStateList = ({ activity, alphas }) => {
 
   const handleEntryAlphaChange = (event, stateId) => {
     const alphaId = event.target.value;
-    updateEntryAlpha(activity.id, alphaId, stateId);
+    updateEntryAlpha(activity.id, alphaId, stateId.toString());
   };
 
   const handleEntryStateChange = (event, alphaId) => {
     const stateId = event.target.value;
-    updateEntryCriterions(activity.id, alphaId, stateId);
+    updateEntryCriterions(activity.id, alphaId.toString(), stateId);
   };
 
   const renderEntryCriterions = () => {
@@ -22,7 +22,7 @@ const EntryStateList = ({ activity, alphas }) => {
             type="checkbox"
             name="entryCriteria"
             value={alpha.id}
-            checked={activity.entryCriterions.alphas.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`))}
+            checked={activity.entryCriterions.alphas.some((entryCriterion) => entryCriterion[0] === alpha.id.toString())}
             onChange={(e) => handleEntryAlphaChange(e, alpha.states[0].id)}
             className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
@@ -31,14 +31,14 @@ const EntryStateList = ({ activity, alphas }) => {
           </label>
         </div>
 
-        {activity.entryCriterions.alphas.some((entryCriterion) => entryCriterion.startsWith(`${alpha.id}.`)) && (
+        {activity.entryCriterions.alphas.some((entryCriterion) => entryCriterion[0] === alpha.id.toString()) && (
           <div>
             <p>States of {alpha.name}</p>
             <select
               name={`entryCriterion-${alpha.id}`}
               value={activity.entryCriterions.alphas.find((entryCriterion) =>
-                entryCriterion.startsWith(`${alpha.id}.`)
-              ).split(".")[1]}
+                entryCriterion[0] === alpha.id.toString()
+              )[1]}
               onChange={(e) => handleEntryStateChange(e, alpha.id)}
             >
               {alpha.states.map((state) => (

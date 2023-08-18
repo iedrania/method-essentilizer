@@ -14,7 +14,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapWorkProducts: React.FC = ({alphas}) => {
-  const { tasks, subAlphas } = useContext(MappingContext);
+  const { workProducts, subAlphas } = useContext(MappingContext);
 
   return (
     <div className="bg-gray-100 h-screen py-4">
@@ -22,18 +22,13 @@ const MapWorkProducts: React.FC = ({alphas}) => {
         <div className="m-auto my-3 w-11/12">
           <div>
             <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-              {tasks.map((activity) => (
-                <div key={activity.id}>
-                  {activity.workProducts.map((workProduct) => (
-                    <AlphaList
-                      key={workProduct.id}
-                      workProduct={workProduct}
-                      alphas={ alphas.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) }
-                      subAlphas={ subAlphas.filter((item) => (activity.areasOfConcern).includes(String(item.areaOfConcernId))) }
-                      activityId={activity.id}
-                    />
-                  ))}
-                </div>
+              {workProducts.map((workProduct) => (
+                <AlphaList
+                  key={workProduct.id}
+                  workProduct={workProduct}
+                  alphas={ alphas.filter((item) => (workProduct.areasOfConcern).includes(String(item.areaOfConcernId))) }
+                  subAlphas={ subAlphas.filter((item) => (workProduct.areasOfConcern).includes(String(item.areaOfConcernId))) }
+                />
               ))}
             </div>
             <div className="mt-5 bg-white rounded-lg shadow">

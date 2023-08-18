@@ -1,4 +1,4 @@
-export function downloadEssenceJson(filename, methodId, title, creator, description, tasks, roles, subAlphas, patterns, essSpaces, essAlphas, essCompetencies) {
+export function downloadEssenceJson(filename, methodId, title, creator, description, tasks, workProducts, roles, subAlphas, patterns, essSpaces, essAlphas, essCompetencies) {
   function getCompetenciesForRolesWithTaskId(roles, taskId) {
     const rolesWithTaskId = roles
       .filter((role) => role.performedTasks.includes(taskId.toString()));
@@ -14,12 +14,28 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
     const groupedActivities = tasks.reduce((result, task) => {
       task.activitySpaces.forEach((spaceId) => {
         const activity = {
-          nameId: methodId + "-task-" + task.id,
+          nameId: methodId + "Activity" + task.id,
           name: task.name,
           description: task.description || "No description",
-          completionCriterions: task.completionCriterions,
-          entryCriterions: task.entryCriterions,
-          competencies: getCompetenciesForRolesWithTaskId(roles, task.id)
+          completionCriterions: {
+            alphas: task.completionCriterions.alphas.map((criterion) => {
+              return `${Number(criterion[0]) ? (methodId + "Sub" + criterion[0]) : criterion[0]}.${Number(criterion[1]) ? (methodId + "Sub" + criterion[0] + "State" + criterion[1]) : criterion[1]}`;
+            }),
+            workProducts: task.completionCriterions.workProducts.map((criterion) => {
+              return `${methodId}WP${criterion[0]}.${criterion[1]}`;
+            }),
+          },
+          entryCriterions: {
+            alphas: task.entryCriterions.alphas.map((criterion) => {
+              return `${Number(criterion[0]) ? (methodId + "Sub" + criterion[0]) : criterion[0]}.${Number(criterion[1]) ? (methodId + "Sub" + criterion[0] + "State" + criterion[1]) : criterion[1]}`;
+            }),
+            workProducts: task.entryCriterions.workProducts.map((criterion) => {
+              return `${methodId}WP${criterion[0]}.${criterion[1]}`;
+            }),
+          },
+          competencies: getCompetenciesForRolesWithTaskId(roles, task.id).map((compLevel) => {
+            return `${compLevel[0]}.${compLevel[1]}`;
+          }),
         };
 
         if (!result[spaceId]) {
@@ -45,44 +61,42 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
   function getSubAlphaIdsByAlphaId(alphaId) {
     const subAlphaIds = subAlphas
       .filter((subAlpha) => subAlpha.alpha === alphaId)
-      .map((subAlpha) => subAlpha.id);
+      .map((subAlpha) => methodId + "Sub" + subAlpha.id);
 
     return subAlphaIds;
   }
 
-  function restructureStates(states) {
+  function restructureStates(states, subAlphaId) {
     return states.map((state) => ({
-      nameId: state.id,
+      nameId: subAlphaId ? (Number(state.id) ? methodId + "Sub" + subAlphaId + "State" + state.id : state.id) : state.id,
       name: state.name,
       description: state.description,
       checklists: state.checklist,
     }));
   }
 
-  function groupWorkProductsByAlphas(tasks, subAlphas) {
-    const groupedWorkProducts = tasks.reduce((result, task) => {
-      task.workProducts.forEach((workProduct) => {
-        workProduct.alphas.forEach((alphaId) => {
-          const wp = {
-            nameId: methodId + "-task-" + task.id + "-wp-" + workProduct.id,
-            name: workProduct.name,
-            description: workProduct.description || "No description",
-            levelOfDetails: [],
-          };
+  function groupWorkProductsByAlphas(workProducts, subAlphas) {
+    const groupedWorkProducts = workProducts.reduce((result, workProduct) => {
+      workProduct.alphas.forEach((alphaId) => {
+        const wp = {
+          nameId: methodId + "WP" + workProduct.id,
+          name: workProduct.name,
+          description: workProduct.description || "No description",
+          levelOfDetails: workProduct.levelOfDetails,
+        };
 
-          if (!result[alphaId]) {
-            result[alphaId] = {
-              nameId: alphaId,
-              name: essAlphas.find((alpha) => alpha.id == alphaId)?.name || "Alpha Name Error",
-              description: essAlphas.find((alpha) => alpha.id == alphaId)?.description || "No description", // TODO P1 add in db
-              workProducts: [wp],
-              states: restructureStates(essAlphas.find((alpha) => alpha.id == alphaId)?.states || []),
-              subalphaIds: getSubAlphaIdsByAlphaId(alphaId),
-            };
-          } else {
-            result[alphaId].workProducts.push(wp);
-          }
-        });
+        if (!result[alphaId]) {
+          result[alphaId] = {
+            nameId: alphaId,
+            name: essAlphas.find((alpha) => alpha.id == alphaId)?.name || "Alpha Name Error",
+            description: essAlphas.find((alpha) => alpha.id == alphaId)?.description || "No description", // TODO P1 add in db
+            workProducts: [wp],
+            states: restructureStates(essAlphas.find((alpha) => alpha.id == alphaId)?.states || []),
+            subalphaIds: getSubAlphaIdsByAlphaId(alphaId),
+          };
+        } else {
+          result[alphaId].workProducts.push(wp);
+        }
       });
 
       subAlphas.forEach((subAlpha) => {
@@ -124,17 +138,17 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
 
   function restructureSubAlphas(subAlphas) {
     return subAlphas.map((subAlpha) => ({
-      nameId: subAlpha.id,
+      nameId: methodId + "Sub" + subAlpha.id,
       name: subAlpha.name,
       description: subAlpha.description,
       workProducts: findWorkProductsById(tasks, subAlpha.workProducts),
-      states: restructureStates(subAlpha.states),
-      subalphaIds: [],
+      states: restructureStates(subAlpha.states, subAlpha.id),
+      subalphaIds: getSubAlphaIdsByAlphaId(subAlpha.id),
     }));
   }
 
-  function combineAlphasWithSubAlphas(tasks, subAlphas) {
-    const alphas = groupWorkProductsByAlphas(tasks, subAlphas);
+  function combineAlphasWithSubAlphas(workProducts, subAlphas) {
+    const alphas = groupWorkProductsByAlphas(workProducts, subAlphas);
     const restructuredSubAlphas = restructureSubAlphas(subAlphas);
 
     return [...alphas, ...restructuredSubAlphas];
@@ -163,13 +177,13 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
 
   function createRolesPattern(roles) {
     const rolesPattern = {
-      nameId: "roles",
+      nameId: methodId + "PatternRoles",
       name: "Roles",
       description: `${title} Roles`,
       activities: [],
       alphas: [],
       competencies: [],
-      subpatternIds: roles.map((role) => `role-${role.id}`),
+      subpatternIds: roles.map((role) => methodId + "PatternRole" + role.id),
     };
   
     return rolesPattern;
@@ -177,7 +191,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
 
   function createRolePattern(role) {
     const rolePattern = {
-      nameId: `role-${role.id}`,
+      nameId: methodId + "PatternRole" + role.id,
       name: role.name,
       description: role.description || "No description",
       activities: [],
@@ -191,13 +205,13 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
 
   function restructurePatterns(patterns) {
     return patterns.map((pattern) => ({
-      nameId: `pattern-${pattern.id}`,
+      nameId: methodId + "Pattern" + pattern.id,
       name: pattern.name,
       description: pattern.description,
-      activities: pattern.activities,
+      activities: pattern.activities.map((item) => methodId + "Activity" + item.id),
       alphas: pattern.alphas,
       competencies: pattern.competencies,
-      subpatternIds: pattern.subPatterns,
+      subpatternIds: pattern.subPatterns.map((id) => methodId + "Pattern" + id),
     }));
   }
 
@@ -216,7 +230,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
     characteristics: [],
     description: description,
     activitySpaces: groupActivitiesByActivitySpaces(tasks),
-    alphas: combineAlphasWithSubAlphas(tasks, subAlphas),
+    alphas: combineAlphasWithSubAlphas(workProducts, subAlphas),
     competencies: groupCompetenciesByRoles(roles),
     patterns: combinePatternsWithRoles(patterns, roles),
   };

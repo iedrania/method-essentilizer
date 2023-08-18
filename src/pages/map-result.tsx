@@ -20,13 +20,13 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
-  const { methodId, name, creator, description, tasks, roles, subAlphas, patterns } = useContext(MappingContext);
+  const { methodId, name, creator, description, tasks, workProducts, roles, subAlphas, patterns } = useContext(MappingContext);
 
   const handleSaveClick = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     // TODO P2 make sure all delete removes from other lists
     try {
-      const body = { methodId, name, creator, description, tasks, roles, subAlphas, patterns };
+      const body = { methodId, name, creator, description, tasks, workProducts, roles, subAlphas, patterns };
       await fetch("/api/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,7 +39,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
   };
 
   const handleJsonClick = () => {
-    downloadEssenceJson(`${methodId} ${name} by ${creator} - Essentialized`, methodId, name, creator, description, tasks, roles, subAlphas, patterns, spaces, alphas, competencies);
+    downloadEssenceJson(`${methodId} ${name} by ${creator} - Essentialized`, methodId, name, creator, description, tasks, workProducts, roles, subAlphas, patterns, spaces, alphas, competencies);
   };
 
   const printConsole = () => {
@@ -54,6 +54,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
           <div className="my-5 bg-white rounded-lg shadow p-5">
             <div className="text-center">
               <h1 className="text-3xl">{name}</h1>
+              <p>{`(${methodId})`}</p>
               <p>by {creator}</p>
               <p>Description:</p>
               <p>{description}</p>
@@ -65,7 +66,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
               <div>
                 <h3 className="text-center font-semibold">Activities:</h3>
                 <ul>
-                  <div className="grid grid-cols-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {tasks.map((activity) => (
                       <div key={activity.id} className="px-5 pb-5 bg-white rounded-lg shadow">
                         <li className="font-semibold">{activity.name}</li>
@@ -81,11 +82,13 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
                           ) : <p>No Activity Spaces chosen.</p>}
                         </div>
 
-                        {activity.workProducts.length > 0 && (
+                        {workProducts.filter((workProduct) => workProduct.taskId === activity.id).length > 0 && (
                           <div>
                             <h4>Work Products:</h4>
                             <ul>
-                              {activity.workProducts.map((workProduct, index) => (
+                              {workProducts
+                                .filter((workProduct) => workProduct.taskId === activity.id)
+                                .map((workProduct, index) => (
                                 <div key={index}>
                                   <li>{workProduct.name}</li>
 
@@ -114,23 +117,22 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
                             <ul>
                               {activity.entryCriterions.alphas.map((criterion) => (
                                 <li key={criterion}>
-                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
-                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion[0])?.name ||
+                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion[0])?.name ||
                                     criterion}::
-                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
-                                    ?.states?.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
-                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
-                                    ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion[0])
+                                    ?.states?.find((state) => state.id.toString() === criterion[1])?.name ||
+                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion[0])
+                                    ?.states.find((state) => state.id.toString() === criterion[1])?.name ||
                                     "State Not Found"}
-                                    {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
+                                    {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion[0]))}
                                 </li>            
                               ))}
                               {activity.entryCriterions.workProducts.map((criterion) => (
                                 <li key={criterion}>
-                                  {tasks.find((task) => task.id.toString() === criterion.split("-")[0])?.
-                                    workProducts.find((workProduct) => workProduct.id.toString() === criterion.split(".")[0].split("-")[2])?.
+                                  {workProducts.find((workProduct) => workProduct.id.toString() === criterion[0])?.
                                     name || criterion}::
-                                  {criterion.split(".")[1] || "Level Not Found"}
+                                  {criterion[1] || "Level Not Found"}
                                 </li>            
                               ))}
                             </ul>
@@ -143,23 +145,22 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
                             <ul>
                               {activity.completionCriterions.alphas.map((criterion, index) => (
                                 <li key={index}>
-                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
-                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])?.name ||
+                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion[0])?.name ||
+                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion[0])?.name ||
                                     criterion}::
-                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
-                                    ?.states?.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
-                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0])
-                                    ?.states.find((state) => state.id.toString() === criterion.split(".")[1])?.name ||
+                                  {alphas.find((alphaObj) => alphaObj.id.toString() === criterion[0])
+                                    ?.states?.find((state) => state.id.toString() === criterion[1])?.name ||
+                                    subAlphas.find((alphaObj) => alphaObj.id.toString() === criterion[0])
+                                    ?.states.find((state) => state.id.toString() === criterion[1])?.name ||
                                     "State Not Found"}
-                                    {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion.split(".")[0]))}
+                                    {console.log(alphas.find((alphaObj) => alphaObj.id.toString() === criterion[0]))}
                                 </li>            
                               ))}
                               {activity.completionCriterions.workProducts.map((criterion) => (
                                 <li key={criterion}>
-                                  {tasks.find((task) => task.id.toString() === criterion.split("-")[0])?.
-                                    workProducts.find((workProduct) => workProduct.id.toString() === criterion.split(".")[0].split("-")[2])?.
+                                  {workProducts.find((workProduct) => workProduct.id.toString() === criterion[0])?.
                                     name || criterion}::
-                                  {criterion.split(".")[1] || "Level Not Found"}
+                                  {criterion[1] || "Level Not Found"}
                                 </li>            
                               ))}
                             </ul>
@@ -176,7 +177,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
               <div>
                 <h3 className="text-center font-semibold">Role Patterns:</h3>
                 <ul>
-                  <div className="grid grid-cols-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {roles.map((role) => (
                       <div key={role.id} className="px-5 pb-5 bg-white rounded-lg shadow">
                         <li className="font-semibold">{role.name}</li>
@@ -202,9 +203,9 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
               <div>
                 <h3 className="text-center font-semibold">Other Patterns:</h3>
                 <ul>
-                  <div className="grid grid-cols-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {patterns.map((pattern) => (
-                      <div key={pattern.id}>
+                      <div key={pattern.id} className="px-5 pb-5 bg-white rounded-lg shadow">
                         <h4>{pattern.name}</h4>
                         <p>{pattern.description}</p>
                         <h5>Alphas:</h5>
@@ -254,9 +255,9 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
               <div>
                 <h3 className="text-center font-semibold">Sub-Alphas:</h3>
                 <ul>
-                  <div className="grid grid-cols-2">
+                  <div className="grid grid-cols-1">
                     {subAlphas.map((subAlpha) => (
-                      <div key={subAlpha.id}>
+                      <div key={subAlpha.id} className="px-5 pb-5 bg-white rounded-lg shadow">
                         <h4>{subAlpha.name}</h4>
                         <p>{subAlpha.description}</p>
                         <p>Alpha: {
@@ -267,9 +268,9 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
 
                         <h5>Work Products:</h5>
                         <ul>
-                          {/* {subAlpha.workProducts.map((workProduct, index) => (
-                            <li key={index}>{(tasks[Number(workProduct.split("-")[2])-1])?.workProducts[Number(workProduct.split("-")[4]-1)].name}</li>
-                          ))} */}
+                          {subAlpha.workProducts.map((wpId, index) => (
+                            <li key={index}>{workProducts.find((workProduct) => workProduct.id === wpId).name}</li>
+                          ))}
                         </ul>
 
                         <h5>States:</h5>

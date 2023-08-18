@@ -14,14 +14,13 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapAreas: React.FC = ({ areas }) => {
-  const { tasks, roles, fillRoleAreasFromRelated } = useContext(MappingContext);
+  const { tasks, roles } = useContext(MappingContext);
 
   const filteredRoles = roles.filter(
     (role) => role.assignedWorkProducts?.length === 0 && role.performedTasks?.length === 0
   );
 
   const handleClick = () => {
-    fillRoleAreasFromRelated()
     Router.push('/map-work-products');
   }
 

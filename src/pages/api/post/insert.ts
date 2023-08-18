@@ -168,6 +168,7 @@ export default async function handle(req, res) {
     },
     {
       id: 5,
+      nameId: "Addressed1",
       name: "Addressed",
       description: "A solution has been produced that demonstrably addresses the opportunity.",
       checklist: opportunityChecklist.Addressed,
@@ -256,6 +257,7 @@ export default async function handle(req, res) {
     },
     {
       id: 5,
+      nameId: "Addressed2",
       name: "Addressed",
       description: "Enough of the requirements have been addressed to satisfy the need for a new system in a way that is acceptable to the stakeholders.",
       checklist: requirementsChecklist.Addressed,
@@ -347,6 +349,7 @@ export default async function handle(req, res) {
     },
     {
       id: 6,
+      nameId: "Retired1",
       name: "Retired",
       description: "The system is no longer supported.",
       checklist: systemChecklist.Retired,
@@ -597,6 +600,7 @@ export default async function handle(req, res) {
     },
     {
       id: 6,
+      nameId: "Retired2",
       name: "Retired",
       description: "The way of working is no longer in use by the team.",
       checklist: wayChecklist.Retired,
@@ -605,15 +609,15 @@ export default async function handle(req, res) {
   
   const alphas = [
     [
-      { id: 1, nameId: 'Stakeholders', name: 'Stakeholders', description: '', states: stakeholdersStates.map((state) => ({...state, nameId: "stakeholders-state-" + state.id })) },
-      { id: 2, nameId: 'Opportunity', name: 'Opportunity', description: '', states: opportunityStates.map((state) => ({...state, nameId: "opportunity-state-" + state.id })) },
+      { id: 1, nameId: 'stakeholders', name: 'Stakeholders', description: '', states: stakeholdersStates },
+      { id: 2, nameId: 'opportunity', name: 'Opportunity', description: '', states: opportunityStates },
     ], [
-      { id: 3, nameId: 'Requirements', name: 'Requirements', description: '', states: requirementsStates.map((state) => ({...state, nameId: "requirements-state-" + state.id })) },
-      { id: 4, nameId: 'Software', name: 'Software System', description: '', states: systemStates.map((state) => ({...state, nameId: "software-state-" + state.id })) },
+      { id: 3, nameId: 'requirements', name: 'Requirements', description: '', states: requirementsStates },
+      { id: 4, nameId: 'software', name: 'Software System', description: '', states: systemStates },
     ], [
-      { id: 5, nameId: 'Team', name: 'Team', description: '', states: teamStates.map((state) => ({...state, nameId: "team-state-" + state.id })) },
-      { id: 6, nameId: 'Work', name: 'Work', description: '', states: workStates.map((state) => ({...state, nameId: "work-state-" + state.id })) },
-      { id: 7, nameId: 'WayofWorking', name: 'Way-of-Working', description: '', states: wayStates.map((state) => ({...state, nameId: "way-state-" + state.id })) },
+      { id: 5, nameId: 'team', name: 'Team', description: '', states: teamStates },
+      { id: 6, nameId: 'work', name: 'Work', description: '', states: workStates },
+      { id: 7, nameId: 'way', name: 'Way-of-Working', description: '', states: wayStates },
     ],
   ];
 
@@ -672,7 +676,7 @@ export default async function handle(req, res) {
             },
             alphas: {
               create: alphas[areaOfConcern.id-1].map((alpha) => ({
-                id: alpha.nameId,
+                id: alpha.name,
                 name: alpha.name,
                 description: alpha.description,
                 workProducts: {
@@ -680,7 +684,7 @@ export default async function handle(req, res) {
                 },
                 states: {
                   create: alpha.states.map((state) => ({
-                    id: state.name,
+                    id: state.name === "Addressed" || state.name === "Retired" ? state.nameId : state.name,
                     name: state.name,
                     description: state.description,
                     checklist: state.checklist,

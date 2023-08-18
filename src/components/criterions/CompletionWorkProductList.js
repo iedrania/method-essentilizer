@@ -12,17 +12,17 @@ const CompletionWorkProductList = ({ activity, workProducts }) => {
 
   const handleCompletionLevelChange = (event, workProductId) => {
     const levelOfDetail = event.target.value;
-    updateCompletionLevel(activity.id, workProductId, levelOfDetail, true);
+    updateCompletionLevel(activity.id, workProductId.toString(), levelOfDetail, true);
   };
 
   const renderCompletionCriterions = () => {
-    return workProducts.filter((workProduct) => workProduct.levelOfDetails.length).map((workProduct) => (
-      <div key={workProduct.id}>
+    return workProducts.filter((workProduct) => workProduct.levelOfDetails.length).map((workProduct, index) => (
+      <div key={`${activity.id}-${index}`}>
         <div className="flex items-center mr-4">
           <input
             type="checkbox"
             value={workProduct.id}
-            checked={activity.completionCriterions.workProducts.some((completionCriterion) => completionCriterion.startsWith(`${activity.id}-wp-${workProduct.id}.`))}
+            checked={activity.completionCriterions.workProducts.some((completionCriterion) => completionCriterion[0] === workProduct.id.toString())}
             onChange={(e) => handleCompletionWorkProductChange(e, workProduct.levelOfDetails[workProduct.levelOfDetails.length-1])}
             className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
@@ -31,17 +31,17 @@ const CompletionWorkProductList = ({ activity, workProducts }) => {
           </label>
         </div>
 
-        {activity.completionCriterions.workProducts.some((completionCriterion) => completionCriterion.startsWith(`${activity.id}-wp-${workProduct.id}.`)) && (
+        {activity.completionCriterions.workProducts.some((completionCriterion) => completionCriterion[0] === workProduct.id.toString()) && (
           <div>
             <p>Levels of {workProduct.name}</p>
             <select
               value={activity.completionCriterions.workProducts.find((completionCriterion) =>
-                completionCriterion.startsWith(`${activity.id}-wp-${workProduct.id}.`)
-              ).split(".")[1]}
+                completionCriterion[0] === workProduct.id.toString()
+              )[1]}
               onChange={(e) => handleCompletionLevelChange(e, workProduct.id)}
             >
               {workProduct.levelOfDetails.map((level, index) => (
-                <option key={index} value={level}>
+                <option key={`${workProduct.taskId}-${workProduct.id}-${index}`} value={level}>
                   {level}
                 </option>
               ))}

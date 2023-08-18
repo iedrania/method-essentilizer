@@ -6,12 +6,12 @@ const CompletionStateList = ({ activity, alphas }) => {
 
   const handleCompletionAlphaChange = (event, stateId) => {
     const alphaId = event.target.value;
-    updateCompletionAlpha(activity.id, alphaId, stateId);
+    updateCompletionAlpha(activity.id, alphaId, stateId.toString());
   };
 
   const handleCompletionStateChange = (event, alphaId) => {
     const stateId = event.target.value;
-    updateCompletionCriterions(activity.id, alphaId, stateId);
+    updateCompletionCriterions(activity.id, alphaId.toString(), stateId);
   };
 
   const renderCompletionCriterions = () => {
@@ -22,7 +22,7 @@ const CompletionStateList = ({ activity, alphas }) => {
             type="checkbox"
             name="completionCriteria"
             value={alpha.id}
-            checked={activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`))}
+            checked={activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion[0] === alpha.id.toString())}
             onChange={(e) => handleCompletionAlphaChange(e, alpha.states[alpha.states.length-1].id)}
           />
           <label className="ml-2 text-sm font-medium text-gray-600">
@@ -30,14 +30,14 @@ const CompletionStateList = ({ activity, alphas }) => {
           </label>
         </div>
 
-        {activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`)) && (
+        {activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion[0] === alpha.id.toString()) && (
           <div>
             <p>States of {alpha.name}</p>
             <select
               name={`completionCriterion-${alpha.id}`}
               value={activity.completionCriterions.alphas.find((completionCriterion) =>
-                completionCriterion.startsWith(`${alpha.id}.`)
-              ).split(".")[1]}
+                completionCriterion[0] === alpha.id.toString()
+              )[1]}
               onChange={(e) => handleCompletionStateChange(e, alpha.id)}
               >
               {alpha.states.map((state) => (

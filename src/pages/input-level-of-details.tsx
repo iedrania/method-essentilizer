@@ -4,7 +4,7 @@ import { MappingContext } from '../context/context';
 import LevelOfDetails from '@/components/LevelOfDetails';
 
 const InputLevelOfDetails: React.FC = () => {
-  const { tasks } = useContext(MappingContext);
+  const { workProducts } = useContext(MappingContext);
 
   return (
     <div className="bg-gray-100 h-screen py-4">
@@ -12,18 +12,11 @@ const InputLevelOfDetails: React.FC = () => {
         <div className="m-auto my-3 w-11/12">
           <div>
             <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-              {tasks.map((activity) => (
-                <div key={activity.id}>
-                  <h3>{activity.name}</h3>
-
-                  {activity.workProducts.map((workProduct) => (
-                    <LevelOfDetails
-                      key={workProduct.id}
-                      activityId={activity.id}
-                      workProduct={workProduct}
-                    />
-                  ))}
-                </div>
+              {workProducts.map((workProduct) => (
+                <LevelOfDetails
+                  key={workProduct.id}
+                  workProduct={workProduct}
+                />
               ))}
             </div>
             <div className="mt-5 bg-white rounded-lg shadow">

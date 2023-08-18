@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const MapTasks: React.FC = ({alphas}) => {
-  const { tasks } = useContext(MappingContext);
+  const { tasks, workProducts } = useContext(MappingContext);
 
   return (
     <div className="bg-gray-100 h-screen py-4">
@@ -29,19 +29,23 @@ const MapTasks: React.FC = ({alphas}) => {
         <div className="m-auto my-3 w-11/12">
           {tasks.length > 0 && (
             <div>
-              <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                {tasks.map((activity) => (
-                  <div key={activity.id}>
-                    <h3>Criterions for {activity.name}</h3>
+              {tasks.map((activity) => (
+                <div key={activity.id}>
+                  <h3 className="text-center font-semibold">Criterions for {activity.name}</h3>
 
+                  <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2">
                     <EntryStateList activity={activity} alphas={ alphas } />
-                    <EntryWorkProductList activity={activity} workProducts={activity.workProducts}/>
-                    {/* TODO P0 all work products */}
                     <CompletionStateList activity={activity} alphas={ alphas } />
-                    <CompletionWorkProductList activity={activity} workProducts={activity.workProducts}/>
                   </div>
-                ))}
-              </div>
+
+                  {(workProducts.reduce((total, workProduct) => total + workProduct.levelOfDetails.length, 0) > 0) && (
+                  <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2">
+                    <EntryWorkProductList activity={activity} workProducts={workProducts} />
+                    <CompletionWorkProductList activity={activity} workProducts={workProducts} />
+                  </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
 

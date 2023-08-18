@@ -3,23 +3,23 @@ import React, { useContext } from "react";
 import Router from "next/router";
 import { MappingContext } from "../context/context";
 import Method from "@/components/Method";
-import styles from "@/styles/Home.module.css";
+import FileUploadButton from '@/components/FileUploadButton';
 
 export const getStaticProps: GetStaticProps = async () => {
-  const latestMethod = await prisma.method.findFirst({
-    orderBy: {
-      id: "desc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  // const latestMethod = await prisma.method.findFirst({
+  //   orderBy: {
+  //     id: "desc",
+  //   },
+  //   select: {
+  //     id: true,
+  //   },
+  // });
 
-  const nextId = latestMethod ? latestMethod.id + 1 : 1;
+  // const nextId = latestMethod ? latestMethod.id + 1 : 1;
 
   const methods = await prisma.method.findMany({
     select: {
-      id: true,
+      nameId: true,
       name: true,
       creator: true,
       description: true,
@@ -75,13 +75,13 @@ export const getStaticProps: GetStaticProps = async () => {
   });
 
   return {
-    props: { nextId, methods },
+    props: { methods },
     revalidate: 10,
   };
 };
 
-export default function Home({ nextId, methods }) {
-  const { setMethodId, setName, setCreator, setDescription, setTasks, setRoles } =
+export default function Home({ methods }) {
+  const { setInputExcel, setMethodId, setName, setCreator, setDescription, setTasks, setRoles } =
     useContext(MappingContext);
 
   const resetDatabase = async (e: React.SyntheticEvent) => {
@@ -121,7 +121,8 @@ export default function Home({ nextId, methods }) {
   };
 
   const handleCreate = () => {
-    setMethodId(nextId);
+    setInputExcel(false);
+    setMethodId("");
     setName("");
     setCreator("");
     setDescription("");
@@ -132,32 +133,35 @@ export default function Home({ nextId, methods }) {
 
   const renderMethods = () => {
     if (methods.length) {
-      return methods.map((method) => (
-        <Method key={method.id} method={method} nextId={nextId} />
-      ));
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+          {methods.map((method) => (
+            <Method key={method.nameId} method={method} />
+          ))}
+        </div>
+      );
     } else {
-      return <p>No methods available.</p>;
+      return (
+        <p className="p-4 text-center">
+          There are no methods in database.
+        </p>
+      );
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-5 bg-gray-100">
-      <div className="m-auto my-3">
-        <div>
+    <div className="h-screen bg-gray-100">
+      <div className="flex flex-col">
+        <div className="m-auto my-3">
           <div className="mt-5 bg-white rounded-lg shadow">
             <div className="flex">
               <div className="flex-1 py-5 overflow-hidden">
                 <h1 className="text-3xl px-5 text-center font-semibold leading-none">
-                  Method Essentializer
+                  Method Essentilizer
                 </h1>
               </div>
             </div>
             <div className="px-5 pb-5">
-              {/* <input
-              placeholder="Name"
-              className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-200 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-200"
-            /> */}
-
               <div className="flex flex-col gap-3 items-center pt-3">
                 <button
                   onClick={handleCreate}
@@ -183,6 +187,9 @@ export default function Home({ nextId, methods }) {
                   </svg>
                   <span className="pl-2 mx-1">Create new method</span>
                 </button>
+                <div className="w-full">
+                  <FileUploadButton />
+                </div>
                 <button
                   onClick={handleDelete}
                   type="button"
@@ -252,29 +259,27 @@ export default function Home({ nextId, methods }) {
               </div>
             </div>
           </div>
-          <div className="mt-5 bg-white shadow cursor-pointer rounded-xl">
-            <div className="flex p-3">
-              {renderMethods()}
-              {/* <div className="flex-1 py-5 pl-5 overflow-hidden">
-                <ul>
-                  <li className="text-xs text-gray-600 uppercase ">Receiver</li>
-                  <li>Max Mustermann</li>
-                  <li>Musterstrasse 1</li>
-                  <li>4020 Linz</li>
-                </ul>
-              </div>
-              <div className="flex-1 py-5 pl-1 overflow-hidden">
-                <ul>
-                  <li className="text-xs text-gray-600 uppercase">Sender</li>
-                  <li>Rick Astley</li>
-                  <li>Rickrolled 11</li>
-                  <li>1000 Vienna</li>
-                </ul>
-              </div> */}
-              <div className="flex-none pt-2.5 pr-2.5 pl-1"></div>
-            </div>
-          </div>
         </div>
+      </div>
+
+      <div className="mt-5 mx-10 bg-white shadow cursor-pointer rounded-xl">
+        {renderMethods()}
+        {/* <div className="flex-1 py-5 pl-5 overflow-hidden">
+          <ul>
+            <li className="text-xs text-gray-600 uppercase ">Receiver</li>
+            <li>Max Mustermann</li>
+            <li>Musterstrasse 1</li>
+            <li>4020 Linz</li>
+          </ul>
+        </div>
+        <div className="flex-1 py-5 pl-1 overflow-hidden">
+          <ul>
+            <li className="text-xs text-gray-600 uppercase">Sender</li>
+            <li>Rick Astley</li>
+            <li>Rickrolled 11</li>
+            <li>1000 Vienna</li>
+          </ul>
+        </div> */}
       </div>
     </div>
   );
