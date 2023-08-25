@@ -6,55 +6,58 @@ const CompletionStateList = ({ activity, alphas }) => {
 
   const handleCompletionAlphaChange = (event, stateId) => {
     const alphaId = event.target.value;
-    updateCompletionAlpha(activity.id, alphaId, stateId);
+    updateCompletionAlpha(activity.id, alphaId, stateId.toString());
   };
 
   const handleCompletionStateChange = (event, alphaId) => {
     const stateId = event.target.value;
-    updateCompletionCriterions(activity.id, alphaId, stateId);
+    updateCompletionCriterions(activity.id, alphaId.toString(), stateId);
   };
 
   const renderCompletionCriterions = () => {
-    return (
-      <div>
-        {alphas.concat(subAlphas).filter((alpha) => alpha.states.length).map((alpha) => (
-          <label key={alpha.id}>
-            <input
-              type="checkbox"
-              name="completionCriteria"
-              value={alpha.id}
-              checked={activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`))}
-              onChange={(e) => handleCompletionAlphaChange(e, alpha.states[alpha.states.length-1].id)}
-            />
+    return alphas.concat(subAlphas).filter((alpha) => alpha.states.length).map((alpha) => (
+      <div key={alpha.id}>
+        <div className="flex items-center mr-4">
+          <input
+            type="checkbox"
+            name="completionCriteria"
+            value={alpha.id}
+            checked={activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion[0] === alpha.id.toString())}
+            onChange={(e) => handleCompletionAlphaChange(e, alpha.states[alpha.states.length-1].id)}
+          />
+          <label className="ml-2 text-sm font-medium text-gray-600">
             {alpha.name}
-            {activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alpha.id}.`)) && (
-              <div>
-                <p>States of {alpha.name}</p>
-                <select
-                  name={`completionCriterion-${alpha.id}`}
-                  value={activity.completionCriterions.alphas.find((completionCriterion) =>
-                    completionCriterion.startsWith(`${alpha.id}.`)
-                  ).split(".")[1]}
-                  onChange={(e) => handleCompletionStateChange(e, alpha.id)}
-                  >
-                  {alpha.states.map((state) => (
-                    <option key={state.id} value={state.id}>
-                      {state.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
           </label>
-        ))}
+        </div>
+
+        {activity.completionCriterions.alphas.some((completionCriterion) => completionCriterion[0] === alpha.id.toString()) && (
+          <div>
+            <p>States of {alpha.name}</p>
+            <select
+              name={`completionCriterion-${alpha.id}`}
+              value={activity.completionCriterions.alphas.find((completionCriterion) =>
+                completionCriterion[0] === alpha.id.toString()
+              )[1]}
+              onChange={(e) => handleCompletionStateChange(e, alpha.id)}
+              >
+              {alpha.states.map((state) => (
+                <option key={state.id} value={state.id}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
-    );
+    ));
   };
 
   return (
-    <div>
-      <p>Choose Completion Criterias from Alpha States:</p>
-      {renderCompletionCriterions()}
+    <div className="px-5 pb-5 bg-white rounded-lg shadow">
+      <div className="flex flex-col gap-3">
+        <p>Choose Completion Criterias from Alpha States:</p>
+        {renderCompletionCriterions()}
+      </div>
     </div>
   );
 };

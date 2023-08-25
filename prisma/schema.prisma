@@ -72,8 +72,8 @@ model SubAlpha {
   description  String
   states       SubAlphaState[]
   // subAlphaIds  String[]
-  methodId     Int
-  method       Method          @relation(fields: [methodId], references: [id])
+  methodId     String
+  method       Method          @relation(fields: [methodId], references: [nameId])
   // areaOfConcernId String
   // areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
   workProducts WorkProduct[]
@@ -91,7 +91,7 @@ model SubAlphaState {
 // Method
 
 model Method {
-  id          Int        @id
+  nameId      String     @id
   name        String
   creator     String
   description String
@@ -109,8 +109,8 @@ model Activity {
   entryCriterions      Json
   areasOfConcern       AreaOfConcern[]
   activitySpaces       ActivitySpace[]
-  methodId             Int
-  method               Method          @relation(fields: [methodId], references: [id])
+  methodId             String
+  method               Method          @relation(fields: [methodId], references: [nameId])
   performerRoles       Pattern[]
   workProducts         WorkProduct[]
   roles                Role[]
@@ -138,8 +138,8 @@ model Role {
   areasOfConcern       AreaOfConcern[]
   performedTasks       Activity[]
   assignedWorkProducts WorkProduct[]
-  methodId             Int
-  method               Method          @relation(fields: [methodId], references: [id])
+  methodId             String
+  method               Method          @relation(fields: [methodId], references: [nameId])
 }
 
 model Pattern {
@@ -150,8 +150,8 @@ model Pattern {
   subPatternIds     String[]
   alphas            Alpha[]
   activities        Activity[]
-  methodId          Int
-  method            Method       @relation(fields: [methodId], references: [id])
+  methodId          String
+  method            Method       @relation(fields: [methodId], references: [nameId])
   workProduct       WorkProduct? @relation(fields: [workProductNameId], references: [nameId])
   workProductNameId String?
 }

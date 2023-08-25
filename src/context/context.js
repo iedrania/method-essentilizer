@@ -3,11 +3,13 @@ import React, { createContext, useState } from 'react';
 const MappingContext = createContext();
 
 const MappingProvider = ({ children }) => {
-  const [methodId, setMethodId] = useState(-1);
+  const [inputExcel, setInputExcel] = useState(false);
+  const [methodId, setMethodId] = useState('');
   const [name, setName] = useState('');
   const [creator, setCreator] = useState('');
   const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [workProducts, setWorkProducts] = useState([]);
   const [roles, setRoles] = useState([]);
   const [subAlphas, setSubAlphas] = useState([]);
   const [patterns, setPatterns] = useState([]);
@@ -42,66 +44,96 @@ const MappingProvider = ({ children }) => {
     );
   };
 
-  const addWorkProductToTask = (taskId, workProducts) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id === taskId) {
-          return { ...task, workProducts: [...(task.workProducts || []), ...workProducts] };
-        }
-        return task;
-      })
+  const addWorkProduct = (workProduct) => {
+    setWorkProducts((prevWorkProducts) =>[...prevWorkProducts, workProduct]);
+  };
+
+  const changeWorkProductName = (workProductId, newWorkProductName) => {
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts.map((workProduct) =>
+        workProduct.id === workProductId ? { ...workProduct, name: newWorkProductName } : workProduct
+      )
     );
   };
 
-  const changeWorkProductName = (taskId, workProductId, newWorkProductName) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id === taskId) {
-          const updatedWorkProducts = task.workProducts.map((workProduct) => {
-            if (workProduct.id === workProductId) {
-              return { ...workProduct, name: newWorkProductName };
-            }
-            return workProduct;
-          });
-          return { ...task, workProducts: updatedWorkProducts };
-        }
-        return task;
-      })
+  const changeWorkProductDescription = (workProductId, newWorkProductDescription) => {
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts.map((workProduct) =>
+        workProduct.id === workProductId ? { ...workProduct, description: newWorkProductDescription } : workProduct
+      )
     );
   };
 
-  const changeWorkProductDescription = (taskId, workProductId, newWorkProductDescription) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id === taskId) {
-          const updatedWorkProducts = task.workProducts.map((workProduct) => {
-            if (workProduct.id === workProductId) {
-              return { ...workProduct, description: newWorkProductDescription };
-            }
-            return workProduct;
-          });
-          return { ...task, workProducts: updatedWorkProducts };
-        }
-        return task;
-      })
+  const deleteWorkProduct = (workProductId) => {
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts
+        .filter((workProduct) => workProduct.id !== workProductId)
+        .map((workProduct) => {
+          return workProduct.id > workProductId ? { ...workProduct, id: workProduct.id - 1 } : workProduct;
+        })
     );
   };
 
-  const deleteWorkProduct = (taskId, workProductId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id === taskId) {
-          const updatedWorkProducts = task.workProducts
-            .filter((workProduct) => workProduct.id !== workProductId)
-            .map((workProduct) => {
-              return workProduct.id > workProductId ? { ...workProduct, id: workProduct.id - 1 } : workProduct;
-            });
-          return { ...task, workProducts: updatedWorkProducts };
-        }
-        return task;
-      })
-    );
-  };  
+  // const addWorkProductToTask = (taskId, workProducts) => {
+  //   setTasks((prevTasks) =>
+  //     prevTasks.map((task) => {
+  //       if (task.id === taskId) {
+  //         return { ...task, workProducts: [...(task.workProducts || []), ...workProducts] };
+  //       }
+  //       return task;
+  //     })
+  //   );
+  // };
+
+  // const changeWorkProductName = (taskId, workProductId, newWorkProductName) => {
+  //   setTasks((prevTasks) =>
+  //     prevTasks.map((task) => {
+  //       if (task.id === taskId) {
+  //         const updatedWorkProducts = task.workProducts.map((workProduct) => {
+  //           if (workProduct.id === workProductId) {
+  //             return { ...workProduct, name: newWorkProductName };
+  //           }
+  //           return workProduct;
+  //         });
+  //         return { ...task, workProducts: updatedWorkProducts };
+  //       }
+  //       return task;
+  //     })
+  //   );
+  // };
+
+  // const changeWorkProductDescription = (taskId, workProductId, newWorkProductDescription) => {
+  //   setTasks((prevTasks) =>
+  //     prevTasks.map((task) => {
+  //       if (task.id === taskId) {
+  //         const updatedWorkProducts = task.workProducts.map((workProduct) => {
+  //           if (workProduct.id === workProductId) {
+  //             return { ...workProduct, description: newWorkProductDescription };
+  //           }
+  //           return workProduct;
+  //         });
+  //         return { ...task, workProducts: updatedWorkProducts };
+  //       }
+  //       return task;
+  //     })
+  //   );
+  // };
+
+  // const deleteWorkProduct = (taskId, workProductId) => {
+  //   setTasks((prevTasks) =>
+  //     prevTasks.map((task) => {
+  //       if (task.id === taskId) {
+  //         const updatedWorkProducts = task.workProducts
+  //           .filter((workProduct) => workProduct.id !== workProductId)
+  //           .map((workProduct) => {
+  //             return workProduct.id > workProductId ? { ...workProduct, id: workProduct.id - 1 } : workProduct;
+  //           });
+  //         return { ...task, workProducts: updatedWorkProducts };
+  //       }
+  //       return task;
+  //     })
+  //   );
+  // };
 
   const addRole = (role) => {
     setRoles((prevRoles) => [...prevRoles, role]);
@@ -153,18 +185,18 @@ const MappingProvider = ({ children }) => {
     );
   };
 
-  const updateAssignedWorkProducts = (roleId, taskId, workProductId, isChecked) => {
+  const updateAssignedWorkProducts = (roleId, workProductId, isChecked) => {
     setRoles((prevRoles) =>
       prevRoles.map((role) => {
         if (role.id === roleId) {
           let updatedAssignedWorkProducts;
 
           if (isChecked) {
-            updatedAssignedWorkProducts = [...role.assignedWorkProducts, [taskId, workProductId]];
+            updatedAssignedWorkProducts = [...role.assignedWorkProducts, workProductId];
           } else {
-            updatedAssignedWorkProducts = role.assignedWorkProducts.filter((item) => item[0] !== taskId || item[1] !== workProductId);
+            updatedAssignedWorkProducts = role.assignedWorkProducts.filter((item) => item !== workProductId);
           }
-  
+
           return { ...role, assignedWorkProducts: updatedAssignedWorkProducts };
         }
         console.log(roles)
@@ -172,7 +204,7 @@ const MappingProvider = ({ children }) => {
         return role;
       })
     );
-  };  
+  };
 
   const updateActivitySpaces = (activityId, activitySpaceId, isChecked) => {
     setTasks((prevActivities) =>
@@ -194,76 +226,130 @@ const MappingProvider = ({ children }) => {
     );
   };
 
-  const updateAlphas = (activityId, workProductId, alphaId, isChecked) => {
-    setTasks((prevActivities) =>
-      prevActivities.map((activity) => {
-        if (activity.id === activityId) {
-          const updatedWorkProducts = activity.workProducts.map((workProduct) => {
-            if (workProduct.id === workProductId) {
-              let updatedAlphas;
-  
-              if (isChecked) {
-                updatedAlphas = [...(workProduct.alphas || []), alphaId];
-              } else {
-                updatedAlphas = (workProduct.alphas || []).filter((id) => id !== alphaId);
-              }
-  
-              return { ...workProduct, alphas: updatedAlphas };
-            }
-  
-            return workProduct;
-          });
-  
-          return { ...activity, workProducts: updatedWorkProducts };
+  const updateAlphas = (workProductId, alphaId, isChecked) => {
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts.map((workProduct) => {
+        if (workProduct.id === workProductId) {
+          let updatedSpaces;
+
+          if (isChecked) {
+            updatedSpaces = [...(workProduct.alphas || []), alphaId];
+          } else {
+            updatedSpaces = (workProduct.alphas || []).filter((id) => id !== alphaId);
+          }
+
+          return { ...workProduct, alphas: updatedSpaces };
         }
-  
-        return activity;
+
+        return workProduct;
       })
     );
   };
 
-  const updateSubAlphas = (activityId, workProductId, alphaId, isChecked) => {
-    setTasks((prevActivities) =>
-      prevActivities.map((activity) => {
-        if (activity.id === activityId) {
-          const updatedWorkProducts = activity.workProducts.map((workProduct) => {
-            if (workProduct.id === workProductId) {
-              let updatedAlphas;
-  
-              if (isChecked) {
-                updatedAlphas = [...(workProduct.subAlphas || []), alphaId];
-              } else {
-                updatedAlphas = (workProduct.subAlphas || []).filter((id) => id !== alphaId);
-              }
-  
-              return { ...workProduct, subAlphas: updatedAlphas };
-            }
-  
-            return workProduct;
-          });
-  
-          return { ...activity, workProducts: updatedWorkProducts };
+  const updateSubAlphas = (workProductId, alphaId, isChecked) => {
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts.map((workProduct) => {
+        if (workProduct.id === workProductId) {
+          let updatedSpaces;
+
+          if (isChecked) {
+            updatedSpaces = [...(workProduct.subAlphas || []), alphaId];
+          } else {
+            updatedSpaces = (workProduct.subAlphas || []).filter((id) => id !== alphaId);
+          }
+
+          return { ...workProduct, subAlphas: updatedSpaces };
         }
-  
-        return activity;
+
+        return workProduct;
       })
     );
 
     setSubAlphas((prevSubAlphas) =>
       prevSubAlphas.map((subAlpha) => {
-        const itemId = `${methodId}-task-${activityId}-wp-${workProductId}`
         if (isChecked) {
-          if (!subAlpha.workProducts.includes(itemId)) {
-            subAlpha.workProducts.push(itemId);
+          if (!subAlpha.workProducts.includes(workProductId)) {
+            subAlpha.workProducts.push(workProductId);
           }
         } else {
-          subAlpha.workProducts = subAlpha.workProducts.filter((id) => id !== itemId);
+          subAlpha.workProducts = subAlpha.workProducts.filter((id) => id !== workProductId);
         }
 
         return subAlpha;
       })
     );
   };
+
+  // const updateAlphas = (workProductId, alphaId, isChecked) => {
+  //   setTasks((prevActivities) =>
+  //     prevActivities.map((activity) => {
+  //       if (activity.id === activityId) {
+  //         const updatedWorkProducts = activity.workProducts.map((workProduct) => {
+  //           if (workProduct.id === workProductId) {
+  //             let updatedAlphas;
+  
+  //             if (isChecked) {
+  //               updatedAlphas = [...(workProduct.alphas || []), alphaId];
+  //             } else {
+  //               updatedAlphas = (workProduct.alphas || []).filter((id) => id !== alphaId);
+  //             }
+  
+  //             return { ...workProduct, alphas: updatedAlphas };
+  //           }
+  
+  //           return workProduct;
+  //         });
+  
+  //         return { ...activity, workProducts: updatedWorkProducts };
+  //       }
+  
+  //       return activity;
+  //     })
+  //   );
+  // };
+
+  // const updateSubAlphas = (activityId, workProductId, alphaId, isChecked) => {
+  //   setTasks((prevActivities) =>
+  //     prevActivities.map((activity) => {
+  //       if (activity.id === activityId) {
+  //         const updatedWorkProducts = activity.workProducts.map((workProduct) => {
+  //           if (workProduct.id === workProductId) {
+  //             let updatedAlphas;
+  
+  //             if (isChecked) {
+  //               updatedAlphas = [...(workProduct.subAlphas || []), alphaId];
+  //             } else {
+  //               updatedAlphas = (workProduct.subAlphas || []).filter((id) => id !== alphaId);
+  //             }
+  
+  //             return { ...workProduct, subAlphas: updatedAlphas };
+  //           }
+  
+  //           return workProduct;
+  //         });
+  
+  //         return { ...activity, workProducts: updatedWorkProducts };
+  //       }
+  
+  //       return activity;
+  //     })
+  //   );
+
+  //   setSubAlphas((prevSubAlphas) =>
+  //     prevSubAlphas.map((subAlpha) => {
+  //       const itemId = [activityId, workProductId];
+  //       if (isChecked) {
+  //         if (!subAlpha.workProducts.includes(itemId)) {
+  //           subAlpha.workProducts.push(itemId);
+  //         }
+  //       } else {
+  //         subAlpha.workProducts = subAlpha.workProducts.filter((id) => id !== itemId);
+  //       }
+
+  //       return subAlpha;
+  //     })
+  //   );
+  // };
 
   const updateCompetencies = (roleId, competencyId, isChecked) => {
     setRoles((prevRoles) =>
@@ -292,16 +378,16 @@ const MappingProvider = ({ children }) => {
           let updatedLevels;
 
           if (isChecked) {
-            if (role.competencyLevels.some((competencyLevel) => competencyLevel.startsWith(`${competencyId}.`))) {
+            if (role.competencyLevels.some((competencyLevel) => competencyLevel[0] === competencyId)) {
               updatedLevels = role.competencyLevels.map((competencyLevel) =>
-                competencyLevel.startsWith(`${competencyId}.`) ? `${competencyId}.${levelName}` : competencyLevel
+                competencyLevel[0] === competencyId ? [competencyId, levelName] : competencyLevel
               );
             } else {
-              updatedLevels = [...role.competencyLevels, `${competencyId}.${levelName}`];
+              updatedLevels = [...role.competencyLevels, [competencyId, levelName]];
             }
           } else {
             console.log("remove", competencyId, "from competencyLevels")
-            updatedLevels = role.competencyLevels.filter((competencyLevel) => !competencyLevel.startsWith(`${competencyId}.`));
+            updatedLevels = role.competencyLevels.filter((competencyLevel) => !competencyLevel[0] === competencyId);
           }
 
           console.log("updatedLevels", updatedLevels);
@@ -331,6 +417,42 @@ const MappingProvider = ({ children }) => {
           return activity;
         })
       );
+
+      setWorkProducts((prevWorkProducts) =>
+        prevWorkProducts.map((workProduct) => {
+          if (workProduct.taskId === elementId) {
+            let updatedAreas;
+
+            if (isChecked) {
+              updatedAreas = [...(workProduct.areasOfConcern || []), areaId];
+            } else {
+              updatedAreas = (workProduct.areasOfConcern || []).filter((id) => id !== areaId);
+            }
+
+            return { ...workProduct, areasOfConcern: updatedAreas };
+          }
+
+          return workProduct;
+        })
+      )
+
+      setRoles((prevRoles) =>
+        prevRoles.map((role) => {
+          if (role.performedTasks.includes(String(elementId))) {
+            if (!role.areasOfConcern.includes(areaId)) {
+              role.areasOfConcern.push(areaId);
+            }
+          }          
+
+          if (role.assignedWorkProducts.some(workProduct => workProduct.taskId === elementId)) {
+            if (!role.areasOfConcern.includes(areaId)) {
+              role.areasOfConcern.push(areaId);
+            }
+          }
+
+          return role;
+        })
+      )
     } else if (elementType === 2) { // role
       setRoles((prevRoles) =>
         prevRoles.map((role) => {
@@ -354,43 +476,43 @@ const MappingProvider = ({ children }) => {
     }
   };
 
-  const fillRoleAreasFromRelated = () => {
-    setRoles((prevRoles) =>
-      prevRoles.map((role) => {
-        if (!role.areasOfConcern.length) {
-          const relatedAreasOfConcern = [];
+  // const fillRoleAreasFromRelated = () => {
+  //   setRoles((prevRoles) =>
+  //     prevRoles.map((role) => {
+  //       if (!role.areasOfConcern.length) {
+  //         const relatedAreasOfConcern = [];
 
-          console.log(role.performedTasks, "length adalah", role.performedTasks.length)
-          if (role.performedTasks.length) {
-            console.log('ada performed task')
-            tasks.forEach((activity) => {
-              console.log(activity);
-              if (role.performedTasks.includes(String(activity.id))) {
-                relatedAreasOfConcern.push(...activity.areasOfConcern);
-                console.log('area of concern yg ditambah dari activity', activity.areasOfConcern)
-              }
-            });
-          }
+  //         console.log(role.performedTasks, "length adalah", role.performedTasks.length)
+  //         if (role.performedTasks.length) {
+  //           console.log('ada performed task')
+  //           tasks.forEach((activity) => {
+  //             console.log(activity);
+  //             if (role.performedTasks.includes(String(activity.id))) {
+  //               relatedAreasOfConcern.push(...activity.areasOfConcern);
+  //               console.log('area of concern yg ditambah dari activity', activity.areasOfConcern)
+  //             }
+  //           });
+  //         }
 
-          if (role.assignedWorkProducts.length) {
-            role.assignedWorkProducts.forEach((idTuple) => {
-              const task = tasks.find((item) => item.id == idTuple[0]);
-              relatedAreasOfConcern.push(...task.areasOfConcern)
-            });
-          }
+  //         if (role.assignedWorkProducts.length) {
+  //           role.assignedWorkProducts.forEach((id) => {
+  //             const task = tasks.find((item) => item.id == id);
+  //             relatedAreasOfConcern.push(...task.areasOfConcern)
+  //           });
+  //         }
 
-          console.log("relatedArea", relatedAreasOfConcern)
+  //         console.log("relatedArea", relatedAreasOfConcern)
 
-          const uniqueAreasOfConcern = Array.from(new Set(relatedAreasOfConcern));
-          console.log(uniqueAreasOfConcern)
+  //         const uniqueAreasOfConcern = Array.from(new Set(relatedAreasOfConcern));
+  //         console.log(uniqueAreasOfConcern)
 
-          return { ...role, areasOfConcern: uniqueAreasOfConcern }
-        }
+  //         return { ...role, areasOfConcern: uniqueAreasOfConcern }
+  //       }
 
-        return role;
-      })
-    );
-  };
+  //       return role;
+  //     })
+  //   );
+  // };
 
   const addSubAlpha = (subAlpha) => {
     setSubAlphas((prevSubAlphas) => [...prevSubAlphas, subAlpha]);
@@ -426,7 +548,12 @@ const MappingProvider = ({ children }) => {
     setSubAlphas((prevSubAlphas) =>
       prevSubAlphas.map((subAlpha) => {
         if (subAlpha.id === subAlphaId) {
-          return { ...subAlpha, alpha: selectedAlphaId, states: newStates, areaOfConcernId: areaOfConcernId };
+          return {
+            ...subAlpha,
+            alpha: selectedAlphaId,
+            states: newStates.map((state) => ({...state, alphaId: subAlphaId})),
+            areaOfConcernId: areaOfConcernId
+          };
         }
 
         return subAlpha;
@@ -573,10 +700,10 @@ const MappingProvider = ({ children }) => {
         if (task.id === taskId) {
           let updatedAlphaCriterions;
 
-          if (task.entryCriterions.alphas.some((entryCriterion) => entryCriterion.startsWith(`${alphaId}.`))) {
-            updatedAlphaCriterions = task.entryCriterions.alphas.filter((entryCriterion) => !entryCriterion.startsWith(`${alphaId}.`));
+          if (task.entryCriterions.alphas.some((entryCriterion) => entryCriterion[0] === alphaId)) {
+            updatedAlphaCriterions = task.entryCriterions.alphas.filter((entryCriterion) => !(entryCriterion[0] === alphaId));
           } else {
-            updatedAlphaCriterions = [...task.entryCriterions.alphas, `${alphaId}.${stateId}`];
+            updatedAlphaCriterions = [...task.entryCriterions.alphas, [alphaId, stateId]];
           }
 
           console.log("updatedAlphaCriterions", updatedAlphaCriterions);
@@ -593,12 +720,12 @@ const MappingProvider = ({ children }) => {
         if (task.id === taskId) {
           let updatedAlphaCriterions;
 
-          if (task.entryCriterions.alphas.some((entryCriterion) => entryCriterion.startsWith(`${alphaId}.`))) {
+          if (task.entryCriterions.alphas.some((entryCriterion) => entryCriterion[0] === alphaId)) {
             updatedAlphaCriterions = task.entryCriterions.alphas.map((entryCriterion) =>
-              entryCriterion.startsWith(`${alphaId}.`) ? `${alphaId}.${stateId}` : entryCriterion
+              entryCriterion[0] === alphaId ? [alphaId, stateId] : entryCriterion
             );
           } else {
-            updatedAlphaCriterions = [...task.entryCriterions.alphas, `${alphaId}.${stateId}`];
+            updatedAlphaCriterions = [...task.entryCriterions.alphas, [alphaId, stateId]];
           }
 
           console.log("updatedAlphaCriterions", updatedAlphaCriterions);
@@ -615,10 +742,10 @@ const MappingProvider = ({ children }) => {
         if (task.id === taskId) {
           let updatedAlphaCriterions;
 
-          if (task.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alphaId}.`))) {
-            updatedAlphaCriterions = task.completionCriterions.alphas.filter((completionCriterion) => !completionCriterion.startsWith(`${alphaId}.`));
+          if (task.completionCriterions.alphas.some((completionCriterion) => completionCriterion[0] === alphaId)) {
+            updatedAlphaCriterions = task.completionCriterions.alphas.filter((completionCriterion) => !(completionCriterion[0] === alphaId));
           } else {
-            updatedAlphaCriterions = [...task.completionCriterions.alphas, `${alphaId}.${stateId}`];
+            updatedAlphaCriterions = [...task.completionCriterions.alphas, [alphaId, stateId]];
           }
 
           console.log("updatedAlphaCriterions", updatedAlphaCriterions);
@@ -635,12 +762,12 @@ const MappingProvider = ({ children }) => {
         if (task.id === taskId) {
           let updatedAlphaCriterions;
 
-          if (task.completionCriterions.alphas.some((completionCriterion) => completionCriterion.startsWith(`${alphaId}.`))) {
+          if (task.completionCriterions.alphas.some((completionCriterion) => completionCriterion[0] === alphaId)) {
             updatedAlphaCriterions = task.completionCriterions.alphas.map((completionCriterion) =>
-              completionCriterion.startsWith(`${alphaId}.`) ? `${alphaId}.${stateId}` : completionCriterion
+              completionCriterion[0] === alphaId ? [alphaId, stateId] : completionCriterion
             );
           } else {
-            updatedAlphaCriterions = [...task.completionCriterions.alphas, `${alphaId}.${stateId}`];
+            updatedAlphaCriterions = [...task.completionCriterions.alphas, [alphaId, stateId]];
           }
 
           console.log("updatedAlphaCriterions", updatedAlphaCriterions);
@@ -765,63 +892,32 @@ const MappingProvider = ({ children }) => {
     );
   };
 
-  const addLevelOfDetailItem = (taskId, workProductId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id !== taskId) return task;
-
-        return {
-          ...task,
-          workProducts: task.workProducts.map((workProduct) => {
-            if (workProduct.id !== workProductId) return workProduct;
-
-            return {
-              ...workProduct,
-              levelOfDetails: [...workProduct.levelOfDetails, ''],
-            };
-          }),
-        };
-      })
+  const addLevelOfDetailItem = (workProductId) => {
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts.map((workProduct) =>
+        workProduct.id === workProductId ? { ...workProduct, levelOfDetails: [...workProduct.levelOfDetails, ''] } : workProduct
+      )
     );
   };
 
-  const changeLevelOfDetailItem = (taskId, workProductId, index, newValue) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id !== taskId) return task;
-
-        return {
-          ...task,
-          workProducts: task.workProducts.map((workProduct) => {
-            if (workProduct.id !== workProductId) return workProduct;
-
-            return {
-              ...workProduct,
-              levelOfDetails: workProduct.levelOfDetails?.map((levelOfDetail, i) => (i === index ? newValue : levelOfDetail)),
-            };
-          }),
-        };
-      })
+  const changeLevelOfDetailItem = (workProductId, index, newValue) => {
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts.map((workProduct) =>
+        workProduct.id === workProductId ? {
+          ...workProduct,
+          levelOfDetails: workProduct.levelOfDetails?.map((levelOfDetail, i) =>
+            (i === index ? newValue : levelOfDetail)
+          )
+        } : workProduct
+      )
     );
   };
 
-  const deleteLevelOfDetailItem = (taskId, workProductId, index) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id !== taskId) return task;
-
-        return {
-          ...task,
-          workProducts: task.workProducts.map((workProduct) => {
-            if (workProduct.id !== workProductId) return workProduct;
-
-            return {
-              ...workProduct,
-              levelOfDetail: workProduct.levelOfDetail.filter((_, i) => i !== index),
-            };
-          }),
-        };
-      })
+  const deleteLevelOfDetailItem = (workProductId, index) => {
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts.map((workProduct) =>
+        workProduct.id === workProductId ? { ...workProduct, levelOfDetails: workProduct.levelOfDetails.filter((_, i) => i !== index) } : workProduct
+      )
     );
   };
 
@@ -832,16 +928,15 @@ const MappingProvider = ({ children }) => {
           let updatedLevels;
 
           if (isChecked) {
-            if (activity.entryCriterions.workProducts.some((entryCriterion) => entryCriterion.startsWith(`${activityId}-wp-${workProductId}.`))) {
+            if (activity.entryCriterions.workProducts.some((entryCriterion) => entryCriterion[0] === workProductId)) {
               updatedLevels = activity.entryCriterions.workProducts.map((entryCriterion) =>
-                entryCriterion.startsWith(`${activityId}-wp-${workProductId}.`) ? `${activityId}-wp-${workProductId}.${levelName}` : entryCriterion
+                entryCriterion[0] === workProductId ? [workProductId, levelName] : entryCriterion
               );
             } else {
-              updatedLevels = [...activity.entryCriterions.workProducts, `${activityId}-wp-${workProductId}.${levelName}`];
+              updatedLevels = [...activity.entryCriterions.workProducts, [workProductId, levelName]];
             }
           } else {
-            console.log("remove", workProductId, "from entryCriterions.workProducts")
-            updatedLevels = activity.entryCriterions.workProducts.filter((entryCriterion) => !entryCriterion.startsWith(`${activityId}-wp-${workProductId}.`));
+            updatedLevels = activity.entryCriterions.workProducts.filter((entryCriterion) => !entryCriterion[0] === workProductId);
           }
 
           console.log("updatedLevels", updatedLevels);
@@ -859,16 +954,15 @@ const MappingProvider = ({ children }) => {
           let updatedLevels;
 
           if (isChecked) {
-            if (activity.completionCriterions.workProducts.some((completionCriterion) => completionCriterion.startsWith(`${activityId}-wp-${workProductId}.`))) {
+            if (activity.completionCriterions.workProducts.some((completionCriterion) => completionCriterion[0] === workProductId)) {
               updatedLevels = activity.completionCriterions.workProducts.map((completionCriterion) =>
-                completionCriterion.startsWith(`${activityId}-wp-${workProductId}.`) ? `${activityId}-wp-${workProductId}.${levelName}` : completionCriterion
+                completionCriterion[0] === workProductId ? [workProductId, levelName] : completionCriterion
               );
             } else {
-              updatedLevels = [...activity.completionCriterions.workProducts, `${activityId}-wp-${workProductId}.${levelName}`];
+              updatedLevels = [...activity.completionCriterions.workProducts, [workProductId, levelName]];
             }
           } else {
-            console.log("remove", workProductId, "from completionCriterions.workProducts")
-            updatedLevels = activity.completionCriterions.workProducts.filter((completionCriterion) => !completionCriterion.startsWith(`${activityId}-wp-${workProductId}.`));
+            updatedLevels = activity.completionCriterions.workProducts.filter((completionCriterion) => !completionCriterion[0] === workProductId);
           }
 
           console.log("updatedLevels", updatedLevels);
@@ -908,6 +1002,8 @@ const MappingProvider = ({ children }) => {
     updateCompletionCriterions,
     tasks,
     setTasks,
+    workProducts,
+    setWorkProducts,
     roles,
     setRoles,
     addTask,
@@ -923,14 +1019,13 @@ const MappingProvider = ({ children }) => {
     changeRoleDescription,
     updatePerformedTasks,
     updateAssignedWorkProducts,
-    addWorkProductToTask,
+    addWorkProduct,
     updateAreas,
     updateActivitySpaces,
     updateAlphas,
     updateSubAlphas,
     updateCompetencies,
     updateCompetencyLevel,
-    fillRoleAreasFromRelated,
     patterns,
     setPatterns,
     addPattern,
@@ -946,6 +1041,8 @@ const MappingProvider = ({ children }) => {
     deleteLevelOfDetailItem,
     updateEntryLevel,
     updateCompletionLevel,
+    inputExcel,
+    setInputExcel,
   };
 
   return <MappingContext.Provider value={contextValue}>{children}</MappingContext.Provider>;
