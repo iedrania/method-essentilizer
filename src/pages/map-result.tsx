@@ -43,8 +43,7 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
   };
 
   const printConsole = () => {
-    console.log(methodId, name, creator, description, tasks, roles, subAlphas, patterns);
-    // TODO P3 ganti index jadi id/otherwise
+    console.log(methodId, name, creator, description, tasks, workProducts, roles, subAlphas, patterns);
   }
 
   return (
@@ -307,12 +306,12 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
               >
                 Download JSON
               </button>
-              <button
+              {/* <button
                 className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-700  focus:outline-none   transition duration-300 transform active:scale-95 ease-in-out"
                 onClick={printConsole}
               >
                 Log
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

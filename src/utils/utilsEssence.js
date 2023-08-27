@@ -120,18 +120,15 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
     return alphas;
   }
 
-  function findWorkProductsById(tasks, workProductIds) {
-    const result = tasks
-      .flatMap((task) =>
-        task.workProducts
-          .filter((workProduct) => workProductIds.includes(methodId + "-task-" + task.id + "-wp-" + workProduct.id))
-          .map((workProduct) => ({
-            nameId: methodId + "-task-" + task.id + "-wp-" + workProduct.id,
-            name: workProduct.name,
-            description: workProduct.description || "No description",
-            levelOfDetails: [],
-          }))
-      );
+  function findWorkProductsById(workProductIds) {
+    const result = workProducts
+      .filter((workProduct) => workProductIds.includes(methodId + "WP" + workProduct.id))
+      .map((workProduct) => ({
+        nameId: methodId + "WP" + workProduct.id,
+        name: workProduct.name,
+        description: workProduct.description || "No description",
+        levelOfDetails: [],
+      }));
   
     return result;
   }
@@ -141,7 +138,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
       nameId: methodId + "Sub" + subAlpha.id,
       name: subAlpha.name,
       description: subAlpha.description,
-      workProducts: findWorkProductsById(tasks, subAlpha.workProducts),
+      workProducts: findWorkProductsById(subAlpha.workProducts),
       states: restructureStates(subAlpha.states, subAlpha.id),
       subalphaIds: getSubAlphaIdsByAlphaId(subAlpha.id),
     }));

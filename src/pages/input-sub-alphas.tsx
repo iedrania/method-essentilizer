@@ -77,7 +77,7 @@ const InputSubAlphas = ({alphas}) => {
                     />
                   </svg>
                 </button>
-                <Link href="/map-areas" className="w-full">
+                <Link href="/input-level-of-details" className="w-full">
                   <button
                     type="button"
                     className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-700  focus:outline-none   transition duration-300 transform active:scale-95 ease-in-out"

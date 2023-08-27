@@ -4,7 +4,7 @@ import { MappingContext } from "../context/context";
 import { read, utils } from "xlsx";
 
 const FileUploadButton = () => {
-  const { setInputExcel, setMethodId, setName, setCreator, setDescription, setTasks, setRoles, setSubAlphas } = useContext(MappingContext);
+  const { setInputExcel, setMethodId, setName, setCreator, setDescription, setTasks, setWorkProducts, setRoles, setSubAlphas } = useContext(MappingContext);
 
   const fileInputRef = useRef(null);
 
@@ -44,14 +44,21 @@ const FileUploadButton = () => {
     setCreator(excelArray[2][1]);
     setDescription(excelArray[4][0]);
 
-    const restructuredTasks = restructureTasks(tasks);
-    setTasks(restructuredTasks); // BUG P1 cek todo
+    const tasksResult = restructureTasks(tasks);
+    const restructuredTasks = tasksResult[0];
+    const workProducts = tasksResult[1];
+    const subAlphas = tasksResult[2];
+    setTasks(restructuredTasks);
+    setWorkProducts(workProducts);
+    setSubAlphas(subAlphas);
 
-    const restructuredRoles = restructureRoles(roles, restructuredTasks);
-    setRoles(restructuredRoles); // BUG P0 cek todo change all stored ids in checkboxes to names?
+    const restructuredRoles = restructureRoles(roles, restructuredTasks, workProducts);
+    setRoles(restructuredRoles);
 
-    console.log("restructured tasks", restructuredTasks);
-    console.log("restructured roles", restructuredRoles);
+    console.log("tasks", restructuredTasks);
+    console.log("workProducts", workProducts);
+    console.log("roles", restructuredRoles);
+    console.log("subAlphas", subAlphas)
   };
 
   const extractTasksFromExcel = (array) => {
@@ -70,7 +77,6 @@ const FileUploadButton = () => {
         inTasksSection = false;
       } else if (inTasksSection) {
         if (line[0] === 'Task') {
-          console.log('new task')
           if (currentTask.length > 0) {
             tasks.push(currentTask);
             currentTask = [];
@@ -86,10 +92,14 @@ const FileUploadButton = () => {
 
   function restructureTasks(tasks) {
     const result = [];
+    const workProducts = [];
+    const subAlphas = [];
+    const allExtractedWorkProducts = [];
 
     for (const task of tasks) {
       const extractedWorkProducts = extractColumnContents(task, 3, 'Work products', 'Conditions');
-      console.log('Extracted Work Products:', extractedWorkProducts);
+      allExtractedWorkProducts.push(...extractedWorkProducts);
+      console.log("AAAAAA", allExtractedWorkProducts)
 
       const extractedConditionsInput = extractColumnContents(task, 0, 'Conditions', undefined);
       console.log('Extracted Conditions:', extractedConditionsInput);
@@ -101,49 +111,166 @@ const FileUploadButton = () => {
         id: result.length + 1,
         name: task[0][1],
         description: task[1][1] || "No description",
-        workProducts: extractedWorkProducts.map((line, index) => ({
-          id: index + 1,
+        entryCriterions: extractedConditionsInput,
+        completionCriterions: extractedConditionsOutput,
+        areasOfConcern: [],
+        activitySpaces: [],
+      })
+
+      extractedWorkProducts.map((line) => {
+        workProducts.push({
+          id: workProducts.length + 1,
           name: line[0],
           description: line[1] || "No description",
           alphas: [],
           subAlphas: [],
-          levelOfDetails: [], // TODO P1 cek semua condition di kolom 0 dan 3 apakah ada nama yang sama, ambil state
-        })),
-        entryCriterions: { // TODO P0 ambil semua yang tidak ada di work product semua task jadi alpha atau sub alpha
-          alphas: extractedConditionsInput.map((line) => (`${line[0]}.${line[2]}`)), // TODO P1 pisahkan berdasarkan keberadaan di daftar semua work product
-          workProducts: [], // TODO P1 ganti semua nameId jadi literally name?
-        },
-        completionCriterions: {
-          alphas: extractedConditionsOutput.map((line) => (`${line[0]}.${line[2]}`)),
-          workProducts: [],
-        },
-        areasOfConcern: [],
-        activitySpaces: [],
+          levelOfDetails: [],
+          taskId: result.find((item) => item.name === task[0][1])?.id,
+          areasOfConcern: [],
+        });
       })
     }
 
-    return result;
+    const workProductLevels = workProducts.map((item) => {
+      const levels = [];
+      result.forEach((item2) => {
+        console.log(item2)
+        item2.entryCriterions.forEach((line2) => {
+          if (line2[0] === item.name && !(levels.includes(line2[2]))) {
+            levels.push(line2[2])
+          }
+        })
+        item2.completionCriterions.forEach((line2) => {
+          if (line2[0] === item.name && !(levels.includes(line2[2]))) {
+            levels.push(line2[2])
+          }
+        })
+      })
+
+      return ({
+        ...item,
+        levelOfDetails: levels,
+      })
+    })
+
+    const resultCrits = result.map((item) => {
+      const inputCriterions = divideCriterions(item.entryCriterions, allExtractedWorkProducts);
+      const outputCriterions =  divideCriterions(item.completionCriterions, allExtractedWorkProducts);
+      const alphasInput = inputCriterions[0];
+      const workProductsInput = inputCriterions[1];
+      const alphasOutput = outputCriterions[0];
+      const workProductsOutput = outputCriterions[1];
+      const resInput = generateSubAlphas(alphasInput, subAlphas);
+      const resOutput = generateSubAlphas(alphasOutput, subAlphas);
+
+      return ({
+        ...item,
+        entryCriterions: {
+          alphas: resInput, 
+          workProducts: changeWorkProductNameToId(workProductsInput, workProducts),
+        },
+        completionCriterions: {
+          alphas: resOutput,
+          workProducts: changeWorkProductNameToId(workProductsOutput, workProducts),
+        },
+      })
+    })
+
+    return [resultCrits, workProductLevels, subAlphas];
   };
 
-  function restructureRoles(roles, tasks) {
+  function changeWorkProductNameToId(workProducts, allWorkProducts) {
+    return workProducts.map((item) => [
+      allWorkProducts.find(workProduct => workProduct.name === item[0]).id.toString(),
+      item[1],
+    ]);
+  }
+
+  function generateSubAlphas(alphasInput, subAlphas) {
+    const alphas = [
+      'Stakeholder Representation',
+      'Analysis',
+      'Development',
+      'Testing', 
+      'Leadership', 
+      'Management',
+    ];
+
+    return alphasInput.map((criterion) => {
+      if (alphas.includes(criterion[0])) {
+        // BUG cek state alpha valid
+        return criterion;
+      } else {
+        const subAlpha = subAlphas.find(item => item.name === criterion[0]);
+        if (subAlpha) {
+          const state = subAlpha.states.find(item => item.name === criterion[1]);
+          if (!state) {
+            subAlphas.find(item => item.name === criterion[0]).states
+              .push({
+                id: subAlpha.states.length + 1,
+                name: criterion[1],
+                description: "",
+                checklist: [],
+              });
+            return [subAlpha.id.toString(), subAlpha.states.length.toString()];
+          } else {
+            return [subAlpha.id.toString(), state.id.toString()];
+          }
+        } else {
+          subAlphas.push({
+            id: subAlphas.length + 1,
+            name: criterion[0],
+            description: "",
+            states: [{
+              id: 1,
+              name: criterion[1],
+              description: "",
+              checklist: [],
+            }],
+            workProducts: [],
+            alpha: "Stakeholders", // TODO P0 default, voluntary from alpha states
+            areaOfConcernId: "Customer", // TODO P0 default, voluntary from alpha
+          });
+          return [subAlphas.length.toString(), '1'];
+        }
+      }
+    });
+  }
+
+  function divideCriterions(criterions, workProducts) {
+    const alphaCrits = [];
+    const workProductCrits = [];
+
+    const wpArray = workProducts.map((line) => line[0]);
+
+    criterions.forEach((line) => {
+      if (wpArray.includes(line[0])) {
+        workProductCrits.push([line[0], line[2]]);
+      } else {
+        alphaCrits.push([line[0], line[2]]);
+      };
+    });
+
+    return [alphaCrits, workProductCrits];
+  };
+
+  function restructureRoles(roles, tasks, workProducts) {
     const result = [];
 
     for (const role of roles) {
       const extractedTasks = extractColumnContents(role, 0, 'Performed Tasks', undefined);
       const performedTasks = extractedTasks.map((line) => (line[0]));
-      const performedTaskIds = performedTasks.map((taskName) => tasks.find((task) => task.name === taskName).id);
-      console.log('Extracted Tasks:', performedTaskIds);
+      const performedTaskIds = performedTasks.map((taskName) =>
+        tasks.find((task) => task.name === taskName).id.toString()
+      );
+      console.log('Performed Tasks:', performedTaskIds);
 
       const extractedWorkProducts = extractColumnContents(role, 3, 'Assigned Work Products', undefined);
       const assignedWorkProducts = extractedWorkProducts.map((line) => (line[0]));
       const assignedWorkProductIds = assignedWorkProducts.map((workProductName) =>
-        [
-          tasks.find((task) => task.workProducts.find((workProduct) => workProduct.name = workProductName)).id,
-          tasks.find((task) => task.workProducts.find((workProduct) => workProduct.name = workProductName)).workProducts
-            .find((workProduct) => workProduct.name === workProductName).id
-        ]
+        workProducts.find((workProduct) => workProduct.name = workProductName).id.toString()
       );
-      console.log('Extracted Work Products:', assignedWorkProductIds);
+      console.log('Assigned Work Products:', assignedWorkProductIds);
 
       result.push({
         id: result.length + 1,

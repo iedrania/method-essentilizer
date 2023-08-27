@@ -70,7 +70,6 @@ const Role = ({ role }) => {
   };
 
   const renderWorkProducts = () => {
-    // TODO P3 add task category
     return workProducts.map((workProduct) => {
       const randomNumber = getRandomNumber(1001, 2000);
       return (
