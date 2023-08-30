@@ -396,6 +396,11 @@ const MappingProvider = ({ children }) => {
   };
 
   const deleteSubAlpha = (subAlphaId) => {
+    const newAlpha = subAlphas.find((subAlpha) => subAlpha.id === subAlphaId).alpha
+    subAlphas
+      .filter((subAlpha) => subAlpha.alpha === subAlphaId)
+      .forEach((subAlpha) => updateAlphaWithoutStates(subAlpha.id, newAlpha))
+
     setSubAlphas((prevSubAlphas) =>
       prevSubAlphas
         .filter((subAlpha) => subAlpha.id !== subAlphaId)
@@ -413,6 +418,21 @@ const MappingProvider = ({ children }) => {
         ...pattern,
         subAlphas: pattern.alphas.filter((subId) => subId !== subAlphaId),
       }))
+    );
+  };
+
+  const updateAlphaWithoutStates = (subAlphaId, selectedAlphaId) => {
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => {
+        if (subAlpha.id === subAlphaId) {
+          return {
+            ...subAlpha,
+            alpha: selectedAlphaId,
+          };
+        }
+
+        return subAlpha;
+      })
     );
   };
 
