@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { MappingContext } from '../context/context';
 import { GetStaticProps } from "next"
 import SubAlpha from '@/components/SubAlpha';
+import { v4 as uuidv4 } from 'uuid';
 
 export const getStaticProps: GetStaticProps = async () => {
   const alphas = await prisma.alpha.findMany({
@@ -23,11 +24,11 @@ const InputSubAlphas = ({alphas}) => {
   const handleAddSubAlpha = () => {
     const updatedStates = alphas[0].states.map((state, index) => ({
       ...state,
-      id: index + 1,
+      id: uuidv4(),
     })) || [];
 
     addSubAlpha({
-      id: subAlphas.length + 1,
+      id: uuidv4(),
       name: '',
       description: '',
       workProducts: [],

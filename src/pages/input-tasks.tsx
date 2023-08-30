@@ -2,13 +2,14 @@ import React, { useContext } from "react";
 import Link from "next/link";
 import { MappingContext } from "../context/context";
 import Task from "@/components/Task";
+import { v4 as uuidv4 } from 'uuid';
 
 const InputTasks = () => {
   const { tasks, addTask } = useContext(MappingContext);
 
   const handleAddTask = () => {
     addTask({
-      id: tasks.length + 1,
+      id: uuidv4(),
       name: "",
       description: "",
       workProducts: [],

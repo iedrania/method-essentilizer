@@ -6,17 +6,6 @@ import Method from "@/components/Method";
 import FileUploadButton from '@/components/FileUploadButton';
 
 export const getStaticProps: GetStaticProps = async () => {
-  // const latestMethod = await prisma.method.findFirst({
-  //   orderBy: {
-  //     id: "desc",
-  //   },
-  //   select: {
-  //     id: true,
-  //   },
-  // });
-
-  // const nextId = latestMethod ? latestMethod.id + 1 : 1;
-
   const methods = await prisma.method.findMany({
     select: {
       nameId: true,
@@ -81,7 +70,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function Home({ methods }) {
-  const { setInputExcel, setMethodId, setName, setCreator, setDescription, setTasks, setRoles } =
+  const { setInputExcel, setMethodId, setName, setCreator, setDescription, setTasks, setWorkProducts, setRoles, setSubAlphas, setPatterns } =
     useContext(MappingContext);
 
   const resetDatabase = async (e: React.SyntheticEvent) => {
@@ -127,7 +116,10 @@ export default function Home({ methods }) {
     setCreator("");
     setDescription("");
     setTasks([]);
+    setWorkProducts([]);
     setRoles([]);
+    setSubAlphas([]);
+    setPatterns([]);
     Router.push("/input-method");
   };
 

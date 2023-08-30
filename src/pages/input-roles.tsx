@@ -2,13 +2,14 @@ import React, { useContext } from "react";
 import Link from "next/link";
 import { MappingContext } from "../context/context";
 import Role from "@/components/Role";
+import { v4 as uuidv4 } from 'uuid';
 
 const InputRoles = () => {
   const { roles, addRole } = useContext(MappingContext);
 
   const handleAddRole = () => {
     addRole({
-      id: roles.length + 1,
+      id: uuidv4(),
       name: "",
       description: "",
       performedTasks: [],

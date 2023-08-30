@@ -4,6 +4,7 @@ import { GetStaticProps } from "next"
 import Link from 'next/link';
 import { MappingContext } from '../context/context';
 import Pattern from '@/components/Pattern';
+import { v4 as uuidv4 } from 'uuid';
 
 export const getStaticProps: GetStaticProps = async () => {
   const alphas = await prisma.alpha.findMany();
@@ -19,7 +20,7 @@ const InputPatterns: React.FC = ({alphas, competencies}) => {
 
   const handleAddPattern = () => {
     addPattern({
-      id: patterns.length + 1,
+      id: uuidv4(),
       name: '',
       description: '',
       alphas: [],

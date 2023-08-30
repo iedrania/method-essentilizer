@@ -12,23 +12,23 @@ export default async function handle(req, res) {
         description: description,
         activities: {
           create: tasks.map((task) => ({
-            nameId: methodId + "Activity" + task.id,
+            nameId: task.id,
             name: task.name,
             description: task.description || "No description",
             completionCriterions: {
               alphas: task.completionCriterions.alphas.map((criterion) => {
-                return `${Number(criterion[0]) ? (methodId + "Sub" + criterion[0]) : criterion[0]}.${Number(criterion[1]) ? (methodId + "Sub" + criterion[0] + "State" + criterion[1]) : criterion[1]}`;
+                return `${criterion[0]}.${criterion[1]}`;
               }),
               workProducts: task.completionCriterions.workProducts.map((criterion) => {
-                return `${methodId}WP${criterion[0]}.${criterion[1]}`;
+                return `${criterion[0]}.${criterion[1]}`;
               }),
             },
             entryCriterions: {
               alphas: task.entryCriterions.alphas.map((criterion) => {
-                return `${Number(criterion[0]) ? (methodId + "Sub" + criterion[0]) : criterion[0]}.${Number(criterion[1]) ? (methodId + "Sub" + criterion[0] + "State" + criterion[1]) : criterion[1]}`;
+                return `${criterion[0]}.${criterion[1]}`;
               }),
               workProducts: task.entryCriterions.workProducts.map((criterion) => {
-                return `${methodId}WP${criterion[0]}.${criterion[1]}`;
+                return `${criterion[0]}.${criterion[1]}`;
               }),
             },
             areasOfConcern: { connect: task.areasOfConcern.map((areaId) => ({ id: areaId })) },
@@ -37,46 +37,46 @@ export default async function handle(req, res) {
               create: workProducts
                 .filter((workProduct) => workProduct.taskId === task.id)
                 .map((workProduct) => ({
-                  nameId: methodId + "WP" + workProduct.id,
+                  nameId: workProduct.id,
                   name: workProduct.name,
                   description: workProduct.description || "No description",
                   levelOfDetails: workProduct.levelOfDetails,
                   areasOfConcern: { connect: workProduct.areasOfConcern.map((areaId) => ({ id: areaId })) },
-                  alphas: { connect: workProduct.alphas.map((alphaId) => ({ id: alphaId })) },
+                  alphas: { connect: workProduct.alphas.filter((alphaId) => alphaId.length < 20).map((alphaId) => ({ id: alphaId })) },
                 })),
             },
           })),
         },
         roles: {
           create: roles.map((role) => ({
-            nameId: methodId + "Role" + role.id,
+            nameId: role.id,
             name: role.name,
             description: role.description || "No description",
             competencies: { connect: role.competencies.map((competencyId) => ({ id: competencyId })) },
             areasOfConcern: { connect: role.areasOfConcern.map((areaId) => ({ id: areaId })) },
-            performedTasks: { connect: role.performedTasks.map((taskId) => ({ nameId: `${methodId}Activity${taskId}` })) },
-            assignedWorkProducts: { connect: role.assignedWorkProducts.map((id) => ({ nameId: `${methodId}WP${id}` })) },
+            performedTasks: { connect: role.performedTasks.map((taskId) => ({ nameId: taskId })) },
+            assignedWorkProducts: { connect: role.assignedWorkProducts.map((id) => ({ nameId: id })) },
           }))
         },
         patterns: {
           create: patterns.map((pattern) => ({
-            nameId: methodId + "Pattern" + pattern.id,
+            nameId: pattern.id,
             name: pattern.name,
             description: pattern.description || "No description",
             subPatternIds: pattern.subPatterns,
             competencies: { connect: pattern.competencies.map((competencyId) => ({ id: competencyId })) },
-            activities: { connect: pattern.activities.map((activityId) => ({ nameId: methodId + "Activity" + activityId })) },
-            alphas: { connect: pattern.alphas.map((alphaId) => ({ id: alphaId })) },
+            activities: { connect: pattern.activities.map((activityId) => ({ nameId: activityId })) },
+            alphas: { connect: pattern.alphas.filter((alphaId) => alphaId.length < 20).map((alphaId) => ({ id: alphaId })) },
           }))
         },
         subAlphas: {
           create: subAlphas.map((subAlpha) => ({
-            nameId: methodId + "Sub" + subAlpha.id,
+            nameId: subAlpha.id,
             name: subAlpha.name,
             description: subAlpha.description || "No description",
             states: {
               create: subAlpha.states.map((state) => ({
-                nameId: methodId + "Sub" + subAlpha.id + "State" + state.id,
+                nameId: state.id,
                 name: state.name,
                 description: state.description,
                 checklist: state.checklist,
@@ -92,11 +92,29 @@ export default async function handle(req, res) {
         where: { id: subAlpha.alpha },
         data: {
           subAlphaIds: {
-            push: methodId + "-sub-" + subAlpha.id,
+            push: subAlpha.id,
           },
         },
       });
     }
+
+    // for (const pattern of patterns) {
+    //   await prisma.pattern.update({
+    //     where: { nameId: pattern.id },
+    //     data: {
+    //       alphas: { connect: pattern.alphas.map((alphaId) => ({ id: alphaId })) },
+    //     },
+    //   });
+    // }
+
+    // for (const workProduct of workProducts) {
+    //   await prisma.workProduct.update({
+    //     where: { nameId: workProduct.id },
+    //     data: {
+    //       alphas: { connect: workProduct.alphas.map((alphaId) => ({ id: alphaId })) },
+    //     },
+    //   });
+    // }
 
     res.json(result);
   } catch (error) {

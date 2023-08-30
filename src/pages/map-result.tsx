@@ -24,7 +24,6 @@ const MapResult: React.FC = ({ spaces, alphas, competencies }) => {
 
   const handleSaveClick = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    // TODO P2 make sure all delete removes from other lists
     try {
       const body = { methodId, name, creator, description, tasks, workProducts, roles, subAlphas, patterns };
       await fetch("/api/post", {

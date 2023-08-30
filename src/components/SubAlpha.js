@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { MappingContext } from '../context/context';
 import StateItem from '@/components/StateItem';
+import { v4 as uuidv4 } from 'uuid';
 
 const SubAlpha = ({ subAlpha, alphas }) => {
   const { subAlphas, changeSubAlphaName, changeSubAlphaDescription, deleteSubAlpha, updateAlphaOfSubAlpha, addState } = useContext(MappingContext);
@@ -25,7 +26,7 @@ const SubAlpha = ({ subAlpha, alphas }) => {
     const selectedAlpha = alphas.concat(subAlphas).find((alpha) => alpha.id == alphaId);
     const updatedStates = selectedAlpha?.states.map((state, index) => ({
       ...state,
-      id: index + 1,
+      id: uuidv4(),
     })) || [];
 
     updateAlphaOfSubAlpha(subAlpha.id, alphaId, updatedStates, selectedAlpha.areaOfConcernId);
@@ -34,7 +35,7 @@ const SubAlpha = ({ subAlpha, alphas }) => {
 
   const handleAddState = () => {
     addState(subAlpha.id, [{
-      id: subAlpha.states.length + 1,
+      id: uuidv4(),
       name: '',
       description: '',
       checklist: []

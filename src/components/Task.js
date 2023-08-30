@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { MappingContext } from "../context/context";
 import WorkProduct from "@/components/WorkProduct";
+import { v4 as uuidv4 } from 'uuid';
 
 const Task = ({ task }) => {
   const { changeTaskName, changeTaskDescription, deleteTask, workProducts, addWorkProduct } =
@@ -26,7 +27,7 @@ const Task = ({ task }) => {
 
   const handleAddWorkProduct = () => {
     addWorkProduct({
-      id: workProducts.length + 1,
+      id: uuidv4(),
       name: "",
       description: "",
       alphas: [],

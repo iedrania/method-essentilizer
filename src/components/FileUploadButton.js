@@ -2,9 +2,20 @@ import React, { useContext, useRef } from "react";
 import Router from "next/router";
 import { MappingContext } from "../context/context";
 import { read, utils } from "xlsx";
+import { v4 as uuidv4 } from 'uuid';
 
 const FileUploadButton = () => {
-  const { setInputExcel, setMethodId, setName, setCreator, setDescription, setTasks, setWorkProducts, setRoles, setSubAlphas } = useContext(MappingContext);
+  const {
+    setInputExcel,
+    setMethodId,
+    setName,
+    setCreator,
+    setDescription,
+    setTasks,
+    setWorkProducts,
+    setRoles,
+    setSubAlphas
+  } = useContext(MappingContext);
 
   const fileInputRef = useRef(null);
 
@@ -19,7 +30,7 @@ const FileUploadButton = () => {
       fileReader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0]; // Assuming first sheet
+        const sheetName = workbook.SheetNames[0]; // First sheet
         const sheet = workbook.Sheets[sheetName];
         const dataArray = utils.sheet_to_json(sheet, { header: 1 });
         console.log("excel array", dataArray);
@@ -28,7 +39,7 @@ const FileUploadButton = () => {
           convertExcelToContext(dataArray);
 
           setInputExcel(true);
-          Router.push("/input-sub-alphas");
+          Router.push("/input-result");
         };
       };
       fileReader.readAsArrayBuffer(file);
@@ -99,16 +110,16 @@ const FileUploadButton = () => {
     for (const task of tasks) {
       const extractedWorkProducts = extractColumnContents(task, 3, 'Work products', 'Conditions');
       allExtractedWorkProducts.push(...extractedWorkProducts);
-      console.log("AAAAAA", allExtractedWorkProducts)
+      console.log("All Extracted Work Products", allExtractedWorkProducts)
 
       const extractedConditionsInput = extractColumnContents(task, 0, 'Conditions', undefined);
-      console.log('Extracted Conditions:', extractedConditionsInput);
+      console.log('Extracted Input Conditions:', extractedConditionsInput);
 
       const extractedConditionsOutput = extractColumnContents(task, 3, 'Conditions', undefined);
-      console.log('Extracted Conditions:', extractedConditionsOutput);
+      console.log('Extracted Output Conditions:', extractedConditionsOutput);
 
       result.push({
-        id: result.length + 1,
+        id: uuidv4(),
         name: task[0][1],
         description: task[1][1] || "No description",
         entryCriterions: extractedConditionsInput,
@@ -119,7 +130,7 @@ const FileUploadButton = () => {
 
       extractedWorkProducts.map((line) => {
         workProducts.push({
-          id: workProducts.length + 1,
+          id: uuidv4(),
           name: line[0],
           description: line[1] || "No description",
           alphas: [],
@@ -181,7 +192,7 @@ const FileUploadButton = () => {
 
   function changeWorkProductNameToId(workProducts, allWorkProducts) {
     return workProducts.map((item) => [
-      allWorkProducts.find(workProduct => workProduct.name === item[0]).id.toString(),
+      allWorkProducts.find(workProduct => workProduct.name === item[0]).id,
       item[1],
     ]);
   }
@@ -205,24 +216,27 @@ const FileUploadButton = () => {
         if (subAlpha) {
           const state = subAlpha.states.find(item => item.name === criterion[1]);
           if (!state) {
+            const stateId = uuidv4();
             subAlphas.find(item => item.name === criterion[0]).states
               .push({
-                id: subAlpha.states.length + 1,
+                id: stateId,
                 name: criterion[1],
                 description: "",
                 checklist: [],
               });
-            return [subAlpha.id.toString(), subAlpha.states.length.toString()];
+            return [subAlpha.id, stateId];
           } else {
-            return [subAlpha.id.toString(), state.id.toString()];
+            return [subAlpha.id, state.id];
           }
         } else {
+          const subAlphaId = uuidv4();
+          const stateId = uuidv4();
           subAlphas.push({
-            id: subAlphas.length + 1,
+            id: subAlphaId,
             name: criterion[0],
             description: "",
             states: [{
-              id: 1,
+              id: stateId,
               name: criterion[1],
               description: "",
               checklist: [],
@@ -231,7 +245,7 @@ const FileUploadButton = () => {
             alpha: "Stakeholders", // TODO P0 default, voluntary from alpha states
             areaOfConcernId: "Customer", // TODO P0 default, voluntary from alpha
           });
-          return [subAlphas.length.toString(), '1'];
+          return [subAlphaId, stateId];
         }
       }
     });
@@ -261,19 +275,19 @@ const FileUploadButton = () => {
       const extractedTasks = extractColumnContents(role, 0, 'Performed Tasks', undefined);
       const performedTasks = extractedTasks.map((line) => (line[0]));
       const performedTaskIds = performedTasks.map((taskName) =>
-        tasks.find((task) => task.name === taskName).id.toString()
+        tasks.find((task) => task.name === taskName).id
       );
       console.log('Performed Tasks:', performedTaskIds);
 
       const extractedWorkProducts = extractColumnContents(role, 3, 'Assigned Work Products', undefined);
       const assignedWorkProducts = extractedWorkProducts.map((line) => (line[0]));
       const assignedWorkProductIds = assignedWorkProducts.map((workProductName) =>
-        workProducts.find((workProduct) => workProduct.name = workProductName).id.toString()
+        workProducts.find((workProduct) => workProduct.name = workProductName).id
       );
       console.log('Assigned Work Products:', assignedWorkProductIds);
 
       result.push({
-        id: result.length + 1,
+        id: uuidv4(),
         name: role[0][1],
         description: role[1][1] || "No description",
         performedTasks: performedTaskIds,

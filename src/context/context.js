@@ -35,12 +35,38 @@ const MappingProvider = ({ children }) => {
   };
 
   const deleteTask = (taskId) => {
+    const deletedIds = [];
+    workProducts.reduce((totalCount, workProduct) => {
+      if (workProduct.taskId === taskId) {
+        deletedIds.push(workProduct.id);
+        return totalCount + 1;
+      }
+      return totalCount;
+    }, 0);
+
     setTasks((prevTasks) =>
       prevTasks
         .filter((task) => task.id !== taskId)
-        .map((task) => {
-          return task.id > taskId ? { ...task, id: task.id - 1 } : task;
-        })
+    );
+
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts
+        .filter((workProduct) => workProduct.taskId !== taskId)
+    );
+
+    setRoles((prevRoles) =>
+      prevRoles.map((role) => ({
+        ...role,
+        performedTasks: role.performedTasks.filter((performedTaskId) => performedTaskId !== taskId),
+        assignedWorkProducts: role.assignedWorkProducts.filter((assignedWorkProduct) => deletedIds.includes(assignedWorkProduct)),
+      }))
+    );
+
+    setPatterns((prevPatterns) =>
+      prevPatterns.map((pattern) => ({
+        ...pattern,
+        activities: pattern.activities.filter((activityId) => activityId !== taskId),
+      }))
     );
   };
 
@@ -68,72 +94,22 @@ const MappingProvider = ({ children }) => {
     setWorkProducts((prevWorkProducts) =>
       prevWorkProducts
         .filter((workProduct) => workProduct.id !== workProductId)
-        .map((workProduct) => {
-          return workProduct.id > workProductId ? { ...workProduct, id: workProduct.id - 1 } : workProduct;
-        })
+    );
+
+    setSubAlphas((prevSubAlphas) =>
+      prevSubAlphas.map((subAlpha) => ({
+        ...subAlpha,
+        workProducts: subAlpha.workProducts.filter((wpId) => wpId !== workProductId),
+      }))
+    );
+
+    setRoles((prevRoles) =>
+      prevRoles.map((role) => ({
+        ...role,
+        assignedWorkProducts: role.assignedWorkProducts.filter((assignedWorkProduct) => assignedWorkProduct !== workProductId),
+      }))
     );
   };
-
-  // const addWorkProductToTask = (taskId, workProducts) => {
-  //   setTasks((prevTasks) =>
-  //     prevTasks.map((task) => {
-  //       if (task.id === taskId) {
-  //         return { ...task, workProducts: [...(task.workProducts || []), ...workProducts] };
-  //       }
-  //       return task;
-  //     })
-  //   );
-  // };
-
-  // const changeWorkProductName = (taskId, workProductId, newWorkProductName) => {
-  //   setTasks((prevTasks) =>
-  //     prevTasks.map((task) => {
-  //       if (task.id === taskId) {
-  //         const updatedWorkProducts = task.workProducts.map((workProduct) => {
-  //           if (workProduct.id === workProductId) {
-  //             return { ...workProduct, name: newWorkProductName };
-  //           }
-  //           return workProduct;
-  //         });
-  //         return { ...task, workProducts: updatedWorkProducts };
-  //       }
-  //       return task;
-  //     })
-  //   );
-  // };
-
-  // const changeWorkProductDescription = (taskId, workProductId, newWorkProductDescription) => {
-  //   setTasks((prevTasks) =>
-  //     prevTasks.map((task) => {
-  //       if (task.id === taskId) {
-  //         const updatedWorkProducts = task.workProducts.map((workProduct) => {
-  //           if (workProduct.id === workProductId) {
-  //             return { ...workProduct, description: newWorkProductDescription };
-  //           }
-  //           return workProduct;
-  //         });
-  //         return { ...task, workProducts: updatedWorkProducts };
-  //       }
-  //       return task;
-  //     })
-  //   );
-  // };
-
-  // const deleteWorkProduct = (taskId, workProductId) => {
-  //   setTasks((prevTasks) =>
-  //     prevTasks.map((task) => {
-  //       if (task.id === taskId) {
-  //         const updatedWorkProducts = task.workProducts
-  //           .filter((workProduct) => workProduct.id !== workProductId)
-  //           .map((workProduct) => {
-  //             return workProduct.id > workProductId ? { ...workProduct, id: workProduct.id - 1 } : workProduct;
-  //           });
-  //         return { ...task, workProducts: updatedWorkProducts };
-  //       }
-  //       return task;
-  //     })
-  //   );
-  // };
 
   const addRole = (role) => {
     setRoles((prevRoles) => [...prevRoles, role]);
@@ -143,9 +119,6 @@ const MappingProvider = ({ children }) => {
     setRoles((prevRoles) =>
       prevRoles
         .filter((role) => role.id !== roleId)
-        .map((role) => {
-          return role.id > roleId ? { ...role, id: role.id - 1 } : role;
-        })
     );
   };
 
@@ -199,7 +172,6 @@ const MappingProvider = ({ children }) => {
 
           return { ...role, assignedWorkProducts: updatedAssignedWorkProducts };
         }
-        console.log(roles)
 
         return role;
       })
@@ -280,77 +252,6 @@ const MappingProvider = ({ children }) => {
     );
   };
 
-  // const updateAlphas = (workProductId, alphaId, isChecked) => {
-  //   setTasks((prevActivities) =>
-  //     prevActivities.map((activity) => {
-  //       if (activity.id === activityId) {
-  //         const updatedWorkProducts = activity.workProducts.map((workProduct) => {
-  //           if (workProduct.id === workProductId) {
-  //             let updatedAlphas;
-  
-  //             if (isChecked) {
-  //               updatedAlphas = [...(workProduct.alphas || []), alphaId];
-  //             } else {
-  //               updatedAlphas = (workProduct.alphas || []).filter((id) => id !== alphaId);
-  //             }
-  
-  //             return { ...workProduct, alphas: updatedAlphas };
-  //           }
-  
-  //           return workProduct;
-  //         });
-  
-  //         return { ...activity, workProducts: updatedWorkProducts };
-  //       }
-  
-  //       return activity;
-  //     })
-  //   );
-  // };
-
-  // const updateSubAlphas = (activityId, workProductId, alphaId, isChecked) => {
-  //   setTasks((prevActivities) =>
-  //     prevActivities.map((activity) => {
-  //       if (activity.id === activityId) {
-  //         const updatedWorkProducts = activity.workProducts.map((workProduct) => {
-  //           if (workProduct.id === workProductId) {
-  //             let updatedAlphas;
-  
-  //             if (isChecked) {
-  //               updatedAlphas = [...(workProduct.subAlphas || []), alphaId];
-  //             } else {
-  //               updatedAlphas = (workProduct.subAlphas || []).filter((id) => id !== alphaId);
-  //             }
-  
-  //             return { ...workProduct, subAlphas: updatedAlphas };
-  //           }
-  
-  //           return workProduct;
-  //         });
-  
-  //         return { ...activity, workProducts: updatedWorkProducts };
-  //       }
-  
-  //       return activity;
-  //     })
-  //   );
-
-  //   setSubAlphas((prevSubAlphas) =>
-  //     prevSubAlphas.map((subAlpha) => {
-  //       const itemId = [activityId, workProductId];
-  //       if (isChecked) {
-  //         if (!subAlpha.workProducts.includes(itemId)) {
-  //           subAlpha.workProducts.push(itemId);
-  //         }
-  //       } else {
-  //         subAlpha.workProducts = subAlpha.workProducts.filter((id) => id !== itemId);
-  //       }
-
-  //       return subAlpha;
-  //     })
-  //   );
-  // };
-
   const updateCompetencies = (roleId, competencyId, isChecked) => {
     setRoles((prevRoles) =>
       prevRoles.map((role) => {
@@ -386,11 +287,9 @@ const MappingProvider = ({ children }) => {
               updatedLevels = [...role.competencyLevels, [competencyId, levelName]];
             }
           } else {
-            console.log("remove", competencyId, "from competencyLevels")
-            updatedLevels = role.competencyLevels.filter((competencyLevel) => !competencyLevel[0] === competencyId);
+            updatedLevels = role.competencyLevels.filter((competencyLevel) => competencyLevel[0] !== competencyId);
           }
 
-          console.log("updatedLevels", updatedLevels);
           return { ...role, competencyLevels: updatedLevels };
         }
         return role;
@@ -438,7 +337,7 @@ const MappingProvider = ({ children }) => {
 
       setRoles((prevRoles) =>
         prevRoles.map((role) => {
-          if (role.performedTasks.includes(String(elementId))) {
+          if (role.performedTasks.includes(elementId)) {
             if (!role.areasOfConcern.includes(areaId)) {
               role.areasOfConcern.push(areaId);
             }
@@ -476,44 +375,6 @@ const MappingProvider = ({ children }) => {
     }
   };
 
-  // const fillRoleAreasFromRelated = () => {
-  //   setRoles((prevRoles) =>
-  //     prevRoles.map((role) => {
-  //       if (!role.areasOfConcern.length) {
-  //         const relatedAreasOfConcern = [];
-
-  //         console.log(role.performedTasks, "length adalah", role.performedTasks.length)
-  //         if (role.performedTasks.length) {
-  //           console.log('ada performed task')
-  //           tasks.forEach((activity) => {
-  //             console.log(activity);
-  //             if (role.performedTasks.includes(String(activity.id))) {
-  //               relatedAreasOfConcern.push(...activity.areasOfConcern);
-  //               console.log('area of concern yg ditambah dari activity', activity.areasOfConcern)
-  //             }
-  //           });
-  //         }
-
-  //         if (role.assignedWorkProducts.length) {
-  //           role.assignedWorkProducts.forEach((id) => {
-  //             const task = tasks.find((item) => item.id == id);
-  //             relatedAreasOfConcern.push(...task.areasOfConcern)
-  //           });
-  //         }
-
-  //         console.log("relatedArea", relatedAreasOfConcern)
-
-  //         const uniqueAreasOfConcern = Array.from(new Set(relatedAreasOfConcern));
-  //         console.log(uniqueAreasOfConcern)
-
-  //         return { ...role, areasOfConcern: uniqueAreasOfConcern }
-  //       }
-
-  //       return role;
-  //     })
-  //   );
-  // };
-
   const addSubAlpha = (subAlpha) => {
     setSubAlphas((prevSubAlphas) => [...prevSubAlphas, subAlpha]);
   };
@@ -538,9 +399,20 @@ const MappingProvider = ({ children }) => {
     setSubAlphas((prevSubAlphas) =>
       prevSubAlphas
         .filter((subAlpha) => subAlpha.id !== subAlphaId)
-        .map((subAlpha) => {
-          return subAlpha.id > subAlphaId ? { ...subAlpha, id: subAlpha.id - 1 } : subAlpha;
-        })
+    );
+
+    setWorkProducts((prevWorkProducts) =>
+      prevWorkProducts.map((workProduct) => ({
+        ...workProduct,
+        subAlphas: workProduct.subAlphas.filter((subId) => subId !== subAlphaId),
+      }))
+    );
+
+    setPatterns((prevPatterns) =>
+      prevPatterns.map((pattern) => ({
+        ...pattern,
+        subAlphas: pattern.alphas.filter((subId) => subId !== subAlphaId),
+      }))
     );
   };
 
@@ -565,7 +437,6 @@ const MappingProvider = ({ children }) => {
     setSubAlphas((prevSubAlphas) =>
       prevSubAlphas.map((subAlpha) => {
         if (subAlpha.id !== subAlphaId) return subAlpha;
-        console.log("old and new states", subAlpha.states, newStateData)
 
         return {
           ...subAlpha,
@@ -589,6 +460,7 @@ const MappingProvider = ({ children }) => {
               ...state,
               checklist: state.checklist?.map((checklist, i) => (i === index ? newValue : checklist)),
             };
+            // TODO pakai ini di level of details
           }),
         };
       })
@@ -596,8 +468,6 @@ const MappingProvider = ({ children }) => {
   };
 
   const deleteChecklistItem = (subAlphaId, stateId, index) => {
-    console.log(subAlphas)
-    console.log(subAlphaId, stateId, index)
     setSubAlphas((prevSubAlphas) =>
       prevSubAlphas.map((subAlpha) => {
         if (subAlpha.id !== subAlphaId) return subAlpha;
@@ -666,9 +536,24 @@ const MappingProvider = ({ children }) => {
           ...subAlpha,
           states: subAlpha.states
             .filter((state) => state.id !== stateId)
-            .map((state) => {
-              return state.id > stateId ? { ...state, id: state.id - 1 } : state;
-            }),
+        };
+      })
+    );
+
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        let updatedEntryAlphaCriterions;
+        updatedEntryAlphaCriterions = task.entryCriterions.alphas.filter((entryCriterion) =>
+          entryCriterion[0] !== subAlphaId);
+
+        let updatedCompletionAlphaCriterions;
+        updatedCompletionAlphaCriterions = task.completionCriterions.alphas.filter((completionCriterion) =>
+          completionCriterion[0] !== subAlphaId);
+
+        return {
+          ...task,
+          entryCriterions: { ...task.entryCriterions, alphas: updatedEntryAlphaCriterions },
+          completionCriterions: { ...task.completionCriterions, alphas: updatedCompletionAlphaCriterions },
         };
       })
     );
@@ -701,12 +586,11 @@ const MappingProvider = ({ children }) => {
           let updatedAlphaCriterions;
 
           if (task.entryCriterions.alphas.some((entryCriterion) => entryCriterion[0] === alphaId)) {
-            updatedAlphaCriterions = task.entryCriterions.alphas.filter((entryCriterion) => !(entryCriterion[0] === alphaId));
+            updatedAlphaCriterions = task.entryCriterions.alphas.filter((entryCriterion) => entryCriterion[0] !== alphaId);
           } else {
             updatedAlphaCriterions = [...task.entryCriterions.alphas, [alphaId, stateId]];
           }
 
-          console.log("updatedAlphaCriterions", updatedAlphaCriterions);
           return { ...task, entryCriterions: { ...task.entryCriterions, alphas: updatedAlphaCriterions } };
         }
         return task;
@@ -728,7 +612,6 @@ const MappingProvider = ({ children }) => {
             updatedAlphaCriterions = [...task.entryCriterions.alphas, [alphaId, stateId]];
           }
 
-          console.log("updatedAlphaCriterions", updatedAlphaCriterions);
           return { ...task, entryCriterions: {...task.entryCriterions, alphas: updatedAlphaCriterions} };
         }
         return task;
@@ -743,12 +626,11 @@ const MappingProvider = ({ children }) => {
           let updatedAlphaCriterions;
 
           if (task.completionCriterions.alphas.some((completionCriterion) => completionCriterion[0] === alphaId)) {
-            updatedAlphaCriterions = task.completionCriterions.alphas.filter((completionCriterion) => !(completionCriterion[0] === alphaId));
+            updatedAlphaCriterions = task.completionCriterions.alphas.filter((completionCriterion) => completionCriterion[0] !== alphaId);
           } else {
             updatedAlphaCriterions = [...task.completionCriterions.alphas, [alphaId, stateId]];
           }
 
-          console.log("updatedAlphaCriterions", updatedAlphaCriterions);
           return { ...task, completionCriterions: {...task.completionCriterions, alphas: updatedAlphaCriterions} };
         }
         return task;
@@ -770,7 +652,6 @@ const MappingProvider = ({ children }) => {
             updatedAlphaCriterions = [...task.completionCriterions.alphas, [alphaId, stateId]];
           }
 
-          console.log("updatedAlphaCriterions", updatedAlphaCriterions);
           return { ...task, completionCriterions: {...task.completionCriterions, alphas: updatedAlphaCriterions} };
         }
         return task;
@@ -802,9 +683,10 @@ const MappingProvider = ({ children }) => {
     setPatterns((prevPatterns) =>
       prevPatterns
         .filter((pattern) => pattern.id !== patternId)
-        .map((pattern) => {
-          return pattern.id > patternId ? { ...pattern, id: pattern.id - 1 } : pattern;
-        })
+        .map((pattern) => ({
+          ...pattern,
+          subPatterns: pattern.subPatterns.filter((pattern) => pattern !== patternId),
+        }))
     );
   };
 
@@ -880,10 +762,6 @@ const MappingProvider = ({ children }) => {
             updatedSubPatterns = (pattern.subPatterns || []).filter((id) => id !== subPatternId);
           }
 
-          console.log(patternId, subPatternId, isChecked)
-
-          console.log(updatedSubPatterns)
-
           return { ...pattern, subPatterns: updatedSubPatterns };
         }
 
@@ -895,7 +773,10 @@ const MappingProvider = ({ children }) => {
   const addLevelOfDetailItem = (workProductId) => {
     setWorkProducts((prevWorkProducts) =>
       prevWorkProducts.map((workProduct) =>
-        workProduct.id === workProductId ? { ...workProduct, levelOfDetails: [...workProduct.levelOfDetails, ''] } : workProduct
+        workProduct.id === workProductId ? {
+          ...workProduct,
+          levelOfDetails: [...workProduct.levelOfDetails, '']
+        } : workProduct
       )
     );
   };
@@ -916,8 +797,27 @@ const MappingProvider = ({ children }) => {
   const deleteLevelOfDetailItem = (workProductId, index) => {
     setWorkProducts((prevWorkProducts) =>
       prevWorkProducts.map((workProduct) =>
-        workProduct.id === workProductId ? { ...workProduct, levelOfDetails: workProduct.levelOfDetails.filter((_, i) => i !== index) } : workProduct
+        workProduct.id === workProductId ? {
+          ...workProduct,
+          levelOfDetails: workProduct.levelOfDetails.filter((_, i) => i !== index)
+        } : workProduct
       )
+    );
+
+    setTasks((prevActivities) =>
+      prevActivities.map((activity) => {
+        let updatedEntryLevels;
+        updatedEntryLevels = activity.entryCriterions.workProducts.filter((entryCriterion) => entryCriterion[0] !== workProductId);
+
+        let updatedCompletionLevels;
+        updatedCompletionLevels = activity.completionCriterions.workProducts.filter((completionCriterion) => completionCriterion[0] !== workProductId);
+
+        return {
+          ...activity,
+          entryCriterions: { ...activity.entryCriterions, workProducts: updatedEntryLevels },
+          completionCriterions: { ...activity.completionCriterions, workProducts: updatedCompletionLevels },
+        };
+      })
     );
   };
 
@@ -936,10 +836,9 @@ const MappingProvider = ({ children }) => {
               updatedLevels = [...activity.entryCriterions.workProducts, [workProductId, levelName]];
             }
           } else {
-            updatedLevels = activity.entryCriterions.workProducts.filter((entryCriterion) => !entryCriterion[0] === workProductId);
+            updatedLevels = activity.entryCriterions.workProducts.filter((entryCriterion) => entryCriterion[0] !== workProductId);
           }
 
-          console.log("updatedLevels", updatedLevels);
           return { ...activity, entryCriterions: { ...activity.entryCriterions, workProducts: updatedLevels } };
         }
         return activity;
@@ -962,10 +861,9 @@ const MappingProvider = ({ children }) => {
               updatedLevels = [...activity.completionCriterions.workProducts, [workProductId, levelName]];
             }
           } else {
-            updatedLevels = activity.completionCriterions.workProducts.filter((completionCriterion) => !completionCriterion[0] === workProductId);
+            updatedLevels = activity.completionCriterions.workProducts.filter((completionCriterion) => completionCriterion[0] !== workProductId);
           }
 
-          console.log("updatedLevels", updatedLevels);
           return { ...activity, completionCriterions: { ...activity.completionCriterions, workProducts: updatedLevels } };
         }
         return activity;
