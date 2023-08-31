@@ -2,11 +2,13 @@ import React, { useContext } from 'react';
 import { MappingContext } from '../context/context';
 import Router from 'next/router'
 import styles from '@/styles/Method.module.css';
+import { v4 as uuidv4 } from 'uuid';
 
 const Method = ({ method }) => {
-  const { setMethodId, setName, setDescription, setTasks, setRoles } = useContext(MappingContext);
+  const { setMethodId, setName, setCreator, setDescription, setTasks, setWorkProducts, setRoles } = useContext(MappingContext);
 
   const handleMethodClick = () => {
+    console.log(method);
     function getNumberIdFromString(str) {
       const parts = str.split("-");
       const lastPart = parts[parts.length - 1];
@@ -19,7 +21,11 @@ const Method = ({ method }) => {
     }
 
     function idsToArray(array) {
-      return array.map((item) => item.id.toString());
+      return array.map((item) => item.id);
+    }
+
+    function nameIdsToArray(array) {
+      return array.map((item) => item.nameId);
     }
 
     function idsToArrayTrim(array) {
@@ -30,32 +36,113 @@ const Method = ({ method }) => {
       return array.map((item) => [getStringIdFromString(item.taskId), getStringIdFromString(item.id)]);
     }
 
+    const alphas = [
+      'Stakeholders',
+      'Opportunity',
+      'Requirements',
+      'Software System',
+      'Team',
+      'Work',
+      'Way-of-Working',
+    ];
+
+    const workProducts= [];
+
     method.activities.forEach((task) => {
-      task.id = getNumberIdFromString(task.nameId);
+      task.id = task.nameId;
+
+      const criterion = task.entryCriterions;
+      const alph = [];
+      criterion.alphas.forEach((alpha) => {
+        if (alphas.includes(alpha.split(".")[0])) {
+          alph.push([alpha.split(".")[0], alpha.split(".")[1]])
+          console.log(alph)
+        }
+      });
+      const wpr = criterion.workProducts.map((wp => [wp.split(".")[0], wp.split(".")[1]]));
+      task.entryCriterions = { alphas: alph, workProducts: wpr };
+
+      const ccriterion = task.completionCriterions;
+      const calph = [];
+      ccriterion.alphas.forEach((alpha) => {
+        if (alphas.includes(alpha.split(".")[0])) {
+          calph.push([alpha.split(".")[0], alpha.split(".")[1]])
+          console.log(calph)
+        }
+      });
+      const cwpr = ccriterion.workProducts.map((wp => [wp.split(".")[0], wp.split(".")[1]]));
+      task.completionCriterions = {alphas: calph, workProducts: cwpr};
+
       task.areasOfConcern = idsToArray(task.areasOfConcern)
       task.activitySpaces = idsToArray(task.activitySpaces)
       task.workProducts.forEach((workProduct) => {
-        workProduct.id = getNumberIdFromString(workProduct.id);
-        workProduct.taskId = getNumberIdFromString(workProduct.taskId)
+        workProduct.areasOfConcern = idsToArray(workProduct.areasOfConcern)
         workProduct.alphas = idsToArray(workProduct.alphas)
+        workProduct.subAlphas = [];
+        workProducts.push(workProduct)
       });
+      task.workProducts.map((workProduct) => workProduct.nameId);
+    });
+
+    workProducts.forEach((workProduct) => {
+      workProduct.id = workProduct.nameId;
+      workProduct.taskId = workProduct.activityNameId;
     });
 
     method.roles.forEach((role) => {
-      role.id = getNumberIdFromString(role.id);
+      role.id = role.nameId;
       role.areasOfConcern = idsToArray(role.areasOfConcern)
       role.competencies = idsToArray(role.competencies)
-      role.performedTasks = idsToArrayTrim(role.performedTasks)
-      role.assignedWorkProducts = twoIdsToArray(role.assignedWorkProducts)
+      role.competencyLevels = role.competencies.map((competency) => {
+        return [competency, "Applies"]
+      })
+      role.performedTasks = nameIdsToArray(role.performedTasks)
+      role.assignedWorkProducts = nameIdsToArray(role.assignedWorkProducts)
     });
 
     console.log("result method", method)
+    
+    // update ids
+    method.activities.forEach((task) => {
+      const newId = uuidv4();
+      const oldId = task.id
+      task.id = newId;
 
-    setMethodId(nextId)
+      workProducts.forEach((wp) => {
+        wp.taskId === oldId ? wp.taskId = newId : wp.taskId = wp.taskId;
+      })
+
+      method.roles.forEach((role) => {
+        role.performedTasks.map((taskId) => taskId === oldId ? newId : taskId)
+      })
+    });
+
+    workProducts.forEach((wp) => {
+      const newId = uuidv4();
+      const oldId = wp.id
+      wp.id = newId;
+
+      method.roles.forEach((role) => {
+        role.assignedWorkProducts.map((taskId) => taskId === oldId ? newId : taskId)
+      })
+    })
+
+    method.roles.forEach((role) => {
+      const newId = uuidv4();
+      const oldId = role.id
+      role.id = newId;
+    })
+
+    const roles = method.roles;
+    const tasks = method.activities;
+
+    setMethodId(method.nameId)
     setName(method.name);
+    setCreator(method.creator);
     setDescription(method.description);
-    setTasks(method.activities);
-    setRoles(method.roles);
+    setTasks(tasks);
+    setWorkProducts(workProducts);
+    setRoles(roles);
     Router.push('/input-method');
   };
 

@@ -31,6 +31,11 @@ export const getStaticProps: GetStaticProps = async () => {
                   id: true,
                 },
               },
+              areasOfConcern: {
+                select: {
+                  id: true,
+                },
+              },
             },
           },
         },
