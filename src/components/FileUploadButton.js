@@ -199,12 +199,13 @@ const FileUploadButton = () => {
 
   function generateSubAlphas(alphasInput, subAlphas) {
     const alphas = [
-      'Stakeholder Representation',
-      'Analysis',
-      'Development',
-      'Testing', 
-      'Leadership', 
-      'Management',
+      'Stakeholders',
+      'Opportunity',
+      'Requirements',
+      'Software System',
+      'Team',
+      'Work',
+      'Way-of-Working',
     ];
 
     return alphasInput.map((criterion) => {
