@@ -4,6 +4,48 @@ export default async function handle(req, res) {
   const { methodId, name, creator, description, tasks, workProducts, roles, subAlphas, patterns } = req.body;
 
   try {
+    const allPatterns = [
+      ...patterns.map((pattern) => ({
+        id: pattern.id,
+        name: pattern.name,
+        description: pattern.description || "No description",
+        role: false,
+        subPatterns: pattern.subPatterns,
+        competencies: pattern.competencies,
+        activities: pattern.activities,
+        alphas: pattern.alphas.filter((alphaId) => alphaId.length < 20),
+        assignedWorkProducts: [],
+        areasOfConcern: [],
+        subAlphas: pattern.alphas.filter((alphaId) => alphaId.length >= 20),
+      })),
+      {
+        id: methodId + "PatternRoles",
+        name: `${name} Roles`,
+        description: `${name} Roles`,
+        role: false,
+        subPatterns: roles.map((role) => role.id),
+        competencies: [],
+        activities: [],
+        alphas: [],
+        assignedWorkProducts: [],
+        areasOfConcern: [],
+        subAlphas: [],
+      },
+      ...roles.map((role) => ({
+        id: role.id,
+        name: role.name,
+        description: role.description || "No description",
+        role: true,
+        subPatterns: [],
+        competencies: role.competencies,
+        activities: role.performedTasks,
+        alphas: [],
+        assignedWorkProducts: role.assignedWorkProducts,
+        areasOfConcern: role.areasOfConcern,
+        subAlphas: [],
+      })),
+    ];
+
     const result = await prisma.method.create({
       data: {
         nameId: methodId,
@@ -47,26 +89,19 @@ export default async function handle(req, res) {
             },
           })),
         },
-        roles: {
-          create: roles.map((role) => ({
-            nameId: role.id,
-            name: role.name,
-            description: role.description || "No description",
-            competencies: { connect: role.competencies.map((competencyId) => ({ id: competencyId })) },
-            areasOfConcern: { connect: role.areasOfConcern.map((areaId) => ({ id: areaId })) },
-            performedTasks: { connect: role.performedTasks.map((taskId) => ({ nameId: taskId })) },
-            assignedWorkProducts: { connect: role.assignedWorkProducts.map((id) => ({ nameId: id })) },
-          }))
-        },
         patterns: {
-          create: patterns.map((pattern) => ({
+          create: allPatterns.map((pattern) => ({
             nameId: pattern.id,
             name: pattern.name,
             description: pattern.description || "No description",
+            role: pattern.role,
             subPatternIds: pattern.subPatterns,
             competencies: { connect: pattern.competencies.map((competencyId) => ({ id: competencyId })) },
             activities: { connect: pattern.activities.map((activityId) => ({ nameId: activityId })) },
             alphas: { connect: pattern.alphas.filter((alphaId) => alphaId.length < 20).map((alphaId) => ({ id: alphaId })) },
+            assignedWorkProducts: { connect: pattern.assignedWorkProducts.map((wpId) => ({ nameId: wpId })) },
+            areasOfConcern: { connect: pattern.areasOfConcern.map((areaId) => ({ id: areaId })) },
+            // subAlphas: { connect: pattern.subAlphas.map((alphaId) => ({ id: alphaId })) },
           }))
         },
         subAlphas: {
@@ -82,6 +117,7 @@ export default async function handle(req, res) {
                 checklist: state.checklist,
               }))
             },
+            alpha: { connect: { id: subAlpha.alpha } },
           }))
         },
       },

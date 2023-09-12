@@ -40,7 +40,7 @@ export const getStaticProps: GetStaticProps = async () => {
           },
         },
       },
-      roles: {
+      patterns: {
         include: {
           areasOfConcern: {
             select: {
@@ -52,7 +52,7 @@ export const getStaticProps: GetStaticProps = async () => {
               id: true,
             },
           },
-          performedTasks: {
+          activities: {
             select: {
               nameId: true,
             },

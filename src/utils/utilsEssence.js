@@ -173,7 +173,7 @@ export function downloadEssenceJson(filename, methodId, title, creator, descript
   function createRolesPattern(roles) {
     const rolesPattern = {
       nameId: methodId + "PatternRoles",
-      name: "Roles",
+      name: `${title} Roles`,
       description: `${title} Roles`,
       activities: [],
       alphas: [],

@@ -89,14 +89,25 @@ const Method = ({ method }) => {
       workProduct.taskId = workProduct.activityNameId;
     });
 
-    method.roles.forEach((role) => {
+    const patterns = []
+    const roles = []
+
+    method.patterns.forEach((role) => {
+      if (role.role) {
+        roles.push(role)
+      } else {
+        patterns.push(role)
+      }
+    });
+
+    roles.forEach((role) => {
       role.id = role.nameId;
       role.areasOfConcern = idsToArray(role.areasOfConcern)
       role.competencies = idsToArray(role.competencies)
       role.competencyLevels = role.competencies.map((competency) => {
         return [competency, "Applies"]
       })
-      role.performedTasks = nameIdsToArray(role.performedTasks)
+      role.performedTasks = nameIdsToArray(role.activities)
       role.assignedWorkProducts = nameIdsToArray(role.assignedWorkProducts)
     });
 
@@ -112,8 +123,8 @@ const Method = ({ method }) => {
         wp.taskId === oldId ? wp.taskId = newId : wp.taskId = wp.taskId;
       })
 
-      method.roles.forEach((role) => {
-        role.performedTasks.map((taskId) => taskId === oldId ? newId : taskId)
+      roles.forEach((role) => {
+        role.activities.map((taskId) => taskId === oldId ? newId : taskId)
       })
     });
 
@@ -122,18 +133,17 @@ const Method = ({ method }) => {
       const oldId = wp.id
       wp.id = newId;
 
-      method.roles.forEach((role) => {
+      roles.forEach((role) => {
         role.assignedWorkProducts.map((taskId) => taskId === oldId ? newId : taskId)
       })
     })
 
-    method.roles.forEach((role) => {
+    roles.forEach((role) => {
       const newId = uuidv4();
       const oldId = role.id
       role.id = newId;
     })
 
-    const roles = method.roles;
     const tasks = method.activities;
 
     setMethodId(method.nameId)

@@ -20,7 +20,7 @@ model AreaOfConcern {
   competencies   Competency[]
   activities     Activity[]
   workProducts   WorkProduct[]
-  roles          Role[]
+  roles          Pattern[]
 }
 
 model ActivitySpace {
@@ -42,6 +42,7 @@ model Alpha {
   patterns        Pattern[]
   areaOfConcernId String
   areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
+  subAlphas       SubAlpha[]
 }
 
 model State {
@@ -60,7 +61,6 @@ model Competency {
   levels          Json[]
   areaOfConcernId String
   areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
-  roles           Role[]
   patterns        Pattern[]
 }
 
@@ -71,12 +71,12 @@ model SubAlpha {
   name         String
   description  String
   states       SubAlphaState[]
-  // subAlphaIds  String[]
+  alphaId      String
+  alpha        Alpha           @relation(fields: [alphaId], references: [id])
   methodId     String
   method       Method          @relation(fields: [methodId], references: [nameId])
-  // areaOfConcernId String
-  // areaOfConcern   AreaOfConcern @relation(fields: [areaOfConcernId], references: [id])
   workProducts WorkProduct[]
+  patterns     Pattern[]
 }
 
 model SubAlphaState {
@@ -96,7 +96,6 @@ model Method {
   creator     String
   description String
   activities  Activity[]
-  roles       Role[]
   patterns    Pattern[]
   subAlphas   SubAlpha[]
 }
@@ -113,7 +112,6 @@ model Activity {
   method               Method          @relation(fields: [methodId], references: [nameId])
   performerRoles       Pattern[]
   workProducts         WorkProduct[]
-  roles                Role[]
 }
 
 model WorkProduct {
@@ -127,31 +125,20 @@ model WorkProduct {
   assigneeRoles  Pattern[]
   activityNameId String
   activity       Activity        @relation(fields: [activityNameId], references: [nameId])
-  roles          Role[]
-}
-
-model Role {
-  nameId               String          @id
-  name                 String
-  description          String
-  competencies         Competency[]
-  areasOfConcern       AreaOfConcern[]
-  performedTasks       Activity[]
-  assignedWorkProducts WorkProduct[]
-  methodId             String
-  method               Method          @relation(fields: [methodId], references: [nameId])
 }
 
 model Pattern {
-  nameId            String       @id
-  name              String
-  description       String
-  competencies      Competency[]
-  subPatternIds     String[]
-  alphas            Alpha[]
-  activities        Activity[]
-  methodId          String
-  method            Method       @relation(fields: [methodId], references: [nameId])
-  workProduct       WorkProduct? @relation(fields: [workProductNameId], references: [nameId])
-  workProductNameId String?
+  nameId               String          @id
+  name                 String
+  description          String
+  role                 Boolean
+  competencies         Competency[]
+  subPatternIds        String[]
+  alphas               Alpha[]
+  activities           Activity[]
+  assignedWorkProducts WorkProduct[]
+  areasOfConcern       AreaOfConcern[]
+  methodId             String
+  method               Method          @relation(fields: [methodId], references: [nameId])
+  subAlphas            SubAlpha[]
 }
